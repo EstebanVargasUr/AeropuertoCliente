@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="Principal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.PrincipalController">
+   <left>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER" />
+   </top>
+   <right>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER" />
+   </right>
+   <bottom>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER" />
+   </bottom>
+</BorderPane>
