@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+
+<VBox fx:id="root" alignment="CENTER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.ServicioController">
+   <children>
+      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="30.0" styleClass="Pane">
+         <children>
+            <VBox alignment="CENTER" prefHeight="700.0" prefWidth="711.0" spacing="30.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="388.0" prefWidth="1010.0" spacing="20.0" styleClass="VBoxTarjeta2" VBox.vgrow="ALWAYS">
+                     <children>
+                        <VBox alignment="CENTER" styleClass="LabelTitulo3" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Servicios" />
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="633.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <JFXTextField fx:id="txt_buscar" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS" />
+                                    <JFXButton buttonType="RAISED" onMousePressed="#buscar" styleClass="Boton1" text="Buscar" HBox.hgrow="ALWAYS" />
+                                    <JFXComboBox fx:id="cb_filtro" promptText="&lt;&lt;Fitrar por&gt;&gt;" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </JFXComboBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="526.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <TableView VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="C1" />
+                                    <TableColumn prefWidth="112.79997861385345" text="C1" />
+                                    <TableColumn prefWidth="98.40003204345703" text="C2" />
+                                    <TableColumn prefWidth="88.79998779296875" text="C3" />
+                                    <TableColumn prefWidth="94.4000244140625" text="C4" />
+                                    <TableColumn prefWidth="94.40005493164062" text="C5" />
+                                    <TableColumn prefWidth="103.99996948242188" text="C6" />
+                                    <TableColumn minWidth="0.0" prefWidth="98.39996337890625" text="C7" />
+                                    <TableColumn minWidth="0.0" prefWidth="136.00006103515625" text="C8" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="102.0" prefWidth="633.0" styleClass="VBoxTarjeta2" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="LabelTitulo3" text="Observaciones" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="86.0" prefWidth="822.0" spacing="43.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="label1" text="No Hay Observaciones" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="256.0" spacing="30.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox alignment="CENTER" spacing="20.0" styleClass="VBoxTarjeta2">
+                     <children>
+                        <VBox alignment="CENTER" styleClass="LabelTitulo3">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Avión" />
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="ID" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Matricula" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Estado" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Registro" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Aerolinea" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" styleClass="VBoxTarjeta2">
+                     <children>
+                        <Label styleClass="LabelTitulo3" text="Precios" />
+                        <HBox alignment="CENTER_LEFT" spacing="30.0">
+                           <children>
+                              <Label styleClass="label1" text="Monto" />
+                              <Label text="-" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="37.0">
+                           <children>
+                              <Label styleClass="label1" text="Fecha" />
+                              <Label text="-" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                     <children>
+                        <JFXButton alignment="CENTER" defaultButton="true" onMousePressed="#nuevo" prefHeight="49.0" prefWidth="215.0" styleClass="jfx-buttonStandard1" text="Nuevo" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </JFXButton>
+                     </children>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+         </padding>
+         <stylesheets>
+            <URL value="@../resources/WinStyle.css" />
+            <URL value="@../resources/Login.css" />
+         </stylesheets>
+      </HBox>
+   </children>
+</VBox>

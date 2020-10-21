@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" styleClass="VBoxTarjeta2" stylesheets="@../resources/WinStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.RegistroUsuarioController">
+<VBox fx:id="root" alignment="CENTER" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" styleClass="VBoxTarjeta2" stylesheets="@../resources/WinStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.RegistroAvionController">
    <children>
       <VBox alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" VBox.vgrow="ALWAYS">
          <VBox.margin>
@@ -22,7 +22,7 @@
                   <Insets left="30.0" right="30.0" />
                </VBox.margin>
                <children>
-                  <Label styleClass="LabelTitulo2" text="Registro de Usuario">
+                  <Label styleClass="LabelTitulo2" text="Registro de Avión">
                      <font>
                         <Font name="System Bold" size="28.0" />
                      </font>
@@ -33,26 +33,29 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="888.0" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label alignment="TOP_CENTER" styleClass="label3" text="Cedula:" HBox.hgrow="ALWAYS" />
-                        <JFXTextField styleClass="label3" unFocusColor="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label alignment="TOP_CENTER" styleClass="label3" text="Matrícula:" HBox.hgrow="ALWAYS" />
+                        <JFXTextField fx:id="txt_matricula" promptText="Digite la matrícula correspondiente" styleClass="label3" unFocusColor="WHITE" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="888.0" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label styleClass="label3" text="Nombre Completo:" HBox.hgrow="ALWAYS" />
-                        <JFXTextField prefHeight="9.0" prefWidth="270.0" styleClass="label3" unFocusColor="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label styleClass="label3" text="Tipo de Avión:" HBox.hgrow="ALWAYS" />
+                        <JFXComboBox fx:id="cb_tipoAvion" prefHeight="26.0" prefWidth="190.0" promptText="Seleccione el Tipo de Avión" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="746.0" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label styleClass="label3" text="Contraseña:" HBox.hgrow="ALWAYS" />
-                        <JFXTextField styleClass="label3" unFocusColor="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label styleClass="label3" text="Recorrido Maximo del Avión:" HBox.hgrow="ALWAYS" />
+                        <JFXTextField fx:id="txt_recorridoMax" promptText="Digite la distancia en Kilometros" styleClass="label3" unFocusColor="WHITE" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="7.0" />
+                           </font></JFXTextField>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label styleClass="label3" text="Area de Trabajo:" HBox.hgrow="ALWAYS" />
-                        <JFXComboBox prefHeight="26.0" prefWidth="241.0" unFocusColor="WHITE" HBox.hgrow="ALWAYS" />
+                        <Label styleClass="label3" text="Aerolinea:" HBox.hgrow="ALWAYS" />
+                        <JFXComboBox fx:id="cb_aerolinea" prefHeight="26.0" prefWidth="241.0" promptText="Seleccione la Aerolinea Correspondiente" unFocusColor="WHITE" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </children>
@@ -62,13 +65,13 @@
             </VBox>
             <HBox alignment="CENTER" spacing="200.0" VBox.vgrow="ALWAYS">
                <children>
-                  <JFXButton fx:id="btnCancelar" onAction="#onActionBtnCancelar" ripplerFill="#333645" text="Cancelar" HBox.hgrow="ALWAYS">
+                  <JFXButton onMousePressed="#cancelar" ripplerFill="#333645" text="Cancelar" HBox.hgrow="ALWAYS">
                      <styleClass>
                         <String fx:value="jfx-buttonStandard" />
                         <String fx:value="label1" />
                      </styleClass>
                   </JFXButton>
-                  <JFXButton fx:id="btnGuardar" onAction="#onActionBtnGuardar" ripplerFill="#333645" text="Guardar" HBox.hgrow="ALWAYS">
+                  <JFXButton onMousePressed="#guardar" ripplerFill="#333645" text="Guardar" HBox.hgrow="ALWAYS">
                      <styleClass>
                         <String fx:value="jfx-buttonStandard" />
                         <String fx:value="label1" />
