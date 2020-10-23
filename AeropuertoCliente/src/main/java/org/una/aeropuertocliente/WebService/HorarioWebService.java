@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.sql.Time;
+import java.util.Date;
 import org.una.aeropuertocliente.DTOs.HorarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -21,11 +22,11 @@ public class HorarioWebService {
     
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/horarios";
-    
 
-    public static void getHorarioById() throws InterruptedException, ExecutionException, IOException
+
+    public static void getHorarioById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -40,26 +41,9 @@ public class HorarioWebService {
         response.join();
     }
     
-     public static void getHorariosByEstado() throws InterruptedException, ExecutionException, IOException
+    public static void getHorariosByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/estado/{termino}")).GET().build();
-        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
-        response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Horario No Encontrado");
-
-        else
-        {
-            HorarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), HorarioDTO.class);
-            System.out.println(bean);
-        }
-        response.join();
-    }
-     
-    public static void getHorarioByDiaEntrada() throws InterruptedException, ExecutionException, IOException
-    {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/diaEntrada/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -74,9 +58,9 @@ public class HorarioWebService {
         response.join();
     }
     
-    public static void getHorarioByDiaSalida() throws InterruptedException, ExecutionException, IOException
+    public static void getHorarioByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/diaSalida/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -90,7 +74,24 @@ public class HorarioWebService {
         }
         response.join();
     }
+    
+    public static void getHorarioByUsuarioId(long id) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioId/"+id)).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
 
+        if(response.get().statusCode() == 500)
+            System.out.println("Horario No Encontrado");
+
+        else
+        {
+            HorarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), HorarioDTO.class);
+            System.out.println(bean);
+        }
+        response.join();
+    }
+    
     public static void createHorario(String diaEntrada, String diaSalida, Time horaEntrada, Time horaSalida, Long usuarioId) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         HorarioDTO bean = new HorarioDTO();
@@ -110,10 +111,10 @@ public class HorarioWebService {
 
     }
 
-    public static void updateHorario(HorarioDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateHorario(HorarioDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

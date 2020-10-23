@@ -2,15 +2,17 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.una.aeropuertocliente.utility.FlowController;
-
+import org.una.aeropuertocliente.WebService.AerolineaWebService;
 /**
  * FXML Controller class
  *
@@ -25,6 +27,8 @@ public class LoginController extends Controller implements Initializable {
     @FXML
     private JFXPasswordField txtPassword;
 
+    private AerolineaWebService autenticationWebService ;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -41,7 +45,8 @@ public class LoginController extends Controller implements Initializable {
     }
 
     @FXML
-    private void btnIniciaSesion(MouseEvent event) {
+    private void btnIniciaSesion(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
+        autenticationWebService.getAerolineaById(1);
     }
 
     @FXML

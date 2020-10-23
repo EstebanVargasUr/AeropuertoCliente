@@ -17,7 +17,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FlowController.getInstance().InitializeFlow(stage, null);
-       // stage.getIcons().add(new Image("cr/ac/una/tareacooperativa/resources/personitaGris.png"));
+        stage.getIcons().add(new Image("org/una/aeropuertocliente/resources/IconoAvion.png"));
         stage.setTitle("Aeropuerto");
         FlowController.getInstance().goMain();
         FlowController.getInstance().goView("login");

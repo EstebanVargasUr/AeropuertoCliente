@@ -19,7 +19,7 @@ public class UsuarioDTO {
     private String passwordEncriptado;
     private Date fechaRegistro; 
     private Date fechaModificacion; 
-    private Long rolId;
+    private Long rol;
      
 }
 

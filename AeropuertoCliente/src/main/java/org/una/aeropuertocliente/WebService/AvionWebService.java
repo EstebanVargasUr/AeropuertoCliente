@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.util.Date;
 import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -35,9 +36,9 @@ public class AvionWebService {
         response.join();
     }
 
-    public static void getAvionById() throws InterruptedException, ExecutionException, IOException
+    public static void getAvionById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -52,9 +53,9 @@ public class AvionWebService {
         response.join();
     }
     
-    public static void getAvionByMatricula() throws InterruptedException, ExecutionException, IOException
+    public static void getAvionByMatricula(String matricula) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/matricula/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByMatricula/"+matricula)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -69,9 +70,9 @@ public class AvionWebService {
         response.join();
     }
     
-    public static void getAvionByTipoAvion() throws InterruptedException, ExecutionException, IOException
+    public static void getAvionByTipoAvion(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/TipoAvion/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByTipoAvion/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -86,9 +87,9 @@ public class AvionWebService {
         response.join();
     }
 
-    public static void getAvionByFechaRegistro() throws InterruptedException, ExecutionException, IOException
+    public static void getAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/FechaRegistro/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -103,9 +104,9 @@ public class AvionWebService {
         response.join();
     }
     
-    public static void getAvionByEstado() throws InterruptedException, ExecutionException, IOException
+    public static void getAvionByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/Estado/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -137,10 +138,10 @@ public class AvionWebService {
 
     }
 
-    public static void updateAerolinea(AvionDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateAerolinea(AvionDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

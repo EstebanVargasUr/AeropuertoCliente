@@ -23,9 +23,9 @@ public class HoraMarcajeWebService {
     private static final String serviceURL = "http://localhost:8099/horaMarcaje";
     
 
-    public static void getHoraMarcajeById() throws InterruptedException, ExecutionException, IOException
+    public static void getHoraMarcajeById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -40,9 +40,9 @@ public class HoraMarcajeWebService {
         response.join();
     }
     
-    public static void getHoraMarcajeByHoraEntrada() throws InterruptedException, ExecutionException, IOException
+    public static void getHoraMarcajeByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/HoraEntrada/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -57,9 +57,9 @@ public class HoraMarcajeWebService {
         response.join();
     }
     
-    public static void getHoraMarcajeByHoraSalida() throws InterruptedException, ExecutionException, IOException
+    public static void getHoraMarcajeByUsuarioId(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/HoraSalida/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioId/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -73,25 +73,8 @@ public class HoraMarcajeWebService {
         }
         response.join();
     }
-
-    public static void getHoraMarcajeByFechaRegistro() throws InterruptedException, ExecutionException, IOException
-    {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/FechaRegistro/{termino}")).GET().build();
-        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
-        response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Hora de Marcaje No Encontrada");
-
-        else
-        {
-            HoraMarcajeDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), HoraMarcajeDTO.class);
-            System.out.println(bean);
-        }
-        response.join();
-    }
-
-    public static void createAerolinea(Date horaEntrada, Date horaSalida, Long usuarioId) throws InterruptedException, ExecutionException, JsonProcessingException
+    
+    public static void createHoraMarcaje(Date horaEntrada, Date horaSalida, Long usuarioId) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         HoraMarcajeDTO bean = new HoraMarcajeDTO();
         
@@ -108,10 +91,10 @@ public class HoraMarcajeWebService {
 
     }
 
-    public static void updateAerolinea(HoraMarcajeDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateHoraMarcaje(HoraMarcajeDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

@@ -30,7 +30,7 @@ public class AutenticationWebService {
             HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
-            CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
+            CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());            
             System.out.println(response.get().body());
             return response.get().body();
     }

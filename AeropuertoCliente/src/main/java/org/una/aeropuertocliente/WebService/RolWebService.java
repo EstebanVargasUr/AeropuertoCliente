@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.util.Date;
 import org.una.aeropuertocliente.DTOs.RolDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -27,7 +28,7 @@ public class RolWebService {
     
     public static void getAllRoles() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<RolDTO> roles = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<RolDTO>>() {});
@@ -35,9 +36,9 @@ public class RolWebService {
         response.join();
     }
 
-    public static void getRolById() throws InterruptedException, ExecutionException, IOException
+    public static void getRolById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -52,9 +53,9 @@ public class RolWebService {
         response.join();
     }
     
-    public static void getRolByTipo() throws InterruptedException, ExecutionException, IOException
+    public static void getRolByNombre(String nombre) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/tipo/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -69,9 +70,9 @@ public class RolWebService {
         response.join();
     }
     
-    public static void getRolByEstado() throws InterruptedException, ExecutionException, IOException
+    public static void getRolByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/estado/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -86,6 +87,23 @@ public class RolWebService {
         response.join();
     }
 
+    public static void getRolByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Rol No Encontrado");
+
+        else
+        {
+            RolDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), RolDTO.class);
+            System.out.println(bean);
+        }
+        response.join();
+    }
+    
     public static void createRol(String tipo) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         RolDTO bean = new RolDTO();
@@ -101,10 +119,10 @@ public class RolWebService {
 
     }
 
-    public static void updateRol(RolDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateRol(RolDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

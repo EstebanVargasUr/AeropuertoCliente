@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.util.Date;
 import java.util.List;
 import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.DTOs.ParametroSistemaDTO;
@@ -28,7 +29,7 @@ public class ParametroSistemaWebService {
     
     public static void getAllParametrosSistema() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<AvionDTO> parametrosSistema = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
@@ -36,9 +37,9 @@ public class ParametroSistemaWebService {
         response.join();
     }
      
-    public static void getParametroSistemaById() throws InterruptedException, ExecutionException, IOException
+    public static void getParametroSistemaById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -53,9 +54,9 @@ public class ParametroSistemaWebService {
         response.join();
     }
     
-     public static void getParametroSistemaByNombre() throws InterruptedException, ExecutionException, IOException
+     public static void getParametroSistemaByNombre(String nombre) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/nombre/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -70,9 +71,9 @@ public class ParametroSistemaWebService {
         response.join();
     }
      
-    public static void getParametroSistemaByEstado() throws InterruptedException, ExecutionException, IOException
+    public static void getParametroSistemaByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/estado/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -87,9 +88,9 @@ public class ParametroSistemaWebService {
         response.join();
     }
     
-    public static void getParametroSistemaByFechaRegistro() throws InterruptedException, ExecutionException, IOException
+    public static void getParametroSistemaByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/fecha/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -121,10 +122,10 @@ public class ParametroSistemaWebService {
 
     }
 
-    public static void updateParametroSistema(ParametroSistemaDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateParametroSistema(ParametroSistemaDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

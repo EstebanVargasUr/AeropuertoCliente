@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.util.Date;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -25,10 +26,9 @@ public class UsuarioWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/usuarios";
     
-    //sending request to retrieve all the products available.
     public static void getAllUsuarios() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<UsuarioDTO> usuarios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
@@ -36,10 +36,9 @@ public class UsuarioWebService {
         response.join();
     }
 
-    //sending request retrieve the product based on the productId
-    public static void getUsuarioById() throws InterruptedException, ExecutionException, IOException
+    public static void getUsuarioById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -54,9 +53,9 @@ public class UsuarioWebService {
         response.join();
     }
     
-    public static void getUsuarioByCedulaAproximate() throws InterruptedException, ExecutionException, IOException
+    public static void getUsuarioByCedulaAproximate(String cedula) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/cedula/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByCedula/"+cedula)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -71,9 +70,9 @@ public class UsuarioWebService {
         response.join();
     }
 
-    public static void getUsuarioByNombreCompletoAproximateIgnoreCase() throws InterruptedException, ExecutionException, IOException
+    public static void getUsuarioByNombreCompletoAproximateIgnoreCase(String nombre) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/nombre/{termino}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -88,7 +87,40 @@ public class UsuarioWebService {
         response.join();
     }
     
-    //send request to add the product details.
+    public static void getUsuarioByUsuarioJefeId(long id) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioJefeId/"+id)).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Usuario No Encontrado");
+
+        else
+        {
+            UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
+            System.out.println(bean);
+        }
+        response.join();
+    }
+    
+    public static void getRolByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Usuario No Encontrado");
+
+        else
+        {
+            UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
+            System.out.println(bean);
+        }
+        response.join();
+    }
+    
     public static void createUsuario(String cedula, String nombreCompleto, String passwordEnciptado, Long rolId) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         UsuarioDTO bean = new UsuarioDTO();
@@ -96,7 +128,7 @@ public class UsuarioWebService {
         bean.setCedula(cedula);
         bean.setNombreCompleto(nombreCompleto);
         bean.setPasswordEncriptado(passwordEnciptado);
-        bean.setRolId(rolId);
+        bean.setRol(rolId);;
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
@@ -107,11 +139,10 @@ public class UsuarioWebService {
 
     }
 
-    //send request to update the product details.
-    public static void updateUsuario(UsuarioDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateUsuario(UsuarioDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
@@ -125,5 +156,4 @@ public class UsuarioWebService {
         }
         response.join();
     }
-
 }
