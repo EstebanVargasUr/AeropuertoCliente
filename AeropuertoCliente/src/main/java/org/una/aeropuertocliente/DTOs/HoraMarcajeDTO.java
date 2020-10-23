@@ -18,6 +18,6 @@ public class HoraMarcajeDTO {
     private Date horaSalida;
     private Date fechaRegistro; 
     private Date fechaModificacion; 
-    private Long usuarioId;
+    private UsuarioDTO usuario;
      
 }

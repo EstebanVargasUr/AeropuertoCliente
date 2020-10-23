@@ -9,13 +9,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor 
 @ToString
-public class AerolineaDTO {
+public class AreaTrabajoAvionDTO {
     
-    private Long id; 
-    private String nombreAerolinea;
-    private String nombreResponsable;  
+    private Long id;
+    private AreaTrabajoDTO areaTrabajo;
+    private AvionDTO avion;
     private Date fechaRegistro;
-    private Date fechaModificacion;
-    private boolean estado;
-    
 }
+

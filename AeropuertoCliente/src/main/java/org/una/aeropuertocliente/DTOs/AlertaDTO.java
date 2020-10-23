@@ -1,25 +1,22 @@
 package org.una.aeropuertocliente.DTOs;
 
-import java.sql.Time;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor 
 @ToString
-public class HorarioDTO {
- 
-     private Long id; 
-    private Short diaEntrada;   
-    private Short diaSalida;
-    private Time horaEntrada;
-    private Time horaSalida;
+public class AlertaDTO {
+    
+    private Long id; 
+    private String descripcion;   
     private Date fechaRegistro; 
     private Date fechaModificacion; 
     private boolean estado; 
-    private UsuarioDTO usuario; 
+    private VueloDTO vuelo; 
+    
 }
+

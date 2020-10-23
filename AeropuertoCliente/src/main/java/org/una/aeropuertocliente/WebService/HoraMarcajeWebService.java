@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Date;
 import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
+import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -74,14 +75,14 @@ public class HoraMarcajeWebService {
         response.join();
     }
     
-    public static void createHoraMarcaje(Date horaEntrada, Date horaSalida, Long usuarioId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createHoraMarcaje(Date horaEntrada, Date horaSalida, UsuarioDTO usuario) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         HoraMarcajeDTO bean = new HoraMarcajeDTO();
         
         bean.setHoraEntrada(horaEntrada);
         bean.setHoraSalida(horaSalida);
-        bean.setUsuarioId(usuarioId);
-
+        bean.setUsuario(usuario);
+        
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
                 .header("Content-Type", "application/json")

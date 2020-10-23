@@ -16,6 +16,7 @@ public class AreaTrabajoDTO {
     private String nombreArea;   
     private boolean estado; 
     private Date fechaRegistro; 
-    private String Responsable; 
+    private Date fechaModificacion;
+    private String nombreResponsable; 
      
 }

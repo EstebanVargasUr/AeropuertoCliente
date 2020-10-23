@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.sql.Time;
 import java.util.Date;
 import org.una.aeropuertocliente.DTOs.HorarioDTO;
+import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -20,9 +21,11 @@ import org.una.aeropuertocliente.utility.JSONUtils;
  */
 public class HorarioWebService {
     
+    UsuarioWebService usuarioWebService;
+    
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/horarios";
-
+    
 
     public static void getHorarioById(long id) throws InterruptedException, ExecutionException, IOException
     {
@@ -92,15 +95,15 @@ public class HorarioWebService {
         response.join();
     }
     
-    public static void createHorario(String diaEntrada, String diaSalida, Time horaEntrada, Time horaSalida, Long usuarioId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createHorario(Short diaEntrada, Short diaSalida, Time horaEntrada, Time horaSalida, UsuarioDTO usuario) throws InterruptedException, ExecutionException, JsonProcessingException, IOException
     {
         HorarioDTO bean = new HorarioDTO();
         
         bean.setDiaEntrada(diaEntrada);
         bean.setDiaSalida(diaSalida);
         bean.setHoraEntrada(horaEntrada);
-        bean.setHoraSalida(horaSalida);
-        bean.setUsuarioId(usuarioId);
+        bean.setHoraSalida(horaSalida);        
+        bean.setUsuario(usuario);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

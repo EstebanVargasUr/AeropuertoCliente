@@ -12,7 +12,7 @@ import lombok.ToString;
 
 /**
  *
- * @author adrian
+ * @author Adrian
  */
 @Data
 @AllArgsConstructor

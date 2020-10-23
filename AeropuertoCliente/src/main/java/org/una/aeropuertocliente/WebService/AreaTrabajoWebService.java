@@ -91,7 +91,7 @@ public class AreaTrabajoWebService {
         AreaTrabajoDTO bean = new AreaTrabajoDTO();
         
         bean.setNombreArea(nombreArea);
-        bean.setResponsable(nombreResponsable);
+        bean.setNombreResponsable(nombreResponsable);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

@@ -17,6 +17,6 @@ public class AuthenticationResponse {
 
     private String jwt;
     private UsuarioDTO usuario;
-    private RolDTO roles; //
+    private RolDTO roles;
 
 }

@@ -15,14 +15,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import java.util.Date;
+import org.una.aeropuertocliente.DTOs.AerolineaDTO;
 import org.una.aeropuertocliente.DTOs.AvionDTO;
+import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
  * @author Esteban Vargas
  */
 public class AvionWebService {
-    
+        
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/aviones";
     
@@ -121,14 +123,14 @@ public class AvionWebService {
         response.join();
     }
 
-    public static void createAerolinea(String matricula, String tipoAvion, Long aerolineaId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createAvion(String matricula, String tipoAvion, AerolineaDTO aerolinea) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         AvionDTO bean = new AvionDTO();
         
         bean.setMatricula(matricula);
         bean.setTipoAvion(tipoAvion);
-        bean.setAerolineaId(aerolineaId);
-
+        bean.setAerolinea(aerolinea);
+        
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
                 .header("Content-Type", "application/json")
@@ -138,7 +140,7 @@ public class AvionWebService {
 
     }
 
-    public static void updateAerolinea(AvionDTO bean, long id) throws InterruptedException, ExecutionException, IOException
+    public static void updateAvion(AvionDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
