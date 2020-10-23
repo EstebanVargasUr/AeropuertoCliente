@@ -21,9 +21,9 @@ public class ServicioWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/servicios";
     
-    public static void getServicioById() throws InterruptedException, ExecutionException, IOException
+    public static void getServicioById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -38,9 +38,9 @@ public class ServicioWebService {
         response.join();
     }
     
-     public static void getServicioByEstado() throws InterruptedException, ExecutionException, IOException
+     public static void getServicioByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{Estado}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -55,9 +55,9 @@ public class ServicioWebService {
         response.join();
     }
     
-    public static void getServicioByEstadoCobro() throws InterruptedException, ExecutionException, IOException
+    public static void getServicioByEstadoCobro(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{estadoCobro}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstadoCobro/"+estado)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -89,9 +89,9 @@ public class ServicioWebService {
         response.join();
     }
 
-    public static void getServicioByAvionId() throws InterruptedException, ExecutionException, IOException
+    public static void getServicioByAvionId(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/avion/{term}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAvionId/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -106,9 +106,26 @@ public class ServicioWebService {
         response.join();
     }
 
-    public static void getServicioByTipoServicioId() throws InterruptedException, ExecutionException, IOException
+    public static void getServicioByTipoServicioId(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/tiposervicio/{term}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByTipoServicioId/"+id)).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Servicio No Encontrado");
+
+        else
+        {
+            ServicioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
+            System.out.println(bean);
+        }
+        response.join();
+    }
+
+    public static void getServicioByTipoServicioIdAndAvionId(long idTipo, long idAvion) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByTipoServicioIdAndAvionId/"+idTipo+"/"+idAvion)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -143,10 +160,10 @@ public class ServicioWebService {
 
     }
 
-    public static void updateServicio(ServicioDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateServicio(ServicioDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

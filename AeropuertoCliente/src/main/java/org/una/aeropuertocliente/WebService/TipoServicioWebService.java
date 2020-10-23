@@ -27,7 +27,7 @@ public class TipoServicioWebService {
     
     public static void getAllTiposServicios() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<TipoServicioDTO> tiposServicios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<TipoServicioDTO>>() {});
@@ -35,9 +35,9 @@ public class TipoServicioWebService {
         response.join();
     }
 
-    public static void getTipoServicioById() throws InterruptedException, ExecutionException, IOException
+    public static void getTipoServicioById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -52,9 +52,9 @@ public class TipoServicioWebService {
         response.join();
     }
     
-    public static void getTipoServicioByNombre() throws InterruptedException, ExecutionException, IOException
+    public static void getTipoServicioByNombre(String nombre) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/nombre/{term}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -85,10 +85,10 @@ public class TipoServicioWebService {
 
     }
 
-    public static void updateTipoServicio(TipoServicioDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateTipoServicio(TipoServicioDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

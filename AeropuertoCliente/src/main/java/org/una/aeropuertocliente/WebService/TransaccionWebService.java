@@ -21,9 +21,9 @@ public class TransaccionWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/transacciones";
 
-    public static void getTransaccionById() throws InterruptedException, ExecutionException, IOException
+    public static void getTransaccionById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -38,9 +38,26 @@ public class TransaccionWebService {
         response.join();
     }
     
-     public static void getTransaccionByEstado() throws InterruptedException, ExecutionException, IOException
+     public static void getTransaccionByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{estado}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Transaccion No Encontrada");
+
+        else
+        {
+            TransaccionDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), TransaccionDTO.class);
+            System.out.println(bean);
+        }
+        response.join();
+    }
+
+    public static void getTransaccionByUsuario(long id) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioId/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -71,10 +88,10 @@ public class TransaccionWebService {
 
     }
 
-    public static void updateTransaccion(TransaccionDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateTransaccion(TransaccionDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());

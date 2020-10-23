@@ -21,9 +21,9 @@ public class VueloWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/vuelos";
 
-    public static void getVueloById() throws InterruptedException, ExecutionException, IOException
+    public static void getVueloById(long id) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -38,9 +38,9 @@ public class VueloWebService {
         response.join();
     }
     
-    public static void getVueloByAeropuerto() throws InterruptedException, ExecutionException, IOException
+    public static void getVueloByAeropuerto(String nombre) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/Aeropuerto/{term}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAeropuerto/"+nombre)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -55,9 +55,9 @@ public class VueloWebService {
         response.join();
     }
     
-    public static void getVueloByEstado() throws InterruptedException, ExecutionException, IOException
+    public static void getVueloByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/{estado}")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -124,10 +124,10 @@ public class VueloWebService {
 
     }
 
-    public static void updateVuelo(VueloDTO bean) throws InterruptedException, ExecutionException, IOException
+    public static void updateVuelo(VueloDTO bean, long id) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
-        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/{id}"))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
