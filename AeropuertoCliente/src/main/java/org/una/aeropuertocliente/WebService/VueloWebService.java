@@ -10,6 +10,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.DTOs.VueloDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -106,14 +107,14 @@ public class VueloWebService {
         response.join();
     }
 
-    public static void createVuelo(Float duracion, String aeropuerto, Long distancia, Long avionId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createVuelo(Float duracion, String aeropuerto, Long distancia, AvionDTO avionId) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         VueloDTO bean = new VueloDTO();
         
         bean.setDuracion(duracion);
         bean.setAeropuerto(aeropuerto);
         bean.setDistancia(distancia);
-        bean.setAvionId(avionId);
+        bean.setAvion(avionId);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

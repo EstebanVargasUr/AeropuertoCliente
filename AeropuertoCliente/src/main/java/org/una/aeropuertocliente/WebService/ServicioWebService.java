@@ -10,7 +10,9 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.DTOs.ServicioDTO;
+import org.una.aeropuertocliente.DTOs.TipoServicioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -140,7 +142,7 @@ public class ServicioWebService {
         response.join();
     }
     
-    public static void createServicio(boolean estadocobro, String factura, String responsable, String observacion, Long avionId, Long tipoServicioId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createServicio(boolean estadocobro, String factura, String responsable, String observacion, AvionDTO avionId, TipoServicioDTO tipoServicioId) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         ServicioDTO bean = new ServicioDTO();
         
@@ -148,8 +150,8 @@ public class ServicioWebService {
         bean.setFactura(factura);
         bean.setResponsable(responsable);
         bean.setObservacion(observacion);
-        bean.setAvionId(avionId);
-        bean.setTipoServicioid(tipoServicioId);
+        bean.setAvion(avionId);
+        bean.setTipoServicio(tipoServicioId);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

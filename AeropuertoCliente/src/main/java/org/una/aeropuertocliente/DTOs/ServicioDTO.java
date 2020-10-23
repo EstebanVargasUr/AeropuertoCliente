@@ -20,9 +20,10 @@ public class ServicioDTO {
     private boolean estadoCobro; 
     private boolean estado; 
     private Date fechaRegistro;
+    private Date fechaModificacion;
     private String factura;
-    private String responsable; 
-    private String observacion;  
-    private Long tipoServicioid;
-    private Long avionId;
+    private String responsable;
+    private String observacion;
+    private TipoServicioDTO tipoServicio;
+    private AvionDTO avion;
 }

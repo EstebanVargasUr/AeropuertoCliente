@@ -108,7 +108,7 @@ public class RolWebService {
     {
         RolDTO bean = new RolDTO();
         
-        bean.setTipo(tipo);
+        bean.setNombre(tipo);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

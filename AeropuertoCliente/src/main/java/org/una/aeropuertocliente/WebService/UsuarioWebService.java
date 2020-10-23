@@ -15,6 +15,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import java.util.Date;
+
+import org.una.aeropuertocliente.DTOs.RolDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -121,7 +123,7 @@ public class UsuarioWebService {
         response.join();
     }
     
-    public static void createUsuario(String cedula, String nombreCompleto, String passwordEnciptado, Long rolId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createUsuario(String cedula, String nombreCompleto, String passwordEnciptado, RolDTO rolId,UsuarioDTO usuario) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         UsuarioDTO bean = new UsuarioDTO();
         
@@ -129,6 +131,7 @@ public class UsuarioWebService {
         bean.setNombreCompleto(nombreCompleto);
         bean.setPasswordEncriptado(passwordEnciptado);
         bean.setRol(rolId);;
+        bean.setUsuarioJefe(usuario);;
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

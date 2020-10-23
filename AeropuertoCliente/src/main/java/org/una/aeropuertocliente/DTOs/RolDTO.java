@@ -13,7 +13,7 @@ import lombok.ToString;
 public class RolDTO {
  
     private Long id; 
-    private String tipo;   
+    private String nombre;
     private Date fechaRegistro; 
     private Date fechaModificacion; 
     private boolean estado; 

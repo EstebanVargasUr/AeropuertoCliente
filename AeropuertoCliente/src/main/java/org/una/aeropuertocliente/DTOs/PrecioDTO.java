@@ -18,6 +18,7 @@ public class PrecioDTO {
     
     private Long id; 
     private Float monto;   
-    private Date fechaRegistro; 
-    private Long tipoServicioId;
+    private Date fechaRegistro;
+    private boolean estado;
+    private TipoServicioDTO tipoServicio;
 }

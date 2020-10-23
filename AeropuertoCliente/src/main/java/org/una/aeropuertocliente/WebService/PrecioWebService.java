@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Date;
 import org.una.aeropuertocliente.DTOs.PrecioDTO;
+import org.una.aeropuertocliente.DTOs.TipoServicioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -21,7 +22,6 @@ public class PrecioWebService {
     
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/precios";
-    
     public static void getPrecioById(long id) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
@@ -73,12 +73,12 @@ public class PrecioWebService {
         response.join();
     }
 
-    public static void createPrecio(Float monto, Long tipoServicioId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createPrecio(Float monto, TipoServicioDTO tipoServicioDTO) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         PrecioDTO bean = new PrecioDTO();
         
         bean.setMonto(monto);
-        bean.setTipoServicioId(tipoServicioId);
+        bean.setTipoServicio(tipoServicioDTO);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

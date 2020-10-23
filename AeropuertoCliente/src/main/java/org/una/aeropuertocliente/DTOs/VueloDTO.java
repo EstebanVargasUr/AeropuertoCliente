@@ -18,7 +18,6 @@ public class VueloDTO {
     private Date fechaSalida; 
     private Date fechaLlegada; 
     private Long distancia; 
-    private boolean estado; 
-    private Long avionId;
-     
+    private boolean estado;
+    private AvionDTO avion;
 }

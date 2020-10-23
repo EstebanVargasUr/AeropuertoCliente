@@ -18,8 +18,9 @@ public class UsuarioDTO {
     private boolean estado; 
     private String passwordEncriptado;
     private Date fechaRegistro; 
-    private Date fechaModificacion; 
-    private Long rol;
+    private Date fechaModificacion;
+    private RolDTO rol;
+    private UsuarioDTO usuarioJefe;
      
 }
 

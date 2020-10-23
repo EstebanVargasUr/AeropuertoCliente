@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.una.aeropuertocliente.DTOs.TransaccionDTO;
+import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -72,12 +73,12 @@ public class TransaccionWebService {
         response.join();
     }
      
-    public static void createTransaccion(String informacion, Long usuarioId) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createTransaccion(String informacion, UsuarioDTO usuarioId) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         TransaccionDTO bean = new TransaccionDTO();
         
         bean.setInformacion(informacion);
-        bean.setUsuarioId(usuarioId);
+        bean.setUsuario(usuarioId);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
