@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="795.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="root" alignment="CENTER" prefHeight="795.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.DashboardGerenteController">
    <children>
       <VBox alignment="CENTER" prefHeight="75.0" prefWidth="300.0" style="-fx-background-color: #00A2D3;" VBox.vgrow="SOMETIMES">
          <children>

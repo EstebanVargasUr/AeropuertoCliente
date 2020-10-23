@@ -46,7 +46,8 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void btnIniciaSesion(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
-        autenticationWebService.getAerolineaById(1);
+        FlowController.getInstance().goViewLeft("DashboardGerente");
+        FlowController.getInstance().goView("MenuGestion");
     }
 
     @FXML

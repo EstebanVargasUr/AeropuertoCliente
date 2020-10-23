@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import org.una.aeropuertocliente.utility.FlowController;
 
 /**
  * FXML Controller class
@@ -47,6 +48,7 @@ public class RegistroAvionController extends Controller implements Initializable
 
     @FXML
     private void cancelar(MouseEvent event) {
+        FlowController.getInstance().goView("MenuGestion");
     }
 
     @FXML
