@@ -42,6 +42,7 @@ public class ServicioController extends Controller implements  Initializable {
 
     @FXML
     private void buscar(MouseEvent event) {
+        FlowController.getInstance().goView("MenuGestion");
     }
 
     @FXML

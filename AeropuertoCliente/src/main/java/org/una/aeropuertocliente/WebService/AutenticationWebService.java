@@ -8,6 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import org.json.JSONObject;
 import org.una.aeropuertocliente.DTOs.AuthenticationRequest;
 import org.una.aeropuertocliente.utility.JSONUtils;
 
@@ -32,6 +33,10 @@ public class AutenticationWebService {
                     .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
             CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());            
             System.out.println(response.get().body());
-            return response.get().body();
+            
+            JSONObject jsonObj = new JSONObject(response.get().body());
+            String name = jsonObj.getString("jwt");
+        System.out.println(name);
+            return name;
     }
 }

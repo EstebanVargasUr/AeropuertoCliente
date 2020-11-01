@@ -13,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.WebService.AerolineaWebService;
+import org.una.aeropuertocliente.WebService.AutenticationWebService;
+import org.una.aeropuertocliente.WebService.UsuarioWebService;
 /**
  * FXML Controller class
  *
@@ -46,8 +48,11 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void btnIniciaSesion(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
-        FlowController.getInstance().goViewLeft("DashboardGerente");
-        FlowController.getInstance().goView("MenuGestion");
+        //FlowController.getInstance().goViewLeft("DashboardGerente");
+       // FlowController.getInstance().goView("MenuGestion");
+       String token = AutenticationWebService.login("admin", "Una2020");
+       UsuarioWebService.getAllUsuarios(token);
+       //UsuarioWebService.getUsuarioById(1, token);
     }
 
     @FXML

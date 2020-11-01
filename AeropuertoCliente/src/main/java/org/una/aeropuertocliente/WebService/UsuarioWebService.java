@@ -28,9 +28,10 @@ public class UsuarioWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/usuarios";
     
-    public static void getAllUsuarios() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static void getAllUsuarios(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<UsuarioDTO> usuarios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
@@ -38,9 +39,10 @@ public class UsuarioWebService {
         response.join();
     }
 
-    public static void getUsuarioById(long id) throws InterruptedException, ExecutionException, IOException
+    public static void getUsuarioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
