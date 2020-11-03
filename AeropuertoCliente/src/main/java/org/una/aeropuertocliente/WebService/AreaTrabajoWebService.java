@@ -25,9 +25,10 @@ public class AreaTrabajoWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/areasTrabajo";
     
-    public static void getAllAreasTrabajo() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static void getAllAreasTrabajo(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<AreaTrabajoDTO> areasTrabajo = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoDTO>>() {});
@@ -35,9 +36,10 @@ public class AreaTrabajoWebService {
         response.join();
     }
 
-    public static void getAreaTrabajoById(long id) throws InterruptedException, ExecutionException, IOException
+    public static void getAreaTrabajoById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -52,9 +54,10 @@ public class AreaTrabajoWebService {
         response.join();
     }
     
-    public static void getAreaTrabajoByNombreArea(String nombre) throws InterruptedException, ExecutionException, IOException
+    public static void getAreaTrabajoByNombreArea(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreArea/"+nombre)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreArea/"+nombre))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -69,9 +72,10 @@ public class AreaTrabajoWebService {
         response.join();
     }
     
-    public static void getAreaTrabajoByNombreResponsable(String nombre) throws InterruptedException, ExecutionException, IOException
+    public static void getAreaTrabajoByNombreResponsable(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreResponsable/"+nombre)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreResponsable/"+nombre))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -80,13 +84,13 @@ public class AreaTrabajoWebService {
 
         else
         {
-            AreaTrabajoDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AreaTrabajoDTO.class);
-            System.out.println(bean);
+             List<AreaTrabajoDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoDTO>>() {});
+            beans.forEach(System.out::println);
         }
         response.join();
     }
 
-    public static void createAerolinea(String nombreArea, String nombreResponsable) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createAerolinea(String nombreArea, String nombreResponsable, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         AreaTrabajoDTO bean = new AreaTrabajoDTO();
         
@@ -95,19 +99,19 @@ public class AreaTrabajoWebService {
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
 
     }
 
-    public static void updateAerolinea(AreaTrabajoDTO bean, long id) throws InterruptedException, ExecutionException, IOException
+    public static void updateAerolinea(AreaTrabajoDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
 
         if(response.get().statusCode() == 500)

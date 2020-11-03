@@ -11,7 +11,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.una.aeropuertocliente.utility.JSONUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Date;
+import java.util.List;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoAvionDTO;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.AvionDTO;
@@ -26,9 +28,10 @@ public class AreaTrabajoAvionWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/areasTrabajoAviones";
     
-    public static void getAreaTrabajoAvionById(long id) throws InterruptedException, ExecutionException, IOException
+    public static void getAreaTrabajoAvionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -43,9 +46,10 @@ public class AreaTrabajoAvionWebService {
         response.join();
     }
     
-    public static void getAreaTrabajoAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
+    public static void getAreaTrabajoAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -54,14 +58,14 @@ public class AreaTrabajoAvionWebService {
 
         else
         {
-            AreaTrabajoAvionDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AreaTrabajoAvionDTO.class);
-            System.out.println(bean);
+            List<AreaTrabajoAvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoAvionDTO>>() {});
+            beans.forEach(System.out::println);
         }
         response.join();
     }
 
 
-    public static void createAreaTrabajoAvion(AreaTrabajoDTO areaTrabajo, AvionDTO avion) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createAreaTrabajoAvion(AreaTrabajoDTO areaTrabajo, AvionDTO avion, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         AreaTrabajoAvionDTO bean = new AreaTrabajoAvionDTO();
         
@@ -70,19 +74,19 @@ public class AreaTrabajoAvionWebService {
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
 
     }
 
-    public static void updateAreaTrabajoAvion(AreaTrabajoAvionDTO bean, long id) throws InterruptedException, ExecutionException, IOException
+    public static void updateAreaTrabajoAvion(AreaTrabajoAvionDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
 
         if(response.get().statusCode() == 500)

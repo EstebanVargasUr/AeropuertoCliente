@@ -57,9 +57,10 @@ public class UsuarioWebService {
         response.join();
     }
     
-    public static void getUsuarioByCedulaAproximate(String cedula) throws InterruptedException, ExecutionException, IOException
+    public static void getUsuarioByCedulaAproximate(String cedula, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByCedula/"+cedula)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByCedula/"+cedula))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -68,15 +69,16 @@ public class UsuarioWebService {
 
         else
         {
-            UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
-            System.out.println(bean);
+            List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
+            beans.forEach(System.out::println);
         }
-        response.join();
+       response.join();
     }
 
-    public static void getUsuarioByNombreCompletoAproximateIgnoreCase(String nombre) throws InterruptedException, ExecutionException, IOException
+    public static void getUsuarioByNombreCompletoAproximateIgnoreCase(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -85,32 +87,16 @@ public class UsuarioWebService {
 
         else
         {
-            UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
-            System.out.println(bean);
-        }
-        response.join();
-    }
-    
-    public static void getUsuarioByUsuarioJefeId(long id) throws InterruptedException, ExecutionException, IOException
-    {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioJefeId/"+id)).GET().build();
-        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
-        response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Usuario No Encontrado");
-
-        else
-        {
-            UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
-            System.out.println(bean);
+            List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
+            beans.forEach(System.out::println);
         }
         response.join();
     }
     
-    public static void getRolByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
+    public static void getUsuarioByUsuarioJefeId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioJefeId/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -119,37 +105,55 @@ public class UsuarioWebService {
 
         else
         {
-            UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
-            System.out.println(bean);
+            List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
+            beans.forEach(System.out::println);
         }
         response.join();
     }
     
-    public static void createUsuario(String cedula, String nombreCompleto, String passwordEnciptado, RolDTO rolId,UsuarioDTO usuario) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void getUsuarioByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Usuario No Encontrado");
+
+        else
+        {
+            List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
+            beans.forEach(System.out::println);
+        }
+        response.join();
+    }
+    
+    public static void createUsuario(String cedula, String nombreCompleto, String passwordEnciptado, RolDTO rolId, UsuarioDTO usuario, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         UsuarioDTO bean = new UsuarioDTO();
         
         bean.setCedula(cedula);
         bean.setNombreCompleto(nombreCompleto);
         bean.setPasswordEncriptado(passwordEnciptado);
-        bean.setRol(rolId);;
-        bean.setUsuarioJefe(usuario);;
+        bean.setRol(rolId);
+        bean.setUsuarioJefe(usuario);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
 
     }
 
-    public static void updateUsuario(UsuarioDTO bean, long id) throws InterruptedException, ExecutionException, IOException
+    public static void updateUsuario(UsuarioDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
 
         if(response.get().statusCode() == 500)

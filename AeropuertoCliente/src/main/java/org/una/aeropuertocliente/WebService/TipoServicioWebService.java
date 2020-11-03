@@ -25,9 +25,10 @@ public class TipoServicioWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/tiposServicios";
     
-    public static void getAllTiposServicios() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static void getAllTiposServicios(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<TipoServicioDTO> tiposServicios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<TipoServicioDTO>>() {});
@@ -35,9 +36,10 @@ public class TipoServicioWebService {
         response.join();
     }
 
-    public static void getTipoServicioById(long id) throws InterruptedException, ExecutionException, IOException
+    public static void getTipoServicioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -52,9 +54,10 @@ public class TipoServicioWebService {
         response.join();
     }
     
-    public static void getTipoServicioByNombre(String nombre) throws InterruptedException, ExecutionException, IOException
+    public static void getTipoServicioByNombre(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -69,7 +72,7 @@ public class TipoServicioWebService {
         response.join();
     }
  
-    public static void createTipoServicio(String nombre, Long duracion) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createTipoServicio(String nombre, Long duracion, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         TipoServicioDTO bean = new TipoServicioDTO();
         
@@ -78,19 +81,19 @@ public class TipoServicioWebService {
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
 
     }
 
-    public static void updateTipoServicio(TipoServicioDTO bean, long id) throws InterruptedException, ExecutionException, IOException
+    public static void updateTipoServicio(TipoServicioDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
 
         if(response.get().statusCode() == 500)

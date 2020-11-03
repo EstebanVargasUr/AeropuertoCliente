@@ -27,9 +27,10 @@ public class ParametroSistemaWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/parametroSistema";
     
-    public static void getAllParametrosSistema() throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static void getAllParametrosSistema(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll")).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
         List<AvionDTO> parametrosSistema = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
@@ -37,9 +38,10 @@ public class ParametroSistemaWebService {
         response.join();
     }
      
-    public static void getParametroSistemaById(long id) throws InterruptedException, ExecutionException, IOException
+    public static void getParametroSistemaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -54,9 +56,10 @@ public class ParametroSistemaWebService {
         response.join();
     }
     
-     public static void getParametroSistemaByNombre(String nombre) throws InterruptedException, ExecutionException, IOException
+     public static void getParametroSistemaByNombre(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -65,15 +68,16 @@ public class ParametroSistemaWebService {
 
         else
         {
-            ParametroSistemaDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), ParametroSistemaDTO.class);
-            System.out.println(bean);
+            List<ParametroSistemaDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<ParametroSistemaDTO>>() {});
+            beans.forEach(System.out::println);
         }
         response.join();
     }
      
-    public static void getParametroSistemaByEstado(boolean estado) throws InterruptedException, ExecutionException, IOException
+    public static void getParametroSistemaByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -82,15 +86,16 @@ public class ParametroSistemaWebService {
 
         else
         {
-            ParametroSistemaDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), ParametroSistemaDTO.class);
-            System.out.println(bean);
+            List<ParametroSistemaDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<ParametroSistemaDTO>>() {});
+            beans.forEach(System.out::println);
         }
         response.join();
     }
     
-    public static void getParametroSistemaByFechaRegistroBetween(Date fechaInicial, Date fechaFinal) throws InterruptedException, ExecutionException, IOException
+    public static void getParametroSistemaByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal)).GET().build();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
@@ -99,13 +104,13 @@ public class ParametroSistemaWebService {
 
         else
         {
-            ParametroSistemaDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), ParametroSistemaDTO.class);
-            System.out.println(bean);
+            List<ParametroSistemaDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<ParametroSistemaDTO>>() {});
+            beans.forEach(System.out::println);
         }
         response.join();
     }
 
-    public static void createParametroSistema(String nombre, String valor, String descripcion) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createParametroSistema(String nombre, String valor, String descripcion, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         ParametroSistemaDTO bean = new ParametroSistemaDTO();
         
@@ -115,19 +120,19 @@ public class ParametroSistemaWebService {
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
 
     }
 
-    public static void updateParametroSistema(ParametroSistemaDTO bean, long id) throws InterruptedException, ExecutionException, IOException
+    public static void updateParametroSistema(ParametroSistemaDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
+        .PUT(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
 
         if(response.get().statusCode() == 500)
