@@ -2,7 +2,9 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -33,7 +35,7 @@
                               <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="633.0" spacing="10.0" VBox.vgrow="ALWAYS">
                                  <children>
                                     <JFXTextField fx:id="txt_buscar" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS" />
-                                    <JFXButton buttonType="RAISED" onMousePressed="#buscar" styleClass="Boton1" text="Buscar" HBox.hgrow="ALWAYS" />
+                                    <JFXButton buttonType="RAISED" onKeyPressed="#buscar" onMouseClicked="#buscar" styleClass="Boton1" text="Buscar" HBox.hgrow="ALWAYS" />
                                     <JFXComboBox fx:id="cb_filtro" promptText="&lt;&lt;Fitrar por&gt;&gt;" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets />
@@ -48,18 +50,21 @@
                         </VBox>
                         <VBox prefHeight="526.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <TableView VBox.vgrow="ALWAYS">
+                              <TableView fx:id="tablaServicios" VBox.vgrow="ALWAYS">
                                  <columns>
-                                    <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="C1" />
-                                    <TableColumn prefWidth="112.79997861385345" text="C1" />
-                                    <TableColumn prefWidth="98.40003204345703" text="C2" />
-                                    <TableColumn prefWidth="88.79998779296875" text="C3" />
-                                    <TableColumn prefWidth="94.4000244140625" text="C4" />
-                                    <TableColumn prefWidth="94.40005493164062" text="C5" />
-                                    <TableColumn prefWidth="103.99996948242188" text="C6" />
-                                    <TableColumn minWidth="0.0" prefWidth="98.39996337890625" text="C7" />
-                                    <TableColumn minWidth="0.0" prefWidth="136.00006103515625" text="C8" />
+                                    <TableColumn fx:id="tbc_id" prefWidth="112.79997861385345" text="ID" />
+                                    <TableColumn fx:id="tbc_tipoServicio" prefWidth="75.0" text="Tipo Servicio" />
+                                    <TableColumn fx:id="tbc_duracion" minWidth="0.0" prefWidth="136.00006103515625" text="Duración" />
+                                    <TableColumn fx:id="tbc_factura" prefWidth="98.40003204345703" text="Factura" />
+                                    <TableColumn fx:id="tbc_encargado" prefWidth="88.79998779296875" text="Encargado" />
+                                    <TableColumn fx:id="tbc_fechaRegistro" prefWidth="94.4000244140625" text="Fecha Registro" />
+                                    <TableColumn fx:id="tbc_fechaModificacion" prefWidth="94.40005493164062" text="Fecha Modificación" />
+                                    <TableColumn fx:id="tbc_estado" minWidth="0.0" prefWidth="98.39996337890625" text="Estado" />
+                                    <TableColumn fx:id="tbc_estadoCobro" prefWidth="103.99996948242188" text="Estado Cobro" />
                                  </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
                               </TableView>
                            </children>
                         </VBox>
@@ -73,7 +78,7 @@
                         <Label styleClass="LabelTitulo3" text="Observaciones" />
                         <HBox alignment="CENTER_LEFT" prefHeight="86.0" prefWidth="822.0" spacing="43.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <Label styleClass="label1" text="No Hay Observaciones" HBox.hgrow="ALWAYS" />
+                              <JFXTextArea fx:id="txt_observaciones" editable="false" styleClass="label1" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
@@ -85,75 +90,79 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="256.0" spacing="30.0" HBox.hgrow="ALWAYS">
                <children>
-                  <VBox alignment="CENTER" spacing="20.0" styleClass="VBoxTarjeta2">
+                  <VBox alignment="CENTER" styleClass="VBoxTarjeta2" VBox.vgrow="ALWAYS">
                      <children>
-                        <VBox alignment="CENTER" styleClass="LabelTitulo3">
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Avión" />
+                              <Label styleClass="LabelTitulo3" text="Avión" VBox.vgrow="ALWAYS" />
                            </children>
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
                         </VBox>
-                        <VBox alignment="CENTER">
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="ID" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                              <Label styleClass="label1" text="ID" VBox.vgrow="ALWAYS" />
+                              <Label fx:id="lbl_id" styleClass="label1" text="-" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox>
+                        <VBox VBox.vgrow="ALWAYS">
                            <children>
-                              <VBox alignment="CENTER">
+                              <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Matricula" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                                    <Label styleClass="label1" text="Matricula" VBox.vgrow="ALWAYS" />
+                                    <Label fx:id="lbl_matricula" styleClass="label1" text="-" VBox.vgrow="ALWAYS" />
                                  </children>
                               </VBox>
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER">
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Estado" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                              <Label styleClass="label1" text="Estado" VBox.vgrow="ALWAYS" />
+                              <Label fx:id="lbl_estado" styleClass="label2" text="-" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER">
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Registro" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                              <Label styleClass="label1" text="Fecha Registro" VBox.vgrow="ALWAYS" />
+                              <Label fx:id="lbl_FechaRegistro" styleClass="label1" text="-" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER">
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label1" text="Aerolinea" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="-" />
+                              <Label styleClass="label1" text="Aerolinea" VBox.vgrow="ALWAYS" />
+                              <Label fx:id="lbl_aerolinea" styleClass="label1" text="-" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" styleClass="VBoxTarjeta2">
+                  <VBox alignment="CENTER" styleClass="VBoxTarjeta2" VBox.vgrow="ALWAYS">
                      <children>
                         <Label styleClass="LabelTitulo3" text="Precios" />
-                        <HBox alignment="CENTER_LEFT" spacing="30.0">
+                        <HBox alignment="CENTER_LEFT" spacing="30.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <Label styleClass="label1" text="Monto" />
-                              <Label text="-" />
+                              <Label styleClass="label1" text="Monto" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="lbl_monto" text="-" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="37.0">
+                        <HBox alignment="CENTER_LEFT" spacing="38.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <Label styleClass="label1" text="Fecha" />
-                              <Label text="-" />
+                              <Label styleClass="label1" text="Fecha" HBox.hgrow="ALWAYS" />
+                              <Label fx:id="lbl_fecha" text="-" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
                   </VBox>
                   <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                      <children>
-                        <JFXButton alignment="CENTER" defaultButton="true" onMousePressed="#nuevo" prefHeight="49.0" prefWidth="215.0" styleClass="jfx-buttonStandard1" text="Nuevo" VBox.vgrow="ALWAYS">
+                        <JFXButton alignment="CENTER" defaultButton="true" onMouseClicked="#nuevoServicio" prefHeight="49.0" prefWidth="215.0" text="Nuevo Servicio" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
+                           <styleClass>
+                              <String fx:value="jfx-buttonStandard1" />
+                              <String fx:value="label1" />
+                           </styleClass>
                         </JFXButton>
                      </children>
                   </VBox>
@@ -166,10 +175,10 @@
          <padding>
             <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
          </padding>
-         <stylesheets>
-            <URL value="@../resources/WinStyle.css" />
-            <URL value="@../resources/Login.css" />
-         </stylesheets>
       </HBox>
    </children>
+   <stylesheets>
+      <URL value="@../resources/WinStyle.css" />
+      <URL value="@../resources/Login.css" />
+   </stylesheets>
 </VBox>
