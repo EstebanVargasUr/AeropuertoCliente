@@ -93,6 +93,18 @@ public class FlowController {
         goView(viewName, "Left", null);
     }
     
+    public void goViewRight(String viewName) {
+        goView(viewName, "Right", null);
+    }
+    
+    public void goViewTop(String viewName) {
+        goView(viewName, "Top", null);
+    }
+    
+    public void goViewBottom(String viewName) {
+        goView(viewName, "Bottom", null);
+    }
+    
     public void goView(String viewName, String accion) {
         goView(viewName, "Center", accion);
     }
