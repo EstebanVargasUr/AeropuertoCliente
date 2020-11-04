@@ -16,14 +16,14 @@
             <VBox alignment="CENTER" prefHeight="253.0" prefWidth="361.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                <children>
                   <Label styleClass="LabelTitulo2" text="Acciones de Gestores" />
-                  <JFXButton fx:id="btnAccion" alignment="CENTER" buttonType="RAISED" ellipsisString="" onMouseClicked="#servicios" opacity="0.97" prefHeight="0.0" prefWidth="0.0" textFill="WHITE">
+                  <JFXButton fx:id="btnAccion" alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#servicios" opacity="0.97" prefHeight="224.0" prefWidth="361.0" ripplerFill="#36a3da" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                      <graphic>
                         <ImageView fitHeight="180.0" fitWidth="292.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@AeropuertoCliente/AeropuertoCliente/src/main/resources/org/una/aeropuertocliente/resources/autorizacion.png" />
+                              <Image url="@../resources/autorizacion.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -33,14 +33,14 @@
             <VBox alignment="CENTER" prefHeight="253.0" prefWidth="361.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                <children>
                   <Label styleClass="LabelTitulo2" text="Listados Gerenciales" />
-                  <JFXButton fx:id="btnListado" alignment="TOP_CENTER" buttonType="RAISED" ellipsisString="" onMouseClicked="#aviones" opacity="0.97" prefHeight="0.0" prefWidth="0.0" textFill="WHITE">
+                  <JFXButton fx:id="btnListado" alignment="TOP_CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#aviones" opacity="0.97" prefHeight="214.0" prefWidth="364.0" text="Button" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                      <graphic>
                         <ImageView fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@AeropuertoCliente/AeropuertoCliente/src/main/resources/org/una/aeropuertocliente/resources/Listado.png" />
+                              <Image url="@../resources/Listado.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -50,14 +50,14 @@
             <VBox alignment="CENTER" prefHeight="253.0" prefWidth="361.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                <children>
                   <Label styleClass="LabelTitulo2" text="Alertas y Notificaciones" />
-                  <JFXButton fx:id="btnAlerta" alignment="TOP_CENTER" buttonType="RAISED" ellipsisString="" onMouseClicked="#vuelos" opacity="0.97" prefHeight="0.0" prefWidth="0.0" text="." textFill="WHITE">
+                  <JFXButton fx:id="btnAlerta" alignment="TOP_CENTER" buttonType="RAISED" ellipsisString="" onMouseClicked="#vuelos" opacity="0.97" prefHeight="215.0" prefWidth="361.0" ripplerFill="#36a3da" text="." textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                      <graphic>
-                        <ImageView fx:id="bt" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@AeropuertoCliente/AeropuertoCliente/src/main/resources/org/una/aeropuertocliente/resources/Alertas.png" />
+                              <Image url="@../resources/Alertas.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -68,7 +68,7 @@
       </HBox>
    </children>
    <stylesheets>
-      <URL value="@AeropuertoCliente/AeropuertoCliente/src/main/resources/org/una/aeropuertocliente/resources/WinStyle.css" />
-      <URL value="@AeropuertoCliente/AeropuertoCliente/src/main/resources/org/una/aeropuertocliente/resources/Login.css" />
+      <URL value="@../resources/WinStyle.css" />
+      <URL value="@../resources/Login.css" />
    </stylesheets>
 </VBox>
