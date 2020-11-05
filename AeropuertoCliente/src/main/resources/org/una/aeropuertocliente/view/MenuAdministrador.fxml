@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="root" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.MenuGestionController">
+   <children>
+      <HBox alignment="CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="125.0">
+         <children>
+            <VBox alignment="CENTER" prefHeight="253.0" prefWidth="275.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+               <children>
+                  <Label styleClass="LabelTitulo2" text="Autorizar Roles" />
+                  <JFXButton fx:id="btnAutorizar" alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#servicios" opacity="0.97" prefHeight="217.0" prefWidth="275.0" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="180.0" fitWidth="273.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../resources/AutorizarRoles.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="253.0" prefWidth="275.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+               <children>
+                  <Label styleClass="LabelTitulo2" text="Modo Desarrollo" />
+                  <JFXButton fx:id="btnDesarrollo" alignment="TOP_CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#aviones" opacity="0.97" prefHeight="214.0" prefWidth="275.0" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="200.0" fitWidth="244.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../resources/modDesarrollo.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+   <stylesheets>
+      <URL value="@../resources/WinStyle.css" />
+      <URL value="@../resources/Login.css" />
+   </stylesheets>
+</VBox>

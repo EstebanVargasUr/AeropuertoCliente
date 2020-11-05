@@ -46,5 +46,6 @@ public class MenuGestionController extends Controller implements Initializable {
 
     @FXML
     private void vuelos(MouseEvent event) {
+        FlowController.getInstance().goView("Vuelo");
     }
 }
