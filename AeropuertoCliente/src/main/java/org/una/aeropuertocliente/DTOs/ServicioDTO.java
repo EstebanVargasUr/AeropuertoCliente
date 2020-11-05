@@ -17,12 +17,12 @@ import lombok.ToString;
 public class ServicioDTO {
     
     private Long id;  
-    private boolean estadoCobro; 
-    private boolean estado; 
+    private Boolean estadoCobro; 
+    private Boolean estado; 
     private Date fechaRegistro;
     private Date fechaModificacion;
     private String factura;
-    private String responsable;
+    private String nombreResponsable;
     private String observacion;
     private TipoServicioDTO tipoServicio;
     private AvionDTO avion;

@@ -15,7 +15,7 @@ public class AvionDTO {
     private Long id; 
     private String matricula; 
     private String tipoAvion;   
-    private boolean estado; 
+    private Boolean estado; 
     private Date fechaRegistro; 
     private Date fechaModificacion;
     private Integer recorrido;

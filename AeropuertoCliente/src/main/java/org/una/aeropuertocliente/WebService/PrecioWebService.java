@@ -61,22 +61,16 @@ public class PrecioWebService {
         response.join();
     }
     
-    public static void getPrecioByTipoServicioId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<PrecioDTO> getPrecioByTipoServicioId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByTipoServicioId/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Precio No Encontrado");
-
-        else
-        {
-            List<PrecioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<PrecioDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<PrecioDTO> precios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<PrecioDTO>>() {});
+        precios.forEach(System.out::println);
         response.join();
+        return precios;  
     }
 
     public static void createPrecio(Float monto, TipoServicioDTO tipoServicioDTO, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException

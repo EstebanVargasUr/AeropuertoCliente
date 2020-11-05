@@ -33,10 +33,24 @@
             </VBox>
             <VBox alignment="CENTER" spacing="40.0" VBox.vgrow="ALWAYS">
                <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="888.0" spacing="10.0">
+                     <children>
+                        <Label alignment="TOP_CENTER" styleClass="label3" text="Estado del servicio:" HBox.hgrow="ALWAYS" />
+                        <JFXCheckBox fx:id="ck_estadoCobro1" text="Activo" textFill="WHITE" />
+                        <JFXComboBox prefHeight="26.0" prefWidth="162.0" />
+                     </children>
+                  </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="888.0" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
                         <Label alignment="TOP_CENTER" styleClass="label3" text="Estado del cobro:" HBox.hgrow="ALWAYS" />
                         <JFXCheckBox fx:id="ck_estadoCobro" text="Activo" textFill="WHITE" />
+                        <JFXComboBox prefHeight="26.0" prefWidth="162.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="888.0" spacing="10.0">
+                     <children>
+                        <Label alignment="TOP_CENTER" styleClass="label3" text="Factura:" HBox.hgrow="ALWAYS" />
+                        <JFXTextField prefHeight="26.0" prefWidth="162.0" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="888.0" spacing="10.0" VBox.vgrow="ALWAYS">
@@ -49,6 +63,7 @@
                      <children>
                         <Label styleClass="label3" text="Tipo de Servicio:" HBox.hgrow="ALWAYS" />
                         <JFXComboBox fx:id="cb_tipoServicio" prefHeight="26.0" prefWidth="184.0" promptText="Seleccione el Tipo de Servicio" />
+                        <JFXTextField fx:id="txt_avion1" prefHeight="35.0" prefWidth="374.0" promptText="Digite la Matrícula o Id del avión" styleClass="label3" unFocusColor="WHITE" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="619.0" spacing="10.0" VBox.vgrow="ALWAYS">
