@@ -1,7 +1,9 @@
 package org.una.aeropuertocliente.controllersView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
@@ -93,7 +95,33 @@ public class ServicioController extends Controller implements  Initializable {
     private Label lbl_monto;
     @FXML
     private Label lbl_fecha;   
-        
+    @FXML
+    private JFXButton btn_modificar;
+    @FXML
+    private JFXButton btn_nuevo;
+    @FXML
+    private VBox vb_barraInferior;
+    @FXML
+    private JFXTextField txt_factura;
+    @FXML
+    private JFXRadioButton rb_ESActivo;
+    @FXML
+    private JFXRadioButton rb_ESInactivo;
+    @FXML
+    private JFXRadioButton rb_ECActivo;
+    @FXML
+    private JFXRadioButton rb_ECInactivo;
+    @FXML
+    private JFXTextField txt_responsable;
+    @FXML
+    private JFXComboBox<?> cb_tipoServicio;
+    @FXML
+    private JFXComboBox<?> cb_buscarAvion;
+    @FXML
+    private JFXTextField txt_avion;
+    @FXML
+    private JFXTextArea txt_observacionesInferior;
+    
     String token;
     
     @Override
@@ -309,6 +337,18 @@ public class ServicioController extends Controller implements  Initializable {
         lbl_aerolinea.setText("-");  
         lbl_monto.setText("-");
         lbl_fecha.setText("-");
+    }
+
+    @FXML
+    private void modificarServicio(MouseEvent event) {
+    }
+
+    @FXML
+    private void cancelar(MouseEvent event) {
+    }
+
+    @FXML
+    private void guardar(MouseEvent event) {
     }
     
     @Data
