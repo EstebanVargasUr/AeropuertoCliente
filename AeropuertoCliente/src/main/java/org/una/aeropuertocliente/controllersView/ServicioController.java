@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,10 +33,10 @@ import lombok.*;
 import org.una.aeropuertocliente.DTOs.PrecioDTO;
 import org.una.aeropuertocliente.WebService.ServicioWebService;
 import org.una.aeropuertocliente.DTOs.ServicioDTO;
-import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.WebService.PrecioWebService;
 import org.una.aeropuertocliente.WebService.TipoServicioWebService;
+import org.una.aeropuertocliente.utility.FlowController;
 
 /**
  * FXML Controller class
@@ -127,16 +125,12 @@ public class ServicioController extends Controller implements  Initializable {
     final ToggleGroup GrEstadoServicio = new ToggleGroup();
     final ToggleGroup GrEstadoCobro = new ToggleGroup();
             
-    String token;
+    String token = FlowController.getInstance().token;
     ServicioDTO ServicioSeleccionado = new ServicioDTO();
     boolean BotonGuardar = false;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            token = AutenticationWebService.login("admin", "Una2020");
-        } catch (InterruptedException | ExecutionException | JsonProcessingException ex) 
-        {Logger.getLogger(ServicioController.class.getName()).log(Level.SEVERE, null, ex);}
-        
+
         cb_filtro.getItems().add("Id");
         cb_filtro.getItems().add("Estado");
         cb_filtro.getItems().add("Estado del cobro");

@@ -20,6 +20,6 @@ public class HorarioDTO {
     private Time horaSalida;
     private Date fechaRegistro; 
     private Date fechaModificacion; 
-    private boolean estado; 
+    private Boolean estado; 
     private UsuarioDTO usuario; 
 }

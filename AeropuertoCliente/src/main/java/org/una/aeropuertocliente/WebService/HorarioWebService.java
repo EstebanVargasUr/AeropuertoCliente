@@ -83,22 +83,28 @@ public class HorarioWebService {
         response.join();
     }
     
-    public static void getHorarioByUsuarioId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<HorarioDTO> getHorarioByUsuarioId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioId/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Horario No Encontrado");
-
-        else
-        {
-            List<HorarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<HorarioDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<HorarioDTO> horarios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<HorarioDTO>>() {});
+        horarios.forEach(System.out::println);
         response.join();
+        return horarios;
+    }
+    
+    public static List<HorarioDTO> getHorarioByEstadoAndUsuario(boolean estado, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstadoAndUsuarioId/"+estado+"/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+        List<HorarioDTO> horarios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<HorarioDTO>>() {});
+        horarios.forEach(System.out::println);
+        response.join();
+        return horarios;
     }
     
     public static void createHorario(Short diaEntrada, Short diaSalida, Time horaEntrada, Time horaSalida, UsuarioDTO usuario, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException, IOException

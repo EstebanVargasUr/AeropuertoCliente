@@ -71,15 +71,10 @@ public class VueloController extends Controller implements Initializable {
     @FXML
     private TableColumn<VueloC, String> tbc_estado;
 
-    String token;
+    String token = FlowController.getInstance().token;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        try {
-            token = AutenticationWebService.login("admin", "Una2020");
-        } catch (InterruptedException | ExecutionException | JsonProcessingException ex) 
-        {Logger.getLogger(ServicioController.class.getName()).log(Level.SEVERE, null, ex);}
         
         cb_filtro.getItems().add("Id");
         cb_filtro.getItems().add("Aeropuerto de destino");

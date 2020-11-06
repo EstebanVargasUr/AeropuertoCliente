@@ -51,7 +51,7 @@ public class LoginController extends Controller implements Initializable {
     private void btnIniciaSesion(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
         //FlowController.getInstance().goViewLeft("DashboardGerente");
        
-       String token = AutenticationWebService.login("admin", "Una2020");
+       FlowController.getInstance().token = AutenticationWebService.login("admin", "Una2020");
        FlowController.getInstance().goView("MenuGestor");
        //ServicioWebService.getServicioById(1,token);
       // UsuarioWebService.getUsuarioById(1, token);
