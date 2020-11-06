@@ -36,8 +36,9 @@ public class TipoServicioWebService {
         response.join();
     }
 
-    public static void getTipoServicioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static TipoServicioDTO getTipoServicioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        TipoServicioDTO bean = null;
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -48,14 +49,16 @@ public class TipoServicioWebService {
 
         else
         {
-            TipoServicioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), TipoServicioDTO.class);
+            bean = JSONUtils.covertFromJsonToObject(response.get().body(), TipoServicioDTO.class);
             System.out.println(bean);
         }
         response.join();
+        return bean;
     }
     
-    public static void getTipoServicioByNombre(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static TipoServicioDTO getTipoServicioByNombre(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        TipoServicioDTO bean = null;
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -66,10 +69,11 @@ public class TipoServicioWebService {
 
         else
         {
-            TipoServicioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), TipoServicioDTO.class);
+            bean = JSONUtils.covertFromJsonToObject(response.get().body(), TipoServicioDTO.class);
             System.out.println(bean);
         }
         response.join();
+        return bean;
     }
  
     public static void createTipoServicio(String nombre, Long duracion, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException

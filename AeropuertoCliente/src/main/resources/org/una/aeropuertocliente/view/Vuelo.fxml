@@ -39,20 +39,20 @@
                            </HBox.margin>
                         </DatePicker>
                         <DatePicker fx:id="datePFechaFinal" minWidth="-Infinity" prefWidth="0.0" promptText="Fecha final" visible="false" HBox.hgrow="ALWAYS" />
-                        <JFXButton buttonType="RAISED" onKeyPressed="#buscarK" onMouseClicked="#buscar" styleClass="Boton1" text="Buscar" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets left="10.0" right="20.0" />
-                           </HBox.margin></JFXButton>
-                        <JFXComboBox fx:id="cb_filtro" onAction="#cb_filtroAction" promptText="&lt;&lt;Fitrar por&gt;&gt;" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets right="10.0" />
-                           </HBox.margin>
-                        </JFXComboBox>
                         <JFXComboBox fx:id="cb_filtroEstado" minWidth="0.0" prefWidth="0.0" promptText="&lt;&lt;Estado&gt;&gt;" visible="false" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="10.0" />
                            </HBox.margin>
                         </JFXComboBox>
+                        <JFXComboBox fx:id="cb_filtro" minWidth="200.0" onAction="#cb_filtroAction" prefWidth="200.0" promptText="&lt;&lt;Fitrar por&gt;&gt;">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </JFXComboBox>
+                        <JFXButton buttonType="RAISED" onKeyPressed="#buscarK" onMouseClicked="#buscar" styleClass="Boton1" text="Buscar" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets left="10.0" right="20.0" />
+                           </HBox.margin></JFXButton>
                      </children>
                   </HBox>
                </children>

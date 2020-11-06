@@ -52,7 +52,7 @@ public class LoginController extends Controller implements Initializable {
         //FlowController.getInstance().goViewLeft("DashboardGerente");
        
        String token = AutenticationWebService.login("admin", "Una2020");
-       FlowController.getInstance().goView("MenuGestion");
+       FlowController.getInstance().goView("MenuGestor");
        //ServicioWebService.getServicioById(1,token);
       // UsuarioWebService.getUsuarioById(1, token);
     }

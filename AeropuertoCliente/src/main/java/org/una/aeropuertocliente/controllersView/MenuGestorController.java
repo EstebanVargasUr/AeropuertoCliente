@@ -62,5 +62,6 @@ public class MenuGestorController extends Controller implements Initializable {
 
     @FXML
     private void horario(MouseEvent event) {
+        FlowController.getInstance().goView("Horario");
     }
 }

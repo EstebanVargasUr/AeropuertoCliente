@@ -26,6 +26,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -35,8 +36,9 @@ import org.una.aeropuertocliente.DTOs.PrecioDTO;
 import org.una.aeropuertocliente.WebService.ServicioWebService;
 import org.una.aeropuertocliente.DTOs.ServicioDTO;
 import org.una.aeropuertocliente.WebService.AutenticationWebService;
+import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.WebService.PrecioWebService;
-import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.WebService.TipoServicioWebService;
 
 /**
  * FXML Controller class
@@ -114,16 +116,20 @@ public class ServicioController extends Controller implements  Initializable {
     @FXML
     private JFXTextField txt_responsable;
     @FXML
-    private JFXComboBox<?> cb_tipoServicio;
+    private JFXComboBox<String> cb_tipoServicio;
     @FXML
-    private JFXComboBox<?> cb_buscarAvion;
+    private JFXComboBox<String> cb_buscarAvion;
     @FXML
     private JFXTextField txt_avion;
     @FXML
     private JFXTextArea txt_observacionesInferior;
     
+    final ToggleGroup GrEstadoServicio = new ToggleGroup();
+    final ToggleGroup GrEstadoCobro = new ToggleGroup();
+            
     String token;
-    
+    ServicioDTO ServicioSeleccionado = new ServicioDTO();
+    boolean BotonGuardar = false;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -138,8 +144,22 @@ public class ServicioController extends Controller implements  Initializable {
         cb_filtro.getItems().add("Id del avion"); 
         cb_filtro.getItems().add("Id del tipo de servicio");
         cb_filtro.getItems().add("Id del tipo de servicio y Id del avion"); 
-        cb_filtroEstado.getItems().add("True"); 
-        cb_filtroEstado.getItems().add("False");    
+        
+        cb_filtroEstado.getItems().add("Activo"); 
+        cb_filtroEstado.getItems().add("Inactivo");  
+        
+        cb_buscarAvion.getItems().add("Por id");  
+        cb_buscarAvion.getItems().add("Por matricula");  
+        
+        cb_tipoServicio.getItems().add("Carga de combustible");    
+        cb_tipoServicio.getItems().add("Uso de hangares");    
+        cb_tipoServicio.getItems().add("Mantenimiento preventivo");    
+        cb_tipoServicio.getItems().add("Correctivos de aeronaves");    
+        
+        rb_ESActivo.setToggleGroup(GrEstadoServicio);
+        rb_ESInactivo.setToggleGroup(GrEstadoServicio);
+        rb_ECActivo.setToggleGroup(GrEstadoCobro);
+        rb_ECInactivo.setToggleGroup(GrEstadoCobro);
     }    
 
     @Override
@@ -195,12 +215,22 @@ public class ServicioController extends Controller implements  Initializable {
             
             if (cb_filtro.getValue().equals("Estado")) {
         
-                boolean Estado = Boolean.parseBoolean(cb_filtroEstado.getValue().toLowerCase());    
+                Boolean Estado = false;
+                if (cb_filtroEstado.getValue().equals("Activo")) 
+                {Estado = true;}
+                else
+                {Estado = false;}
+                
                 servicio = ServicioWebService.getServicioByEstado(Estado, token);
             }
             if (cb_filtro.getValue().equals("Estado del cobro")) {
-        
-                boolean Estado = Boolean.parseBoolean(cb_filtroEstado.getValue().toLowerCase());    
+                
+                Boolean Estado = false;
+                if (cb_filtroEstado.getValue().equals("Activo")) 
+                {Estado = true;}
+                else
+                {Estado = false;}
+                
                 servicio = ServicioWebService.getServicioByEstadoCobro(Estado, token);
             }
              if (cb_filtro.getValue().equals("Id del tipo de servicio")) {
@@ -253,12 +283,6 @@ public class ServicioController extends Controller implements  Initializable {
     }
 
     @FXML
-    private void nuevoServicio(MouseEvent event) 
-    {
-        FlowController.getInstance().goView("CreacionServicio");
-    }
-
-    @FXML
     private void cb_filtroAction(ActionEvent event) 
     {
         txt_buscar.clear();
@@ -297,6 +321,7 @@ public class ServicioController extends Controller implements  Initializable {
         long Id = tablaServicios.getSelectionModel().selectedItemProperty().get().Id;
         ServicioDTO servicio = ServicioWebService.getServicioById(Id, token);
         List<PrecioDTO> precio = PrecioWebService.getPrecioByTipoServicioId(servicio.getTipoServicio().getId(), token);
+        ServicioSeleccionado = servicio;
         
         txt_observaciones.setText(servicio.getObservacion());
         lbl_id.setText(servicio.getAvion().getId().toString());
@@ -341,15 +366,108 @@ public class ServicioController extends Controller implements  Initializable {
     }
 
     @FXML
-    private void modificarServicio(MouseEvent event) {
+    private void nuevoServicio(MouseEvent event) 
+    {     
+        LimpiaBarraInferior();
+        BotonGuardar = false;
+        vb_barraInferior.setPrefHeight(200);
+        vb_barraInferior.setVisible(true);
+    }
+    @FXML
+    private void modificarServicio(MouseEvent event) 
+    {
+        LimpiaBarraInferior();
+        BotonGuardar = true;
+        vb_barraInferior.setPrefHeight(200);
+        vb_barraInferior.setVisible(true);
+        
+        txt_factura.setText(ServicioSeleccionado.getFactura());
+        txt_responsable.setText(ServicioSeleccionado.getNombreResponsable());
+        txt_observacionesInferior.setText(ServicioSeleccionado.getObservacion());
+        
+        if (ServicioSeleccionado.getEstado().toString().equals("true")) 
+        {rb_ESActivo.setSelected(true);}
+        else
+        {rb_ESInactivo.setSelected(true);}
+        
+        if (ServicioSeleccionado.getEstadoCobro().toString().equals("true")) 
+        {rb_ECActivo.setSelected(true);}
+        else
+        {rb_ECInactivo.setSelected(true);}
+        
+        cb_tipoServicio.setValue(ServicioSeleccionado.getTipoServicio().getNombre());
+        cb_buscarAvion.setValue("Por id");  txt_avion.setText(ServicioSeleccionado.getId().toString());
+    }
+ 
+    
+    @FXML
+    private void cancelar(MouseEvent event) 
+    {
+        LimpiaBarraInferior();
+        vb_barraInferior.setPrefHeight(0);
+        vb_barraInferior.setVisible(false); 
     }
 
     @FXML
-    private void cancelar(MouseEvent event) {
-    }
+    private void guardar(MouseEvent event) throws InterruptedException, ExecutionException, IOException 
+    {
+        if (BotonGuardar == false) 
+        {ServicioSeleccionado = new ServicioDTO();}
+        
+        vb_barraInferior.setPrefHeight(0);
+        vb_barraInferior.setVisible(false);
 
-    @FXML
-    private void guardar(MouseEvent event) {
+        if (rb_ECInactivo.isSelected()) 
+        {ServicioSeleccionado.setEstadoCobro(false);}
+        else {{ServicioSeleccionado.setEstadoCobro(true);}}
+        
+        if (rb_ESInactivo.isSelected()) 
+        {ServicioSeleccionado.setEstado(false);}
+        else {ServicioSeleccionado.setEstado(true);}
+        
+        ServicioSeleccionado.setFactura(txt_factura.getText());
+        ServicioSeleccionado.setNombreResponsable(txt_responsable.getText());
+        ServicioSeleccionado.setObservacion(txt_observacionesInferior.getText());
+
+        if (cb_tipoServicio.getValue().equals("Carga de combustible")) 
+        {ServicioSeleccionado.setTipoServicio(TipoServicioWebService.getTipoServicioById(1, token));}
+        if (cb_tipoServicio.getValue().equals("Uso de hangares")) 
+        {ServicioSeleccionado.setTipoServicio(TipoServicioWebService.getTipoServicioById(2, token));}
+        if (cb_tipoServicio.getValue().equals("Mantenimiento preventivo")) 
+        {ServicioSeleccionado.setTipoServicio(TipoServicioWebService.getTipoServicioById(3, token));}
+        if (cb_tipoServicio.getValue().equals("Correctivos de aeronaves")) 
+        {ServicioSeleccionado.setTipoServicio(TipoServicioWebService.getTipoServicioById(4, token));}
+
+        if (cb_buscarAvion.getValue().equals("Por id")) 
+        {
+            long Id = Long.parseLong(txt_avion.getText());
+            ServicioSeleccionado.setAvion(AvionWebService.getAvionById(Id, token));
+        }
+        else
+        {ServicioSeleccionado.setAvion(AvionWebService.getAvionByMatricula(txt_avion.getText(), token));}
+        
+        
+        if (BotonGuardar == true) 
+        {ServicioWebService.updateServicio(ServicioSeleccionado, ServicioSeleccionado.getId(), token);}
+        if (BotonGuardar == false) 
+        {ServicioWebService.createServicio(ServicioSeleccionado, token);}
+        
+        LimpiaBarraInferior();
+        LimpiaDatos();
+    }
+    
+    private void LimpiaBarraInferior()
+    {
+        txt_factura.setText("");
+        txt_responsable.setText("");
+        txt_observacionesInferior.setText("");
+        rb_ESActivo.setSelected(false);
+        rb_ESInactivo.setSelected(false);
+        rb_ECActivo.setSelected(false);
+        rb_ECInactivo.setSelected(false);
+        cb_tipoServicio.setValue("");
+        cb_buscarAvion.setValue("");  
+        txt_avion.setText("");   
     }
     
     @Data

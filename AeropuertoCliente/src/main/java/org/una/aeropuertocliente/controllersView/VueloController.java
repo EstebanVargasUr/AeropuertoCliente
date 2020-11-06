@@ -87,8 +87,8 @@ public class VueloController extends Controller implements Initializable {
         cb_filtro.getItems().add("Fecha de llegada");
         cb_filtro.getItems().add("Fecha de salida");
         cb_filtro.getItems().add("Id del avion"); 
-        cb_filtroEstado.getItems().add("True"); 
-        cb_filtroEstado.getItems().add("False");    
+        cb_filtroEstado.getItems().add("Activo"); 
+        cb_filtroEstado.getItems().add("Inactivo");    
     }    
 
     @Override
@@ -142,8 +142,13 @@ public class VueloController extends Controller implements Initializable {
             List<VueloDTO> vuelo = null;
             
             if (cb_filtro.getValue().equals("Estado")) {
-        
-                boolean Estado = Boolean.parseBoolean(cb_filtroEstado.getValue().toLowerCase());    
+                
+                Boolean Estado = false;
+                if (cb_filtroEstado.getValue().equals("Activo")) 
+                {Estado = true;}
+                else
+                {Estado = false;}
+
                 vuelo = VueloWebService.getVueloByEstado(Estado, token);
             }
             if (cb_filtro.getValue().equals("Aeropuerto de destino")) {

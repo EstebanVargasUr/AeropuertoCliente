@@ -124,17 +124,8 @@ public class ServicioWebService {
         return servicios; 
     }
     
-    public static void createServicio(boolean estadocobro, String factura, String responsable, String observacion, AvionDTO avionId, TipoServicioDTO tipoServicioId, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createServicio(ServicioDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
-        ServicioDTO bean = new ServicioDTO();
-        
-        bean.setEstadoCobro(estadocobro);
-        bean.setFactura(factura);
-        bean.setNombreResponsable(responsable);
-        bean.setObservacion(observacion);
-        bean.setAvion(avionId);
-        bean.setTipoServicio(tipoServicioId);
-
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)

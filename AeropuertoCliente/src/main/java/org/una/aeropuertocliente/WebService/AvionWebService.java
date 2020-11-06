@@ -38,8 +38,9 @@ public class AvionWebService {
         response.join();
     }
 
-    public static void getAvionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static AvionDTO getAvionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        AvionDTO bean = null;
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -50,14 +51,16 @@ public class AvionWebService {
 
         else
         {
-            AvionDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AvionDTO.class);
+            bean = JSONUtils.covertFromJsonToObject(response.get().body(), AvionDTO.class);
             System.out.println(bean);
         }
         response.join();
+        return bean;
     }
     
-    public static void getAvionByMatricula(String matricula, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static AvionDTO getAvionByMatricula(String matricula, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        AvionDTO bean = null;
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByMatricula/"+matricula))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -68,10 +71,11 @@ public class AvionWebService {
 
         else
         {
-            AvionDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AvionDTO.class);
+            bean = JSONUtils.covertFromJsonToObject(response.get().body(), AvionDTO.class);
             System.out.println(bean);
         }
         response.join();
+        return bean;
     }
     
     public static void getAvionByTipoAvion(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
