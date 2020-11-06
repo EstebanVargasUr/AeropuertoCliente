@@ -5,19 +5,30 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import org.una.aeropuertocliente.utility.FlowController;
 
 /**
  * FXML Controller class
  *
  * @author Esteban Vargas
  */
-public class MenuGestionController extends Controller implements Initializable {
+public class HorarioController extends Controller implements Initializable {
 
     @FXML
     private VBox root;
+    @FXML
+    private TableView<?> tablaHorario;
+    @FXML
+    private TableColumn<?, ?> tbc_diaEntrada;
+    @FXML
+    private TableColumn<?, ?> tbc_diaSalida;
+    @FXML
+    private TableColumn<?, ?> tbc_horaEntrada;
+    @FXML
+    private TableColumn<?, ?> tbc_horaSalida;
 
     @Override
     public void initialize() {
@@ -32,20 +43,10 @@ public class MenuGestionController extends Controller implements Initializable {
     @Override
     public Node getRoot() {
         return root;
-    }  
+    }    
 
     @FXML
-    private void servicios(MouseEvent event) {
-        FlowController.getInstance().goView("Servicio");
+    private void tablaServiciosClic(MouseEvent event) {
     }
-
-    @FXML
-    private void aviones(MouseEvent event) {
-        FlowController.getInstance().goView("RegistroAvion");
-    }
-
-    @FXML
-    private void vuelos(MouseEvent event) {
-        FlowController.getInstance().goView("Vuelo");
-    }
+    
 }
