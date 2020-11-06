@@ -1,6 +1,7 @@
 package org.una.aeropuertocliente.utility;
 
 import org.una.aeropuertocliente.App;
+import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.controllersView.Controller;
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ public class FlowController {
     private static Stage mainStage;
     private static ResourceBundle idioma;
     private static HashMap<String, FXMLLoader> loaders = new HashMap<>();
+    public String token="";
+    public UsuarioDTO usuarioDTO= new UsuarioDTO();
     //FMLLoader: interfaz y controlador de la interfaz grafica
     private FlowController() {
     }

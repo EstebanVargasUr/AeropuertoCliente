@@ -128,22 +128,16 @@ public class AvionWebService {
         response.join();
     }
     
-    public static void getAvionByAerolineaId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AvionDTO> getAvionByAerolineaId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAerolinea/"+id))
-        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+                .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Avion No Encontrado");
-
-        else
-        {
-            List<AvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<AvionDTO> aviones = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
+        aviones.forEach(System.out::println);
         response.join();
+        return aviones;
     }
 
     public static void createAvion(String matricula, String tipoAvion, AerolineaDTO aerolinea, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
