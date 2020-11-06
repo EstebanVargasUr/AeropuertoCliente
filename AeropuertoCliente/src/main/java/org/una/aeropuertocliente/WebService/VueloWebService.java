@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.una.aeropuertocliente.DTOs.AvionDTO;
@@ -25,8 +26,9 @@ public class VueloWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/vuelos";
 
-    public static void getVueloById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static VueloDTO getVueloById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        VueloDTO bean = null;
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -37,100 +39,79 @@ public class VueloWebService {
 
         else
         {
-            VueloDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), VueloDTO.class);
+            bean = JSONUtils.covertFromJsonToObject(response.get().body(), VueloDTO.class);
             System.out.println(bean);
         }
         response.join();
+        return bean;
     }
     
-    public static void getVueloByAeropuerto(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
-    {
+    public static List<VueloDTO> getVueloByAeropuerto(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {        
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAeropuerto/"+nombre))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Vuelo No Encontrado");
-
-        else
-        {
-            List<VueloDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<VueloDTO> vuelos = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
+        vuelos.forEach(System.out::println);
         response.join();
+        return vuelos;
     }
     
-    public static void getVueloByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<VueloDTO> getVueloByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Vuelo No Encontrado");
-
-        else
-        {
-            List<VueloDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<VueloDTO> vuelos = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
+        vuelos.forEach(System.out::println);
         response.join();
+        return vuelos;
     }
 
-    public static void getVueloByFechaSalidaBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<VueloDTO> getVueloByFechaSalidaBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findbyFechaSalidaBetween/"+fechaInicial+"/"+fechaFinal))
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaSalidaBetween/"+stringDate+"/"+stringDate2))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Vuelo No Encontrado");
-
-        else
-        {
-            List<VueloDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<VueloDTO> vuelos = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
+        vuelos.forEach(System.out::println);
         response.join();
+        return vuelos;
     }
     
-    public static void getVueloByFechaLlegadaBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<VueloDTO> getVueloByFechaLlegadaBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/FechaLlegadaBetween/"+fechaInicial+"/"+fechaFinal))
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaLlegadaBetween/"+stringDate+"/"+stringDate2))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Vuelo No Encontrado");
-
-        else
-        {
-            List<VueloDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<VueloDTO> vuelos = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
+        vuelos.forEach(System.out::println);
         response.join();
+        return vuelos;
     }
     
-    public static void getVueloByAvionId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
-    {
+    public static List<VueloDTO> getVueloByAvionId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {        
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAvionId/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Vuelo No Encontrado");
-
-        else
-        {
-            List<VueloDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<VueloDTO> vuelos = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<VueloDTO>>() {});
+        vuelos.forEach(System.out::println);
         response.join();
+        return vuelos;
     }
 
     public static void createVuelo(Float duracion, String aeropuerto, Long distancia, AvionDTO avionId, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException

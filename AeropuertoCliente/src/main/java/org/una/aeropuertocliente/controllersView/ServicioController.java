@@ -273,7 +273,7 @@ public class ServicioController extends Controller implements  Initializable {
         {
             cb_filtroEstado.setPrefWidth(100);
             cb_filtroEstado.setVisible(true);
-            txt_buscar.setDisable(true); 
+            txt_buscar.setDisable(true);
         }  
         if(cb_filtro.getValue().equals("Fecha de registro"))
         {
@@ -281,6 +281,7 @@ public class ServicioController extends Controller implements  Initializable {
             datePFechaInicial.setVisible(true);
             datePFechaFinal.setPrefWidth(130);
             datePFechaFinal.setVisible(true);
+            txt_buscar.setDisable(true); 
         }
         if(cb_filtro.getValue().equals("Id del tipo de servicio y Id del avion"))
         {
