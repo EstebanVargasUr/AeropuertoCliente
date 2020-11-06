@@ -105,7 +105,7 @@ public class HorarioController extends Controller implements Initializable {
         else
         {Estado = false;}
 
-        horarios = HorarioWebService.getHorarioByEstadoAndUsuario(Estado,FlowController.getInstance().usuarioDTO.getId(),FlowController.getInstance().token);
+        horarios = HorarioWebService.getHorarioByEstadoAndUsuario(Estado,FlowController.getInstance().authenticationResponse.getUsuario().getId(),FlowController.getInstance().token);
 
          for (int i = 0; i < horarios.toArray().length; i++) 
          {
@@ -142,7 +142,7 @@ public class HorarioController extends Controller implements Initializable {
         String EstadoHorario = "-";
         
         try {
-            horarios = HorarioWebService.getHorarioByUsuarioId(FlowController.getInstance().usuarioDTO.getId() ,FlowController.getInstance().token);
+            horarios = HorarioWebService.getHorarioByUsuarioId(FlowController.getInstance().authenticationResponse.getUsuario().getId() ,FlowController.getInstance().token);
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);}
 
 

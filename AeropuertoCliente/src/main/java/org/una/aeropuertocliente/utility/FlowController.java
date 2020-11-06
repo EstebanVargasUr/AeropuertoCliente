@@ -1,7 +1,6 @@
 package org.una.aeropuertocliente.utility;
 
 import org.una.aeropuertocliente.App;
-import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.controllersView.Controller;
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,13 +9,13 @@ import java.util.logging.Level;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 
 public class FlowController {
     
@@ -25,7 +24,7 @@ public class FlowController {
     private static ResourceBundle idioma;
     private static HashMap<String, FXMLLoader> loaders = new HashMap<>();
     public String token="";
-    public UsuarioDTO usuarioDTO= new UsuarioDTO();
+    public AuthenticationResponse authenticationResponse= new AuthenticationResponse();
     //FMLLoader: interfaz y controlador de la interfaz grafica
     private FlowController() {
     }

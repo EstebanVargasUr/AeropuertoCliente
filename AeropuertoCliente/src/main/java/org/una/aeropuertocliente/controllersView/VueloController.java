@@ -71,10 +71,28 @@ public class VueloController extends Controller implements Initializable {
     @FXML
     private TableColumn<VueloC, String> tbc_estado;
 
-    String token = FlowController.getInstance().token;
+    String token;
+    @FXML
+    private VBox vb_barraInferior;
+    @FXML
+    private JFXTextField txt_destino;
+    @FXML
+    private JFXComboBox<?> cb_buscarAvion;
+    @FXML
+    private JFXTextField txt_avion;
+    @FXML
+    private DatePicker dpk_fechaSalida;
+    @FXML
+    private DatePicker dpk_fechaLlegada;
+    @FXML
+    private JFXTextField txt_distancia;
+    @FXML
+    private JFXTextField txt_duracion;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+            
+        token = FlowController.getInstance().authenticationResponse.getJwt();
         
         cb_filtro.getItems().add("Id");
         cb_filtro.getItems().add("Aeropuerto de destino");
@@ -96,9 +114,6 @@ public class VueloController extends Controller implements Initializable {
         return root;
     }     
 
-    @FXML
-    private void buscarK(KeyEvent event) {
-    }
 
     @FXML
     private void buscar(MouseEvent event) throws InterruptedException, ExecutionException, IOException 
@@ -222,7 +237,6 @@ public class VueloController extends Controller implements Initializable {
     {
         long Id = tablaVuelos.getSelectionModel().selectedItemProperty().get().Id;
     }
-    @FXML
     private void volver(MouseEvent event) {
         FlowController.getInstance().goView("MenuGestion");
     }
@@ -230,6 +244,18 @@ public class VueloController extends Controller implements Initializable {
     @FXML
     private void nuevo(MouseEvent event) {
         FlowController.getInstance().goView("RegistroVuelo");
+    }
+
+    @FXML
+    private void cancelar(MouseEvent event) {
+    }
+
+    @FXML
+    private void guardar(MouseEvent event) {
+    }
+
+    @FXML
+    private void btnBuscar(KeyEvent event) {
     }
     
     @Data

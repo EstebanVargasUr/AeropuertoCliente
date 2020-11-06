@@ -11,11 +11,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.utility.FlowController;
-import org.una.aeropuertocliente.WebService.AerolineaWebService;
 import org.una.aeropuertocliente.WebService.AutenticationWebService;
-import org.una.aeropuertocliente.WebService.ServicioWebService;
-import org.una.aeropuertocliente.WebService.UsuarioWebService;
 /**
  * FXML Controller class
  *
@@ -29,8 +27,6 @@ public class LoginController extends Controller implements Initializable {
     private VBox root;
     @FXML
     private JFXPasswordField txtPassword;
-
-    private AerolineaWebService autenticationWebService ;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -49,17 +45,43 @@ public class LoginController extends Controller implements Initializable {
 
     @FXML
     private void btnIniciaSesion(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
-        //FlowController.getInstance().goViewLeft("DashboardGerente");
        
-       FlowController.getInstance().token = AutenticationWebService.login("admin", "Una2020");
-       FlowController.getInstance().goView("MenuGestor");
-       //ServicioWebService.getServicioById(1,token);
-      // UsuarioWebService.getUsuarioById(1, token);
-    }
+       AuthenticationResponse authenticationResponse = AutenticationWebService.login(txtCedula.getText(), txtPassword.getText());
+       
+       if(authenticationResponse != null)
+       {
+            if(authenticationResponse.getRoles().getNombre().equals("Gestor")){
+                FlowController.getInstance().authenticationResponse = authenticationResponse;
+                FlowController.getInstance().goView("MenuGestor");
+                FlowController.getInstance().goViewTop("BarraNavegacion");
+                
+            }
 
-    @FXML
-    private void btnRegistrarse(MouseEvent event) {
-        FlowController.getInstance().goView("RegistroUsuario");
+            else if(authenticationResponse.getRoles().getNombre().equals("Gerente")){
+                FlowController.getInstance().authenticationResponse = authenticationResponse;
+                FlowController.getInstance().goView("MenuGerente");
+                FlowController.getInstance().goViewTop("BarraNavegacion");
+            }
+
+            else if(authenticationResponse.getRoles().getNombre().equals("Administrador")){
+                FlowController.getInstance().authenticationResponse = authenticationResponse;
+                FlowController.getInstance().goView("MenuAdministrador");
+                FlowController.getInstance().goViewTop("BarraNavegacion");
+            }
+
+            else if(authenticationResponse.getRoles().getNombre().equals("Auditor")){
+                FlowController.getInstance().authenticationResponse = authenticationResponse;
+                FlowController.getInstance().goView("MenuAuditor");
+                FlowController.getInstance().goViewTop("BarraNavegacion");
+            }
+
+            else{
+                FlowController.getInstance().authenticationResponse = authenticationResponse;
+                FlowController.getInstance().goView("MenuEmpleado");
+                FlowController.getInstance().goViewTop("BarraNavegacion");
+            }
+       }
+       
     }
     
 }

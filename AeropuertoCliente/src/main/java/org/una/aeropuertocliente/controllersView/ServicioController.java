@@ -130,7 +130,10 @@ public class ServicioController extends Controller implements  Initializable {
     boolean BotonGuardar = false;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
+        token = FlowController.getInstance().authenticationResponse.getJwt();
+     
+        
         cb_filtro.getItems().add("Id");
         cb_filtro.getItems().add("Estado");
         cb_filtro.getItems().add("Estado del cobro");

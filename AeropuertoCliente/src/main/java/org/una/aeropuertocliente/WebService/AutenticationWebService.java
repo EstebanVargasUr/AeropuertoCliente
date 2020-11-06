@@ -1,6 +1,7 @@
 package org.una.aeropuertocliente.WebService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
@@ -10,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.json.JSONObject;
 import org.una.aeropuertocliente.DTOs.AuthenticationRequest;
+import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.utility.JSONUtils;
 
 /**
@@ -20,7 +22,7 @@ public class AutenticationWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/login";
     
-    public static String login(String cedula,String password) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static AuthenticationResponse login(String cedula,String password) throws InterruptedException, ExecutionException, JsonProcessingException, IOException
     {
             AuthenticationRequest bean = new AuthenticationRequest();
             
@@ -34,9 +36,7 @@ public class AutenticationWebService {
             CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());            
             System.out.println(response.get().body());
             
-            JSONObject jsonObj = new JSONObject(response.get().body());
-            String name = jsonObj.getString("jwt");
-            System.out.println(name);
-            return name;
+            AuthenticationResponse authenticationResponse = JSONUtils.covertFromJsonToObject(response.get().body(), AuthenticationResponse.class);
+            return authenticationResponse;
     }
 }
