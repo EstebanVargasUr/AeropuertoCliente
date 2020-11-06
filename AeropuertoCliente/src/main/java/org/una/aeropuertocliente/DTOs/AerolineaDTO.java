@@ -16,6 +16,6 @@ public class AerolineaDTO {
     private String nombreResponsable;  
     private Date fechaRegistro;
     private Date fechaModificacion;
-    private boolean estado;
+    private Boolean estado;
     
 }

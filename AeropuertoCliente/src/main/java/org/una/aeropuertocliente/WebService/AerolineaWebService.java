@@ -25,7 +25,7 @@ public class AerolineaWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/aerolineas";
     
-    public static void getAllAerolineas(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static List<AerolineaDTO> getAllAerolineas(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -34,6 +34,7 @@ public class AerolineaWebService {
         List<AerolineaDTO> aerolineas = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AerolineaDTO>>() {});
         aerolineas.forEach(System.out::println);
         response.join();
+        return aerolineas;
     }
 
     public static void getAerolineaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
