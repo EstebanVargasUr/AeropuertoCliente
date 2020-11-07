@@ -41,7 +41,7 @@ public class AerolineaAvionController extends Controller implements Initializabl
     private JFXButton btnBuscar;
 
     @FXML
-    private JFXComboBox<?> cb_filtro;
+    private JFXComboBox<String> cb_filtro;
 
     @FXML
     private TreeTableView<Modelo> tabla;
@@ -73,9 +73,45 @@ public class AerolineaAvionController extends Controller implements Initializabl
     @FXML
     private TreeTableColumn<Modelo, String> tbc_RecorridoMaximo;
 
-    @FXML
+  @FXML
     void buscar(MouseEvent event) {
-
+        
+        if ( cb_filtro.getValue().equals("Todo")) {
+            tabla.getRoot().getChildren().clear();
+            ModeloAerolinea.getChildren().clear();
+            try {CargarDatos();} 
+            catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaAvionController.class.getName()).log(Level.SEVERE, null, ex);}
+        }
+        
+        if ( cb_filtro.getValue().equals("Id de Aerolinea")) {
+            tabla.getRoot().getChildren().clear();
+            ModeloAerolinea.getChildren().clear();
+            try {FiltraPorIdAerolinea();} 
+            catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaAvionController.class.getName()).log(Level.SEVERE, null, ex);}
+        }
+        
+        if ( cb_filtro.getValue().equals("Nombre de Aerolinea")) {
+            tabla.getRoot().getChildren().clear();
+            ModeloAerolinea.getChildren().clear();
+            try {FiltraPorNombreAerolinea();} 
+            catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaAvionController.class.getName()).log(Level.SEVERE, null, ex);}
+        }
+        
+        if (cb_filtro.getValue().equals("Nombre de Responsable")) {
+            tabla.getRoot().getChildren().clear();
+            ModeloAerolinea.getChildren().clear();
+            try {FiltraPorNombreResponsable();} 
+            catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaAvionController.class.getName()).log(Level.SEVERE, null, ex);}
+        }
+         
+        if (cb_filtro.getValue().equals("Estado de Aerolinea")) {
+            tabla.getRoot().getChildren().clear();
+            ModeloAerolinea.getChildren().clear();
+            try {FiltraPorNombreResponsable();} 
+            catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaAvionController.class.getName()).log(Level.SEVERE, null, ex);}
+        }
+        
+       
     }
 
     AutenticationWebService Login= new AutenticationWebService();
@@ -93,10 +129,64 @@ public class AerolineaAvionController extends Controller implements Initializabl
     
     AuthenticationResponse authenticationResponse = FlowController.getInstance().authenticationResponse;
 
+    void CargarDatos() throws InterruptedException, ExecutionException, IOException{
+        List<AerolineaDTO> aerolineasModel = AerolineaWebService.getAllAerolineas(FlowController.getInstance().token);
+        for (int i = 0; i < aerolineasModel.toArray().length; i++)
+        {
+            if (aerolineasModel.get(i).getEstado().toString().equals("true"))
+                EstadoAerolinea = "Activo";
+            else EstadoAerolinea = "Inactivo";
+            aerolinea = new TreeItem<>(new Modelo(aerolineasModel.get(i).getNombreAerolinea(),
+                aerolineasModel.get(i).getId()+"", aerolineasModel.get(i).getNombreResponsable(),aerolineasModel.get(i).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+                aerolineasModel.get(i).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAerolinea,"-","-","-"));
 
-    void CargarDatosIniciales() throws InterruptedException, ExecutionException, IOException
-    {
-        List<AerolineaDTO> aerolineasModel = AerolineaWebService.getAllAerolineas(authenticationResponse.getJwt());
+            aero = new TreeItem<>(new Modelo("Aviones Matricula","-","-","-","-","-","-","-","-"));
+            aerolinea.getChildren().add(aero);
+
+            List<AvionDTO> aviones = AvionWebService.getAvionByAerolineaId(aerolineasModel.get(i).getId(),FlowController.getInstance().token);
+            for(int j = 0; j < aviones.toArray().length; j++){
+                if (aviones.get(j).getEstado().toString().equals("true"))
+                    EstadoAvion = "Activo";
+                else EstadoAvion = "Inactivo";
+                avion = new TreeItem<>(new Modelo(aviones.get(j).getMatricula(),aviones.get(j).getId()+"",
+                        "-",aviones.get(j).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+                        aviones.get(j).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,aviones.get(j).getTipoAvion()+"",aviones.get(j).getRecorrido()+"",aviones.get(j).getRecorridoMaximo()+""));
+                aero.getChildren().add(avion);
+
+            }
+            ModeloAerolinea.getChildren().add(aerolinea);
+        }
+    }
+    
+    void FiltraPorIdAerolinea() throws InterruptedException, ExecutionException, IOException{
+        long num = Long.parseLong(txt_buscar.getText());
+        AerolineaDTO aerolineasModel = AerolineaWebService.getAerolineaById(num,FlowController.getInstance().token);
+
+        if (aerolineasModel.getEstado().toString().equals("true"))
+            EstadoAerolinea = "Activo";
+        else EstadoAerolinea = "Inactivo";
+        aerolinea = new TreeItem<>(new Modelo(aerolineasModel.getNombreAerolinea(),
+            aerolineasModel.getId()+"", aerolineasModel.getNombreResponsable(),aerolineasModel.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+            aerolineasModel.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAerolinea,"-","-","-"));
+
+        aero = new TreeItem<>(new Modelo("Aviones Matricula","-","-","-","-","-","-","-","-"));
+        aerolinea.getChildren().add(aero);
+
+        List<AvionDTO> aviones = AvionWebService.getAvionByAerolineaId(aerolineasModel.getId(),FlowController.getInstance().token);
+        for(int j = 0; j < aviones.toArray().length; j++){
+            if (aviones.get(j).getEstado().toString().equals("true"))
+                EstadoAvion = "Activo";
+            else EstadoAvion = "Inactivo";
+            avion = new TreeItem<>(new Modelo(aviones.get(j).getMatricula(),aviones.get(j).getId()+"",
+                    "-",aviones.get(j).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+                    aviones.get(j).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,aviones.get(j).getTipoAvion()+"",aviones.get(j).getRecorrido()+"",aviones.get(j).getRecorridoMaximo()+""));
+            aero.getChildren().add(avion);
+        }
+        ModeloAerolinea.getChildren().add(aerolinea);
+    }
+     
+      void FiltraPorNombreAerolinea() throws InterruptedException, ExecutionException, IOException{
+        List<AerolineaDTO> aerolineasModel = AerolineaWebService.getAerolineaByNombreAerolinea(txt_buscar.getText(),FlowController.getInstance().token);
         for (int i = 0; i < aerolineasModel.toArray().length; i++)
         {
             if (aerolineasModel.get(i).getEstado().toString().equals("true"))
@@ -124,12 +214,84 @@ public class AerolineaAvionController extends Controller implements Initializabl
             ModeloAerolinea.getChildren().add(aerolinea);
         }
     }
+      
+      void FiltraPorNombreResponsable() throws InterruptedException, ExecutionException, IOException
+        {
+        List<AerolineaDTO> aerolineasModel = AerolineaWebService.getAerolineaByNombreResponsable(txt_buscar.getText(),FlowController.getInstance().token);
+        for (int i = 0; i < aerolineasModel.toArray().length; i++)
+        {
+            if (aerolineasModel.get(i).getEstado().toString().equals("true"))
+                EstadoAerolinea = "Activo";
+            else EstadoAerolinea = "Inactivo";
+            aerolinea = new TreeItem<>(new Modelo(aerolineasModel.get(i).getNombreAerolinea(),
+                    aerolineasModel.get(i).getId()+"", aerolineasModel.get(i).getNombreResponsable(),
+                    aerolineasModel.get(i).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),aerolineasModel.get(i).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAerolinea,"-","-","-"));
 
+            aero = new TreeItem<>(new Modelo("Aviones Matricula","-","-","-","-","-","-","-","-"));
+            aerolinea.getChildren().add(aero);
+
+            List<AvionDTO> aviones = AvionWebService.getAvionByAerolineaId(aerolineasModel.get(i).getId(),FlowController.getInstance().token);
+            for(int j = 0; j < aviones.toArray().length; j++){
+                if (aviones.get(j).getEstado().toString().equals("true"))
+                    EstadoAvion = "Activo";
+                else EstadoAvion = "Inactivo";
+                avion = new TreeItem<>(new Modelo(aviones.get(j).getMatricula(),aviones.get(j).getId()+"",
+                        "-",aviones.get(j).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+                        aviones.get(j).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,aviones.get(j).getTipoAvion()+"",aviones.get(j).getRecorrido()+"",aviones.get(j).getRecorridoMaximo()+""));
+                aero.getChildren().add(avion);
+
+            }
+
+            ModeloAerolinea.getChildren().add(aerolinea);
+        }
+    }
+      
+    void FiltraPorEstado() throws InterruptedException, ExecutionException, IOException
+    {
+    boolean estado= Boolean.getBoolean(txt_buscar.getText());
+    List<AerolineaDTO> aerolineasModel = AerolineaWebService.getAerolineaByEstado(estado,FlowController.getInstance().token);
+    for (int i = 0; i < aerolineasModel.toArray().length; i++)
+    {
+        if (aerolineasModel.get(i).getEstado().toString().equals("true"))
+            EstadoAerolinea = "Activo";
+        else EstadoAerolinea = "Inactivo";
+        aerolinea = new TreeItem<>(new Modelo(aerolineasModel.get(i).getNombreAerolinea(),
+                aerolineasModel.get(i).getId()+"", aerolineasModel.get(i).getNombreResponsable(),
+                aerolineasModel.get(i).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),aerolineasModel.get(i).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAerolinea,"-","-","-"));
+
+        aero = new TreeItem<>(new Modelo("Aviones Matricula","-","-","-","-","-","-","-","-"));
+        aerolinea.getChildren().add(aero);
+
+        List<AvionDTO> aviones = AvionWebService.getAvionByAerolineaId(aerolineasModel.get(i).getId(),FlowController.getInstance().token);
+        for(int j = 0; j < aviones.toArray().length; j++){
+            if (aviones.get(j).getEstado().toString().equals("true"))
+                EstadoAvion = "Activo";
+            else EstadoAvion = "Inactivo";
+            avion = new TreeItem<>(new Modelo(aviones.get(j).getMatricula(),aviones.get(j).getId()+"",
+                    "-",aviones.get(j).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+                    aviones.get(j).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,aviones.get(j).getTipoAvion()+"",aviones.get(j).getRecorrido()+"",aviones.get(j).getRecorridoMaximo()+""));
+            aero.getChildren().add(avion);
+
+        }
+
+        ModeloAerolinea.getChildren().add(aerolinea);
+    }
+    }
+     
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        cb_filtro.getItems().add("Todo");
+        cb_filtro.getItems().add("Id de Aerolinea");
+        cb_filtro.getItems().add("Nombre de Aerolinea");
+        cb_filtro.getItems().add("Nombre de Responsable");
+        cb_filtro.getItems().add("Estado de Aerolinea");
+        cb_filtro.getItems().add("Nombre de Aerolinea");
+        cb_filtro.getItems().add("Nombre de Responsable");
+        cb_filtro.getItems().add("Estado de Aerolinea");
+        
         try {
-            CargarDatosIniciales();
+            CargarDatos();
             tbc_Aerolinea.setCellValueFactory((TreeTableColumn.CellDataFeatures<Modelo, String> param) -> param.getValue().getValue().getAerolineaProperty());
             tbc_Id.setCellValueFactory((TreeTableColumn.CellDataFeatures<Modelo, String> param) -> param.getValue().getValue().getIdPropertyProperty());
             tbc_Encargado.setCellValueFactory((TreeTableColumn.CellDataFeatures<Modelo, String> param) -> param.getValue().getValue().getEncargadoProperty());
