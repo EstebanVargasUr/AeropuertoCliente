@@ -3,7 +3,6 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TreeTableColumn?>
@@ -44,7 +43,7 @@
             </VBox>
             <VBox prefHeight="526.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
                <children>
-                  <TreeTableView fx:id="tabla" prefHeight="813.0" prefWidth="1860.0">
+                  <TreeTableView fx:id="tabla" prefHeight="813.0" prefWidth="1860.0" VBox.vgrow="ALWAYS">
                     <columns>
                         <TreeTableColumn fx:id="tbc_Aerolinea" prefWidth="75.0" text="Aerolineas" />
                         <TreeTableColumn fx:id="tbc_Id" prefWidth="75.0" text="ID" />
@@ -67,33 +66,6 @@
             <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
          </VBox.margin>
       </VBox>
-      <HBox alignment="CENTER">
-         <VBox.margin>
-            <Insets bottom="30.0" left="30.0" right="30.0" />
-         </VBox.margin>
-         <children>
-            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-               <children>
-                  <JFXButton onMouseClicked="#volver" prefHeight="50.0" prefWidth="300.0" text="Volver" VBox.vgrow="ALWAYS">
-                     <styleClass>
-                        <String fx:value="jfx-buttonStandard1" />
-                        <String fx:value="label1" />
-                     </styleClass>
-                  </JFXButton>
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-               <children>
-                  <JFXButton onMouseClicked="#guardar" prefHeight="50.0" prefWidth="300.0" text="Guardar" VBox.vgrow="ALWAYS">
-                     <styleClass>
-                        <String fx:value="jfx-buttonStandard1" />
-                        <String fx:value="label1" />
-                     </styleClass>
-                  </JFXButton>
-               </children>
-            </VBox>
-         </children>
-      </HBox>
    </children>
    <stylesheets>
       <URL value="@../resources/WinStyle.css" />

@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.DTOs.HorarioDTO;
 import org.una.aeropuertocliente.WebService.HorarioWebService;
 import org.una.aeropuertocliente.utility.FlowController;
@@ -55,6 +56,7 @@ public class HorarioController extends Controller implements Initializable {
 
     
     ObservableList<HorarioC> DatosHorarios = FXCollections.observableArrayList();
+    AuthenticationResponse authenticationResponse = FlowController.getInstance().authenticationResponse;
     
     @Override
     public void initialize() {
@@ -142,7 +144,7 @@ public class HorarioController extends Controller implements Initializable {
         String EstadoHorario = "-";
         
         try {
-            horarios = HorarioWebService.getHorarioByUsuarioId(FlowController.getInstance().authenticationResponse.getUsuario().getId() ,FlowController.getInstance().token);
+            horarios = HorarioWebService.getHorarioByUsuarioId(authenticationResponse.getUsuario().getId() ,authenticationResponse.getJwt());
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);}
 
 
@@ -161,9 +163,6 @@ public class HorarioController extends Controller implements Initializable {
         tablaHorario.setItems(DatosHorarios);
     }
     
-   /* @FXML
-    private void tablaServiciosClic(MouseEvent event) {
-    }*/
     
     private String DeterminaDia(Short dia)
     {

@@ -43,7 +43,7 @@
                            </HBox.margin>
                         </DatePicker>
                         <DatePicker fx:id="datePFechaFinal" minWidth="-Infinity" prefWidth="0.0" promptText="Fecha final" visible="false" HBox.hgrow="ALWAYS" />
-                        <JFXComboBox fx:id="cb_filtro" onAction="#cb_filtroAction" promptText="&lt;&lt;Fitrar por&gt;&gt;" HBox.hgrow="ALWAYS">
+                        <JFXComboBox fx:id="cb_filtroEstado" promptText="&lt;&lt;Elija estado&gt;&gt;" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets right="10.0" />
                            </HBox.margin>

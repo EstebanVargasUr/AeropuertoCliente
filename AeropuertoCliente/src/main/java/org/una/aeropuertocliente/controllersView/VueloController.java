@@ -1,6 +1,5 @@
 package org.una.aeropuertocliente.controllersView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
@@ -12,8 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,12 +21,10 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import lombok.*;
 import org.una.aeropuertocliente.DTOs.VueloDTO;
-import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.VueloWebService;
 import org.una.aeropuertocliente.utility.FlowController;
 
@@ -254,9 +249,6 @@ public class VueloController extends Controller implements Initializable {
     private void guardar(MouseEvent event) {
     }
 
-    @FXML
-    private void btnBuscar(KeyEvent event) {
-    }
     
     @Data
     @AllArgsConstructor

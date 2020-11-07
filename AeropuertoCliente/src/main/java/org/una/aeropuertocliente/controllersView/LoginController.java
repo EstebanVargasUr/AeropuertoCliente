@@ -12,8 +12,9 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
-import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.WebService.AutenticationWebService;
+import org.una.aeropuertocliente.utility.FlowController;
+
 /**
  * FXML Controller class
  *
@@ -22,31 +23,30 @@ import org.una.aeropuertocliente.WebService.AutenticationWebService;
 public class LoginController extends Controller implements Initializable {
 
     @FXML
-    private JFXTextField txtCedula;
-    @FXML
     private VBox root;
     @FXML
+    private JFXTextField txtCedula;
+    @FXML
     private JFXPasswordField txtPassword;
-    
+
+    @Override
+    public void initialize() {
+        
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
-
-    @Override
-    public void initialize() {
-       
-    }
-
+    
     @Override
     public Node getRoot() {
-       return root;
-    }
+        return root;
+    }    
 
     @FXML
     private void btnIniciaSesion(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
-       
-       AuthenticationResponse authenticationResponse = AutenticationWebService.login(txtCedula.getText(), txtPassword.getText());
+         AuthenticationResponse authenticationResponse = AutenticationWebService.login(txtCedula.getText(), txtPassword.getText());
        
        if(authenticationResponse != null)
        {
@@ -81,7 +81,6 @@ public class LoginController extends Controller implements Initializable {
                 FlowController.getInstance().goViewTop("BarraNavegacion");
             }
        }
-       
     }
     
 }

@@ -18,7 +18,6 @@ import org.una.aeropuertocliente.WebService.AerolineaWebService;
 import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.utility.FlowController;
-
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
@@ -27,6 +26,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.input.KeyEvent;
+import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 
 public class AerolineaAvionController extends Controller implements Initializable {
 
@@ -77,16 +78,6 @@ public class AerolineaAvionController extends Controller implements Initializabl
 
     }
 
-    @FXML
-    void guardar(MouseEvent event) {
-
-    }
-
-    @FXML
-    void volver(MouseEvent event) {
-
-    }
-
     AutenticationWebService Login= new AutenticationWebService();
     TreeItem<Modelo> ModeloPrimAerolinea = new TreeItem<>(new Modelo("Aerolinea","-","-","-","-","-","-","-","-"));
     TreeItem<Modelo> ModeloAerolinea = new TreeItem<>(new Modelo("Aerolinea","-","-","-","-","-","-","-","-"));
@@ -99,11 +90,13 @@ public class AerolineaAvionController extends Controller implements Initializabl
 
     String EstadoAerolinea;
     String EstadoAvion;
+    
+    AuthenticationResponse authenticationResponse = FlowController.getInstance().authenticationResponse;
 
 
     void CargarDatosIniciales() throws InterruptedException, ExecutionException, IOException
     {
-        List<AerolineaDTO> aerolineasModel = AerolineaWebService.getAllAerolineas(FlowController.getInstance().token);
+        List<AerolineaDTO> aerolineasModel = AerolineaWebService.getAllAerolineas(authenticationResponse.getJwt());
         for (int i = 0; i < aerolineasModel.toArray().length; i++)
         {
             if (aerolineasModel.get(i).getEstado().toString().equals("true"))
@@ -116,7 +109,7 @@ public class AerolineaAvionController extends Controller implements Initializabl
             aero = new TreeItem<>(new Modelo("Aviones Matricula","-","-","-","-","-","-","-","-"));
             aerolinea.getChildren().add(aero);
 
-            List<AvionDTO> aviones = AvionWebService.getAvionByAerolineaId(aerolineasModel.get(i).getId(),FlowController.getInstance().token);
+            List<AvionDTO> aviones = AvionWebService.getAvionByAerolineaId(aerolineasModel.get(i).getId(),authenticationResponse.getJwt());
             for(int j = 0; j < aviones.toArray().length; j++){
                 if (aviones.get(j).getEstado().toString().equals("true"))
                     EstadoAvion = "Activo";
@@ -161,6 +154,10 @@ public class AerolineaAvionController extends Controller implements Initializabl
     @Override
     public Node getRoot() {
         return null;
+    }
+
+    @FXML
+    private void buscar(KeyEvent event) {
     }
 
     public class Modelo {
