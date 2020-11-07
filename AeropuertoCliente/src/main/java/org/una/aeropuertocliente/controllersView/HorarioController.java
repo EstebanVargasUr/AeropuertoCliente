@@ -107,7 +107,8 @@ public class HorarioController extends Controller implements Initializable {
         else
         {Estado = false;}
 
-        horarios = HorarioWebService.getHorarioByEstadoAndUsuario(Estado,FlowController.getInstance().authenticationResponse.getUsuario().getId(),FlowController.getInstance().token);
+        horarios = HorarioWebService.getHorarioByEstadoAndUsuario(Estado,FlowController.getInstance().
+                authenticationResponse.getUsuario().getId(),FlowController.getInstance().authenticationResponse.getJwt());
 
          for (int i = 0; i < horarios.toArray().length; i++) 
          {
@@ -115,7 +116,8 @@ public class HorarioController extends Controller implements Initializable {
              EstadoHorario = "Activo";
              else EstadoHorario = "Inactivo";
 
-             HorarioC horario1 = new HorarioC(DeterminaDia(horarios.get(i).getDiaEntrada()),DeterminaDia(horarios.get(i).getDiaEntrada()),horarios.get(i).getHoraEntrada().toString(),
+             HorarioC horario1 = new HorarioC(DeterminaDia(horarios.get(i).getDiaEntrada()),
+                     DeterminaDia(horarios.get(i).getDiaEntrada()),horarios.get(i).getHoraEntrada().toString(),
              horarios.get(i).getHoraSalida().toString(),EstadoHorario);
 
              DatosHorarios.add(horario1);

@@ -125,7 +125,7 @@ public class ServicioController extends Controller implements  Initializable {
     final ToggleGroup GrEstadoServicio = new ToggleGroup();
     final ToggleGroup GrEstadoCobro = new ToggleGroup();
             
-    String token = FlowController.getInstance().token;
+    String token;
     ServicioDTO ServicioSeleccionado = new ServicioDTO();
     boolean BotonGuardar = false;
     @Override
