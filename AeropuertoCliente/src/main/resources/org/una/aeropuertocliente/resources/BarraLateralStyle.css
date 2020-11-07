@@ -1,0 +1,76 @@
+
+.jfx-buttonRojo {
+    -fx-background-color: #E17A47;
+    -fx-background-radius: 75 0 0 75;
+    -fx-opacity: 1;
+    -fx-content-display: right;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-pref-width: 400px; 
+    -fx-pref-height: 100px;
+    
+}
+
+.jfx-buttonRojo :hover {
+    
+}
+
+.jfx-buttonRojo :pressed {
+    -fx-background-insets: 2 0 0 0,2 0 3 0,2 0 4 0,2 0 5 0;
+}
+
+.jfx-buttonAmarillo {
+    -fx-background-color: #EFC958;
+    -fx-background-radius: 75 0 0 75;
+    -fx-opacity: 1;
+    -fx-content-display: right;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-pref-width: 400px; 
+    -fx-pref-height: 100px;
+}
+
+.jfx-buttonAmarillo :hover {
+    
+}
+
+.jfx-buttonAmarillo :pressed {
+    -fx-background-insets: 2 0 0 0,2 0 3 0,2 0 4 0,2 0 5 0;
+}
+    
+.jfx-buttonAzul {
+    -fx-background-color: #4AB19D;
+    -fx-background-radius: 75 0 0 75;
+    -fx-opacity: 1;
+    -fx-content-display: right;
+    -fx-alignmentt: CENTER_RIGHT;
+    -fx-pref-width: 400px; 
+    -fx-pref-height: 100px;
+}
+
+.jfx-buttonAzul :hover {
+    
+}
+
+.jfx-buttonAzul :pressed {
+    -fx-background-insets: 2 0 0 0,2 0 3 0,2 0 4 0,2 0 5 0;
+}
+
+.hboxInterno {
+    -fx-padding: 0 0 0 0;
+    -fx-spacing: 0;
+    -fx-pref-width: 280px; 
+    -fx-pref-height: 100px;
+}
+
+.vboxLateral{
+    -fx-alignment: CENTER_RIGHT;
+    -fx-spacing: 45px;
+    -fx-pref-width: 450px; 
+    -fx-pref-height: 800px;
+}
+
+.label {
+    -fx-font-size: 23px;
+    -fx-text-fill: #323232;
+    -fx-font-weight: 700;
+    -fx-font-family: dubai;
+}
