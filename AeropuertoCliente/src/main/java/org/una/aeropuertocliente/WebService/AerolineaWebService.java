@@ -37,76 +37,60 @@ public class AerolineaWebService {
         return aerolineas;
     }
 
-    public static void getAerolineaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static AerolineaDTO getAerolineaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
+        AerolineaDTO bean=new AerolineaDTO();
 
         if(response.get().statusCode() == 500)
             System.out.println("Aerolinea No Encontrada");
 
         else
         {
-            AerolineaDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
+            bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
             System.out.println(bean);
         }
         response.join();
+        return bean;
     }
     
-    public static void getAerolineaByNombreAerolinea(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AerolineaDTO> getAerolineaByNombreAerolinea(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreAerolinea/"+nombre))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Aerolinea No Encontrada");
-
-        else
-        {
-            AerolineaDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
-            System.out.println(bean);
-        }
+        List<AerolineaDTO> aerolineas = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AerolineaDTO>>() {});
+        aerolineas.forEach(System.out::println);
         response.join();
+        return aerolineas;
     }
     
-    public static void getAerolineaByNombreResponsable(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AerolineaDTO> getAerolineaByNombreResponsable(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreResponsable/"+nombre))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Aerolinea No Encontrada");
-
-        else
-        {
-            List<AerolineaDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AerolineaDTO>>() {});
-            beans.forEach(System.out::println);
-        }
+        List<AerolineaDTO> aerolineas = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AerolineaDTO>>() {});
+        aerolineas.forEach(System.out::println);
         response.join();
+        return aerolineas;
     }
 
-    public static void getAerolineaByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AerolineaDTO> getAerolineaByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado))
-        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Aerolinea No Encontrada");
-
-        else
-        {
-            List<AerolineaDTO> aerolineas = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AerolineaDTO>>() {});
-            aerolineas.forEach(System.out::println);
-        }
+        List<AerolineaDTO> aerolineas = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AerolineaDTO>>() {});
+        aerolineas.forEach(System.out::println);
         response.join();
+        return aerolineas;
     }
 
     public static void createAerolinea(String nombreAerolinea, String nombreResponsable, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
