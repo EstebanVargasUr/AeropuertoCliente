@@ -9,7 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import org.una.aeropuertocliente.controllersView.Controller;
+import org.una.aeropuertocliente.utility.FlowController;
 
 /**
  * FXML Controller class
@@ -47,7 +47,7 @@ public class MenuAdministradorController extends Controller implements Initializ
     }
 
     @FXML
-    private void modoDesarrollo(MouseEvent event) {
+    private void modoDesarrollo(MouseEvent event) {   
     }
 
     @FXML
@@ -60,6 +60,7 @@ public class MenuAdministradorController extends Controller implements Initializ
 
     @FXML
     private void horario(MouseEvent event) {
+        FlowController.getInstance().goView("Horario");
     }
     
 }

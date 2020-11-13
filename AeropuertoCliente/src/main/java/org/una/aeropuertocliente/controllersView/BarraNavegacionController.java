@@ -1,6 +1,7 @@
 package org.una.aeropuertocliente.controllersView;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
+import org.una.aeropuertocliente.DTOs.UsuarioAreaTrabajoDTO;
 import org.una.aeropuertocliente.utility.FlowController;
 
 /**
@@ -28,15 +30,24 @@ public class BarraNavegacionController extends Controller implements Initializab
     @FXML
     private Label lbl_usuario;
 
-    AuthenticationResponse authenticationResponse = FlowController.getInstance().authenticationResponse;
+    private AuthenticationResponse authenticationResponse;
+    private String AreaTrabajo;
+    private List<UsuarioAreaTrabajoDTO> usuarioAreaTrabajo;
+    
     @Override
     public void initialize() {
 
         root.setVisible(true);
         root.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
+        authenticationResponse = FlowController.getInstance().authenticationResponse;
+        usuarioAreaTrabajo = FlowController.getInstance().areaTrabajo;
         
         lbl_usuario.setText(authenticationResponse.getUsuario().getNombreCompleto());
         lbl_rol.setText(authenticationResponse.getRoles().getNombre());
+        for (UsuarioAreaTrabajoDTO usuarioTrabajo : usuarioAreaTrabajo) 
+            AreaTrabajo = usuarioTrabajo.getAreaTrabajo().getNombreArea()+"  ";   
+        
+        lbl_areaTrabajo.setText(AreaTrabajo);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -13,11 +14,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
+import org.una.aeropuertocliente.DTOs.UsuarioAreaTrabajoDTO;
 import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.UsuarioWebService;
 import org.una.aeropuertocliente.utility.FlowController;
@@ -52,8 +53,10 @@ public class PerfilUsuarioController extends Controller implements Initializable
     @FXML
     private JFXButton btn_operacion;
     
-    AuthenticationResponse authenticationResponse;
-            
+    private String AreaTrabajo = "Sin Asignar";
+    private AuthenticationResponse authenticationResponse;
+    private List<UsuarioAreaTrabajoDTO> usuarioAreaTrabajo;
+           
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -66,12 +69,19 @@ public class PerfilUsuarioController extends Controller implements Initializable
         hb_password.setPrefSize(0,0);
         btn_operacion.setText("Modificar");
         authenticationResponse = FlowController.getInstance().authenticationResponse;
-        
+        usuarioAreaTrabajo = FlowController.getInstance().areaTrabajo;
+  
         lbl_cedula.setText(authenticationResponse.getUsuario().getCedula());
         lbl_nombre.setText(authenticationResponse.getUsuario().getNombreCompleto());
+        lbl_rol.setText(authenticationResponse.getRoles().getNombre());
+        lbl_telefono.setText(authenticationResponse.getUsuario().getTelefono());
         if(authenticationResponse.getUsuario().getUsuarioJefe() != null)
             lbl_jefe.setText(authenticationResponse.getUsuario().getUsuarioJefe().getNombreCompleto());
-        lbl_rol.setText(authenticationResponse.getRoles().getNombre());
+        for (int i = 0; i < usuarioAreaTrabajo.toArray().length; i++) {
+            if(usuarioAreaTrabajo.get(i).getAreaTrabajo() != null)
+                AreaTrabajo = usuarioAreaTrabajo.get(i).getAreaTrabajo().getNombreArea()+"  ";   
+        }
+        lbl_areaTrabajo.setText(AreaTrabajo);
     }
 
     @Override
@@ -82,10 +92,6 @@ public class PerfilUsuarioController extends Controller implements Initializable
     @FXML
     private void volver(MouseEvent event) {
         elegirVentana();
-    }
-
-    @FXML
-    private void operacion(KeyEvent event) {
     }
 
     @FXML

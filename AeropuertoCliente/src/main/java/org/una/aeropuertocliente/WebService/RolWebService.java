@@ -26,7 +26,7 @@ public class RolWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/roles";
     
-    public static void getAllRoles(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public List<RolDTO> getAllRoles(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -35,9 +35,10 @@ public class RolWebService {
         List<RolDTO> roles = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<RolDTO>>() {});
         roles.forEach(System.out::println);
         response.join();
+        return roles;
     }
 
-    public static void getRolById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static RolDTO getRolById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -51,11 +52,13 @@ public class RolWebService {
         {
             RolDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), RolDTO.class);
             System.out.println(bean);
+            return bean;
         }
         response.join();
+        return null;
     }
     
-    public static void getRolByNombre(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<RolDTO> getRolByNombre(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -67,13 +70,15 @@ public class RolWebService {
 
         else
         {
-            RolDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), RolDTO.class);
-            System.out.println(bean);
+            List<RolDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<RolDTO>>() {});
+            beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
     
-    public static void getRolByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<RolDTO> getRolByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -87,11 +92,13 @@ public class RolWebService {
         {
              List<RolDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<RolDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
 
-    public static void getRolByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<RolDTO> getRolByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -105,8 +112,10 @@ public class RolWebService {
         {
              List<RolDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<RolDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
     
     public static void createRol(String tipo, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException

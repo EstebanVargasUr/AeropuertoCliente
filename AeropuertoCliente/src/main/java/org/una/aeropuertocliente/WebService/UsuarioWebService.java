@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.una.aeropuertocliente.DTOs.RolDTO;
@@ -28,7 +30,7 @@ public class UsuarioWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/usuarios";
     
-    public static void getAllUsuarios(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static List<UsuarioDTO> getAllUsuarios(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -37,9 +39,10 @@ public class UsuarioWebService {
         List<UsuarioDTO> usuarios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
         usuarios.forEach(System.out::println);
         response.join();
+        return usuarios;
     }
 
-    public static void getUsuarioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static UsuarioDTO getUsuarioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -53,11 +56,12 @@ public class UsuarioWebService {
         {
             UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
             System.out.println(bean);
+            return bean;
         }
-        response.join();
+        return null;
     }
     
-    public static void getUsuarioByCedulaAproximate(String cedula, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<UsuarioDTO> getUsuarioByCedulaAproximate(String cedula, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByCedula/"+cedula))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -71,13 +75,15 @@ public class UsuarioWebService {
         {
             List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
-       response.join();
+       return null;
     }
 
-    public static void getUsuarioByNombreCompletoAproximateIgnoreCase(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<UsuarioDTO> getUsuarioByNombreCompletoAproximateIgnoreCase(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombre))
+        String nombreAdaptado = URLEncoder.encode(nombre, "UTF-8");
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombre/"+nombreAdaptado))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
@@ -89,11 +95,12 @@ public class UsuarioWebService {
         {
             List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
-        response.join();
+        return null;
     }
     
-    public static void getUsuarioByUsuarioJefeId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<UsuarioDTO> getUsuarioByUsuarioJefeId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioJefeId/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -107,13 +114,18 @@ public class UsuarioWebService {
         {
             List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
-        response.join();
+        return null;
     }
     
-    public static void getUsuarioByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<UsuarioDTO> getUsuarioByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+stringDate+"/"+stringDate2))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
@@ -125,20 +137,13 @@ public class UsuarioWebService {
         {
             List<UsuarioDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<UsuarioDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
-        response.join();
+        return null;
     }
     
-    public static void createUsuario(String cedula, String nombreCompleto, String passwordEnciptado, RolDTO rolId, UsuarioDTO usuario, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createUsuario(UsuarioDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
-        UsuarioDTO bean = new UsuarioDTO();
-        
-        bean.setCedula(cedula);
-        bean.setNombreCompleto(nombreCompleto);
-        bean.setPasswordEncriptado(passwordEnciptado);
-        bean.setRol(rolId);
-        bean.setUsuarioJefe(usuario);
-
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)

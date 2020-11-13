@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.WebService.AutenticationWebService;
+import org.una.aeropuertocliente.WebService.UsuarioAreaTrabajoWebService;
 import org.una.aeropuertocliente.utility.FlowController;
 
 /**
@@ -50,36 +51,36 @@ public class LoginController extends Controller implements Initializable {
        
        if(authenticationResponse != null)
        {
-            if(authenticationResponse.getRoles().getNombre().equals("Gestor")){
-                FlowController.getInstance().authenticationResponse = authenticationResponse;
-                FlowController.getInstance().goView("MenuGestor");
-                FlowController.getInstance().goViewTop("BarraNavegacion");
-                
-            }
-
-            else if(authenticationResponse.getRoles().getNombre().equals("Gerente")){
-                FlowController.getInstance().authenticationResponse = authenticationResponse;
-                FlowController.getInstance().goView("MenuGerente");
-                FlowController.getInstance().goViewTop("BarraNavegacion");
-            }
-
-            else if(authenticationResponse.getRoles().getNombre().equals("Administrador")){
-                FlowController.getInstance().authenticationResponse = authenticationResponse;
-                FlowController.getInstance().goView("MenuAdministrador");
-                FlowController.getInstance().goViewTop("BarraNavegacion");
-            }
-
-            else if(authenticationResponse.getRoles().getNombre().equals("Auditor")){
-                FlowController.getInstance().authenticationResponse = authenticationResponse;
-                FlowController.getInstance().goView("MenuAuditor");
-                FlowController.getInstance().goViewTop("BarraNavegacion");
-            }
-
-            else{
-                FlowController.getInstance().authenticationResponse = authenticationResponse;
-                FlowController.getInstance().goView("MenuEmpleado");
-                FlowController.getInstance().goViewTop("BarraNavegacion");
-            }
+           FlowController.getInstance().areaTrabajo = UsuarioAreaTrabajoWebService.getUsuarioAreaTrabajoByUsuarioId
+            (authenticationResponse.getUsuario().getId(), authenticationResponse.getJwt());
+           FlowController.getInstance().authenticationResponse = authenticationResponse;
+           
+           switch (authenticationResponse.getRoles().getNombre()){
+               case "Gestor":
+                   FlowController.getInstance().goView("MenuGestor");
+                   FlowController.getInstance().goViewTop("BarraNavegacion");
+                   break;
+                        case "Gerente":
+                            FlowController.getInstance().goView("MenuGerente");
+                            FlowController.getInstance().goViewTop("BarraNavegacion");
+                            break;
+                        
+                            case "Administrador":
+                                FlowController.getInstance().goView("MenuAdministrador");
+                                FlowController.getInstance().goViewTop("BarraNavegacion");
+                                break;
+                   
+                                case "Auditor":
+                                    FlowController.getInstance().goView("MenuAuditor");
+                                    FlowController.getInstance().goViewTop("BarraNavegacion");
+                                    break;
+                   
+                                    default :
+                                        FlowController.getInstance().goView("MenuEmpleado");
+                                        FlowController.getInstance().goViewTop("BarraNavegacion");
+                                        break;
+           }
+            
        }
     }
     

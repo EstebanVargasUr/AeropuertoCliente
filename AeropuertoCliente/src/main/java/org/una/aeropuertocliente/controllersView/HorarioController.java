@@ -26,6 +26,7 @@ import lombok.ToString;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.DTOs.HorarioDTO;
 import org.una.aeropuertocliente.WebService.HorarioWebService;
+import org.una.aeropuertocliente.controllersView.UsuarioController.UsuarioC;
 import org.una.aeropuertocliente.utility.FlowController;
 
 /**
@@ -57,6 +58,7 @@ public class HorarioController extends Controller implements Initializable {
     
     ObservableList<HorarioC> DatosHorarios = FXCollections.observableArrayList();
     AuthenticationResponse authenticationResponse = FlowController.getInstance().authenticationResponse;
+    public static UsuarioC usuarioActual;
     
     @Override
     public void initialize() {
@@ -146,7 +148,11 @@ public class HorarioController extends Controller implements Initializable {
         String EstadoHorario = "-";
         
         try {
-            horarios = HorarioWebService.getHorarioByUsuarioId(authenticationResponse.getUsuario().getId() ,authenticationResponse.getJwt());
+            if(usuarioActual == null)
+                horarios = HorarioWebService.getHorarioByUsuarioId(authenticationResponse.getUsuario().getId() ,authenticationResponse.getJwt());
+            else
+               horarios = HorarioWebService.getHorarioByUsuarioId(usuarioActual.getId() ,authenticationResponse.getJwt()); 
+            
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(HorarioController.class.getName()).log(Level.SEVERE, null, ex);}
 
 

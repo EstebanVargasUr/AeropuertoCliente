@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -25,7 +27,7 @@ public class AreaTrabajoWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/areasTrabajo";
     
-    public static void getAllAreasTrabajo(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static List<AreaTrabajoDTO> getAllAreasTrabajo(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -34,9 +36,10 @@ public class AreaTrabajoWebService {
         List<AreaTrabajoDTO> areasTrabajo = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoDTO>>() {});
         areasTrabajo.forEach(System.out::println);
         response.join();
+        return areasTrabajo;
     }
 
-    public static void getAreaTrabajoById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static AreaTrabajoDTO getAreaTrabajoById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -50,13 +53,16 @@ public class AreaTrabajoWebService {
         {
             AreaTrabajoDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AreaTrabajoDTO.class);
             System.out.println(bean);
+            return bean;
         }
         response.join();
+        return null;
     }
     
-    public static void getAreaTrabajoByNombreArea(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AreaTrabajoDTO> getAreaTrabajoByNombreArea(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreArea/"+nombre))
+        String nombreAdaptado = URLEncoder.encode(nombre, "UTF-8");
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreArea/"+nombreAdaptado))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
@@ -66,28 +72,33 @@ public class AreaTrabajoWebService {
 
         else
         {
-            AreaTrabajoDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AreaTrabajoDTO.class);
-            System.out.println(bean);
-        }
-        response.join();
-    }
-    
-    public static void getAreaTrabajoByNombreResponsable(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
-    {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreResponsable/"+nombre))
-        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
-        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
-        response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Area de Trabajo No Encontrada");
-
-        else
-        {
-             List<AreaTrabajoDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoDTO>>() {});
+            List<AreaTrabajoDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
+    }
+    
+    public static List<AreaTrabajoDTO> getAreaTrabajoByNombreResponsable(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        String restUrl = URLDecoder.decode(nombre, "UTF-8");
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreResponsable/"+restUrl))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Area de Trabajo No Encontrada");
+
+        else
+        {
+            List<AreaTrabajoDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoDTO>>() {});
+            beans.forEach(System.out::println);
+            return beans;
+        }
+        response.join();
+        return null;
     }
 
     public static void createAerolinea(String nombreArea, String nombreResponsable, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
