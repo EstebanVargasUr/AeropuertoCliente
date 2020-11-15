@@ -441,7 +441,7 @@ public class ServicioController extends Controller implements  Initializable {
             ServicioSeleccionado.setAvion(AvionWebService.getAvionById(Id, token));
         }
         else
-        {ServicioSeleccionado.setAvion(AvionWebService.getAvionByMatricula(txt_avion.getText(), token));}
+        {ServicioSeleccionado.setAvion(AvionWebService.getAvionByMatricula(txt_avion.getText(), token).get(0));}
         
         
         if (BotonGuardar == true) 

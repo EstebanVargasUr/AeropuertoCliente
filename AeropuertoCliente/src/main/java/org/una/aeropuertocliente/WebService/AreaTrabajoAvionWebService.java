@@ -28,7 +28,7 @@ public class AreaTrabajoAvionWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/areasTrabajoAviones";
     
-    public static void getAreaTrabajoAvionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static AreaTrabajoAvionDTO getAreaTrabajoAvionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -42,11 +42,13 @@ public class AreaTrabajoAvionWebService {
         {
             AreaTrabajoAvionDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AreaTrabajoAvionDTO.class);
             System.out.println(bean);
+            return bean;
         }
         response.join();
+        return null;
     }
     
-    public static void getAreaTrabajoAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AreaTrabajoAvionDTO> getAreaTrabajoAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -60,10 +62,49 @@ public class AreaTrabajoAvionWebService {
         {
             List<AreaTrabajoAvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoAvionDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
 
+    public static AreaTrabajoAvionDTO getAreaTrabajoAvionByAvionId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAvionId/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Avion No Encontrado");
+
+        else
+        {
+            AreaTrabajoAvionDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), AreaTrabajoAvionDTO.class);
+            System.out.println(bean);
+            return bean;
+        }
+        return null;
+    }
+    
+    public static List<AreaTrabajoAvionDTO> getAreaTrabajoAvionByAreaTrabajoId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAreaTrabajoId/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Avion No Encontrado");
+
+        else
+        {
+            List<AreaTrabajoAvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoAvionDTO>>() {});
+            beans.forEach(System.out::println);
+            return beans;
+        }
+        return null;
+    }
 
     public static void createAreaTrabajoAvion(AreaTrabajoDTO areaTrabajo, AvionDTO avion, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
@@ -81,8 +122,12 @@ public class AreaTrabajoAvionWebService {
 
     }
 
-    public static void updateAreaTrabajoAvion(AreaTrabajoAvionDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static void updateAreaTrabajoAvion(AreaTrabajoDTO areaTrabajo,AvionDTO avion, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        AreaTrabajoAvionDTO bean = new AreaTrabajoAvionDTO();
+        
+        bean.setAreaTrabajo(areaTrabajo);
+        bean.setAvion(avion);
         String inputJson=JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)

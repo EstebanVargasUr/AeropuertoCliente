@@ -81,7 +81,7 @@ public class AerolineaWebService {
         return aerolineas;
     }
 
-    public static List<AerolineaDTO> getAerolineaByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AerolineaDTO> getAerolineaByEstado(Boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado))
          .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -93,13 +93,8 @@ public class AerolineaWebService {
         return aerolineas;
     }
 
-    public static void createAerolinea(String nombreAerolinea, String nombreResponsable, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createAerolinea(AerolineaDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
-        AerolineaDTO bean = new AerolineaDTO();
-        
-        bean.setNombreAerolinea(nombreAerolinea);
-        bean.setNombreResponsable(nombreResponsable);
-
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)

@@ -14,8 +14,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.una.aeropuertocliente.DTOs.AerolineaDTO;
 import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -27,7 +27,7 @@ public class AvionWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/aviones";
     
-    public static void getAllAviones(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
+    public static List<AvionDTO> getAllAviones(String finalToken) throws InterruptedException, ExecutionException, JsonParseException, JsonMappingException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findAll"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -36,6 +36,7 @@ public class AvionWebService {
         List<AvionDTO> aviones = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
         aviones.forEach(System.out::println);
         response.join();
+        return aviones;
     }
 
     public static AvionDTO getAvionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
@@ -58,9 +59,8 @@ public class AvionWebService {
         return bean;
     }
     
-    public static AvionDTO getAvionByMatricula(String matricula, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AvionDTO> getAvionByMatricula(String matricula, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        AvionDTO bean = null;
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByMatricula/"+matricula))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -71,14 +71,15 @@ public class AvionWebService {
 
         else
         {
-            bean = JSONUtils.covertFromJsonToObject(response.get().body(), AvionDTO.class);
-            System.out.println(bean);
+            List<AvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
+            beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
-        return bean;
+        return null;
     }
     
-    public static void getAvionByTipoAvion(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AvionDTO> getAvionByTipoAvion(String id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByTipoAvion/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -92,13 +93,19 @@ public class AvionWebService {
         {
             List<AvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
 
-    public static void getAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AvionDTO> getAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+stringDate+"/"+stringDate2))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
@@ -110,11 +117,13 @@ public class AvionWebService {
         {
             List<AvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
     
-    public static void getAvionByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AvionDTO> getAvionByEstado(Boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -128,11 +137,13 @@ public class AvionWebService {
         {
             List<AvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AvionDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
     
-    public static List<AvionDTO> getAvionByAerolineaId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<AvionDTO> getAvionByAerolineaId(String id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByAerolinea/"+id))
                 .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -144,14 +155,8 @@ public class AvionWebService {
         return aviones;
     }
 
-    public static void createAvion(String matricula, String tipoAvion, AerolineaDTO aerolinea, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createAvion(AvionDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
-        AvionDTO bean = new AvionDTO();
-        
-        bean.setMatricula(matricula);
-        bean.setTipoAvion(tipoAvion);
-        bean.setAerolinea(aerolinea);
-        
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)
