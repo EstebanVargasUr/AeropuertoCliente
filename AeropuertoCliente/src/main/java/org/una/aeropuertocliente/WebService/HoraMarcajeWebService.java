@@ -80,14 +80,36 @@ public class HoraMarcajeWebService {
         response.join();
     }
     
-    public static void createHoraMarcaje(Date horaEntrada, Date horaSalida, UsuarioDTO usuario, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static HoraMarcajeDTO getUltimaHoraMarcajeByUsuarioId(long idUsuario, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HoraMarcajeDTO bean = new HoraMarcajeDTO();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findUltimaHoraMarcajeByUsuarioId/"+idUsuario))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Hora de Marcaje No Encontrada");
+
+        else
+        {
+            if (response.get().body().isBlank()) 
+            {
+                System.out.println("NO TIENE HORAS DE MARCAJE");
+            }
+            else
+            {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), HoraMarcajeDTO.class);
+                System.out.println(bean);
+            } 
+        }
         
-        bean.setHoraEntrada(horaEntrada);
-        bean.setHoraSalida(horaSalida);
-        bean.setUsuario(usuario);
-        
+        response.join();
+        return bean;
+    }
+    
+    public static void createHoraMarcaje(HoraMarcajeDTO bean, UsuarioDTO usuario, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    {       
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)

@@ -1,16 +1,28 @@
 package org.una.aeropuertocliente.controllersView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jfoenix.controls.JFXButton;
+import java.io.IOException;
 import java.net.URL;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
+import org.una.aeropuertocliente.DTOs.UsuarioDTO;
+import org.una.aeropuertocliente.WebService.HoraMarcajeWebService;
 import org.una.aeropuertocliente.utility.FlowController;
 
 /**
@@ -25,7 +37,12 @@ public class MenuAdministradorController extends Controller implements Initializ
     @FXML private JFXButton btnDesarrollo;
     @FXML private Label lbl_ultimaHora;
     @FXML private ImageView cargando;
+    @FXML
+    private Label lbl_ultimaHora2;
 
+    UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
+    String token = FlowController.getInstance().authenticationResponse.getJwt();
+    
     @Override
     public void initialize() {
         
@@ -34,6 +51,7 @@ public class MenuAdministradorController extends Controller implements Initializ
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ModificarFormaCargando();
+        CargaLogicaMenuAdministrador();
     }    
     
     @Override
@@ -55,13 +73,84 @@ public class MenuAdministradorController extends Controller implements Initializ
     @FXML
     private void modoDesarrollo(MouseEvent event) {   
     }
+    
+    private void CargaLogicaMenuAdministrador(){
+        Thread t = new Thread(new Runnable(){
+        public void run(){
+            cargando.setVisible(true);
+            root.setDisable(true);
+            
+            CargaGrafica();
+            
+            cargando.setVisible(false);
+            root.setDisable(false);
+        }
+        });
+        t.start();
+    }
+    private void CargaGrafica(){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
+            
+        try {
+            
+            MostrarUltimaHoraMarcaje();
+            
+        } catch (InterruptedException | ExecutionException | IOException ex) {
+            Logger.getLogger(MenuGestorController.class.getName()).log(Level.SEVERE, null, ex);
+        }     
+       }
+       });
+    }
+
 
     @FXML
-    private void marcarEntrada(MouseEvent event) {
+    private void marcarEntrada(MouseEvent event) throws InterruptedException, ExecutionException, JsonProcessingException, IOException 
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Información");
+        
+        HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
+        UltimaHoraMarcaje = HoraMarcajeWebService.getUltimaHoraMarcajeByUsuarioId(usuario.getId(), token);
+        
+        if (UltimaHoraMarcaje.getHoraEntrada() == null || UltimaHoraMarcaje.getHoraEntrada() != null && UltimaHoraMarcaje.getHoraSalida()!= null) 
+        {
+            HoraMarcajeDTO horaMarcaje = new HoraMarcajeDTO();
+            horaMarcaje.setUsuario(usuario);
+            HoraMarcajeWebService.createHoraMarcaje(horaMarcaje, usuario, token);
+        }
+        else
+        {
+           
+            alert.setContentText("YA SE MARCÓ HORA DE ENTRADA");
+            alert.showAndWait();
+        }
+        
+        MostrarUltimaHoraMarcaje();
     }
 
     @FXML
-    private void marcarSalida(MouseEvent event) {
+    private void marcarSalida(MouseEvent event) throws InterruptedException, ExecutionException, IOException 
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Información");
+         
+        HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
+        UltimaHoraMarcaje = HoraMarcajeWebService.getUltimaHoraMarcajeByUsuarioId(usuario.getId(), token);
+        
+        if (UltimaHoraMarcaje.getHoraEntrada() != null && UltimaHoraMarcaje.getHoraSalida() == null) 
+        {
+            HoraMarcajeWebService.updateHoraMarcaje(UltimaHoraMarcaje, UltimaHoraMarcaje.getId(), token);
+        }
+        else
+        {
+            alert.setContentText("YA SE MARCÓ HORA DE SALIDA");
+            alert.showAndWait(); 
+        } 
+        
+        MostrarUltimaHoraMarcaje();
     }
 
     @FXML
@@ -69,4 +158,21 @@ public class MenuAdministradorController extends Controller implements Initializ
         FlowController.getInstance().goView("Horario");
     }
     
+    private void MostrarUltimaHoraMarcaje( ) throws InterruptedException, ExecutionException, IOException
+    {
+        HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
+        UltimaHoraMarcaje = HoraMarcajeWebService.getUltimaHoraMarcajeByUsuarioId(usuario.getId(), token);
+            
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm:ss");
+        lbl_ultimaHora.setText("Entrada: " + UltimaHoraMarcaje.getHoraEntrada().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+        
+        if (UltimaHoraMarcaje.getHoraSalida() == null) 
+        {
+            lbl_ultimaHora2.setText("Salida: sin registrar");
+        }
+        else
+        {
+            lbl_ultimaHora2.setText("Salida: " + UltimaHoraMarcaje.getHoraSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+        }
+    }
 }

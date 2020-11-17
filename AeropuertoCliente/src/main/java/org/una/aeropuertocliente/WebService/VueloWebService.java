@@ -114,15 +114,8 @@ public class VueloWebService {
         return vuelos;
     }
 
-    public static void createVuelo(Float duracion, String aeropuerto, Long distancia, AvionDTO avionId, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createVuelo(VueloDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
-        VueloDTO bean = new VueloDTO();
-        
-        bean.setDuracion(duracion);
-        bean.setAeropuerto(aeropuerto);
-        bean.setDistancia(distancia);
-        bean.setAvion(avionId);
-
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)

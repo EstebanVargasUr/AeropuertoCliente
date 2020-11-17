@@ -150,8 +150,9 @@
                         </VBox>
                         <VBox alignment="TOP_CENTER" maxHeight="160.0" maxWidth="300.0" spacing="20.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label styleClass="LabelTitulo2" text="Última Hora Marcaje" />
-                              <Label fx:id="lbl_ultimaHora" styleClass="LabelTitulo2" text="-" />
+                              <Label styleClass="LabelTitulo2" text="Último Marcaje" />
+                              <Label fx:id="lbl_ultimaHora" styleClass="label3" text="-" />
+                              <Label fx:id="lbl_ultimaHora2" styleClass="label3" text="-" />
                            </children>
                            <HBox.margin>
                               <Insets bottom="30.0" />

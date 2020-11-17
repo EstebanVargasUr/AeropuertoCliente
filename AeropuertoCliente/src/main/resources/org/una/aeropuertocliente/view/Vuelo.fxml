@@ -18,7 +18,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.VueloController">
    <children>
       <VBox alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" styleClass="Pane">
@@ -48,7 +47,7 @@
                                  </HBox.margin>
                               </DatePicker>
                               <DatePicker fx:id="datePFechaFinal" minWidth="-Infinity" prefWidth="0.0" promptText="Fecha final" visible="false" HBox.hgrow="ALWAYS" />
-                              <JFXComboBox fx:id="cb_filtroEstado" promptText="&lt;&lt;Elija estado&gt;&gt;" HBox.hgrow="ALWAYS">
+                              <JFXComboBox fx:id="cb_filtroEstado" minWidth="-Infinity" prefWidth="0.0" promptText="Elija estado" visible="false" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>
@@ -71,6 +70,15 @@
                                  </graphic>
                                  <HBox.margin>
                                     <Insets right="40.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton onMouseClicked="#modificar" prefHeight="40.0" prefWidth="115.0" text="Modificar">
+                                 <styleClass>
+                                    <String fx:value="jfx-buttonStandard1" />
+                                    <String fx:value="label1" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets right="20.0" />
                                  </HBox.margin>
                               </JFXButton>
                               <JFXButton onMouseClicked="#nuevo" prefHeight="40.0" prefWidth="94.0" text="Nuevo">
@@ -128,8 +136,12 @@
                      <children>
                         <Label styleClass="label2" text="Fecha Salida:" />
                         <DatePicker fx:id="dpk_fechaSalida" promptText="Seleccione una fecha" />
+                        <Label styleClass="label2" text="Hora Salida:" />
+                        <JFXTextField fx:id="txt_horaSalida" prefHeight="30.0" prefWidth="110.0" promptText="Formato: HH:mm:ss" />
                         <Label styleClass="label2" text="Fecha Llegada:" />
                         <DatePicker fx:id="dpk_fechaLlegada" promptText="Seleccione una fecha" />
+                        <Label styleClass="label2" text="Hora Llegada:" />
+                        <JFXTextField fx:id="txt_horaLlegada" prefHeight="30.0" prefWidth="110.0" promptText="Formato: HH:mm:ss" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">

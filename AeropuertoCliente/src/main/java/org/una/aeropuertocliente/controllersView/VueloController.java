@@ -4,9 +4,12 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -31,6 +34,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import lombok.*;
 import org.una.aeropuertocliente.DTOs.VueloDTO;
+import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.WebService.VueloWebService;
 import org.una.aeropuertocliente.utility.FlowController;
 
@@ -58,17 +62,22 @@ public class VueloController extends Controller implements Initializable {
     @FXML private TableColumn<VueloC, String> tbc_estado;
     @FXML private VBox vb_barraInferior;
     @FXML private JFXTextField txt_destino;
-    @FXML private JFXComboBox<?> cb_buscarAvion;
+    @FXML private JFXComboBox<String> cb_buscarAvion;
     @FXML private JFXTextField txt_avion;
     @FXML private DatePicker dpk_fechaSalida;
     @FXML private DatePicker dpk_fechaLlegada;
     @FXML private JFXTextField txt_distancia;
     @FXML private JFXTextField txt_duracion;
     @FXML private ImageView cargando;
+    @FXML private JFXTextField txt_horaSalida;
+    @FXML private JFXTextField txt_horaLlegada;
     
     private String token, EstadoVuelo;
     private ObservableList<VueloC> DatosServicios;
     private List<VueloDTO> vuelo;
+    
+    VueloDTO VueloSeleccionado = new VueloDTO();
+    boolean BotonGuardar = false;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -123,7 +132,10 @@ public class VueloController extends Controller implements Initializable {
         cb_filtro.getItems().add("Id del avion"); 
         
         cb_filtroEstado.getItems().add("Activo"); 
-        cb_filtroEstado.getItems().add("Inactivo");    
+        cb_filtroEstado.getItems().add("Inactivo");
+        
+        cb_buscarAvion.getItems().add("Por id");  
+        cb_buscarAvion.getItems().add("Por matricula");
 
     }
     
@@ -154,10 +166,12 @@ public class VueloController extends Controller implements Initializable {
             EstadoVuelo = "Activo";
         else 
             EstadoVuelo = "Inactivo";
-
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm:ss");
+        
         VueloC vuelo1 = new VueloC(vuelo.getId(),vuelo.getDuracion(),vuelo.getAeropuerto(),
-        vuelo.getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-        vuelo.getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),vuelo.getDistancia(),
+        vuelo.getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).format(formatter),
+        vuelo.getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter),vuelo.getDistancia(),
         EstadoVuelo,vuelo.getAvion().getMatricula());
 
         DatosServicios.add(vuelo1);
@@ -174,10 +188,12 @@ public class VueloController extends Controller implements Initializable {
                 EstadoVuelo = "Activo";
             else 
                 EstadoVuelo = "Inactivo";
-
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm:ss");
+            
             VueloC vuelo1 = new VueloC(vuelo.get(i).getId(),vuelo.get(i).getDuracion(),vuelo.get(i).getAeropuerto(),
-            vuelo.get(i).getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-            vuelo.get(i).getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),vuelo.get(i).getDistancia(),
+            vuelo.get(i).getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).format(formatter),
+            vuelo.get(i).getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter),vuelo.get(i).getDistancia(),
             EstadoVuelo,vuelo.get(i).getAvion().getMatricula());
 
             DatosServicios.add(vuelo1);
@@ -248,22 +264,101 @@ public class VueloController extends Controller implements Initializable {
     private void tablaVuelosClicked(MouseEvent event) throws InterruptedException, ExecutionException, IOException 
     {
         long Id = tablaVuelos.getSelectionModel().selectedItemProperty().get().Id;
+        VueloSeleccionado = VueloWebService.getVueloById(Id, token);
     }
     private void volver(MouseEvent event) {
         FlowController.getInstance().goView("MenuGestion");
     }
+    
+    @FXML
+    private void modificar(MouseEvent event) {
+        
+        LimpiaBarraInferior();
+        BotonGuardar = true;
+        vb_barraInferior.setPrefHeight(200);
+        vb_barraInferior.setVisible(true);
+        
+        cb_buscarAvion.setValue("Por matricula");
+        
+        txt_distancia.setText(VueloSeleccionado.getDistancia().toString());
+        txt_duracion.setText(VueloSeleccionado.getDuracion().toString());
+        txt_destino.setText(VueloSeleccionado.getAeropuerto());
+        txt_avion.setText(VueloSeleccionado.getAvion().getMatricula());
+        
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        txt_horaSalida.setText(VueloSeleccionado.getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+        txt_horaLlegada.setText(VueloSeleccionado.getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+        
+        dpk_fechaLlegada.setValue(VueloSeleccionado.getFechaLlegada().toInstant()
+       .atZone(ZoneId.systemDefault()).toLocalDate());
+        dpk_fechaSalida.setValue(VueloSeleccionado.getFechaSalida().toInstant()
+       .atZone(ZoneId.systemDefault()).toLocalDate());
+    }
+
 
     @FXML
     private void nuevo(MouseEvent event) {
-        
+        LimpiaBarraInferior();
+        BotonGuardar = false;
+        vb_barraInferior.setPrefHeight(200);
+        vb_barraInferior.setVisible(true);
     }
 
     @FXML
     private void cancelar(MouseEvent event) {
+        LimpiaBarraInferior();
+        vb_barraInferior.setPrefHeight(0);
+        vb_barraInferior.setVisible(false); 
     }
-
+    
+    
     @FXML
-    private void guardar(MouseEvent event) {
+    private void guardar(MouseEvent event) throws ParseException, InterruptedException, ExecutionException, IOException {
+    if (BotonGuardar == false) 
+        {VueloSeleccionado = new VueloDTO();}
+        
+        vb_barraInferior.setPrefHeight(0);
+        vb_barraInferior.setVisible(false);
+
+        String horaSalida = txt_horaSalida.getText();
+        String FechaHoraSalida = dpk_fechaSalida.getValue().toString() + " " + horaSalida;
+        Date dateSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraSalida);  
+        System.out.println("Fecha a insertar: " + dateSalida);
+        
+        String horaLlegada = txt_horaLlegada.getText();
+        String FechaHoraLlegada = dpk_fechaLlegada.getValue().toString() + " " + horaLlegada;
+        Date dateLlegada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraLlegada);  
+        System.out.println("Fecha a insertar: " + dateLlegada);
+            
+        VueloSeleccionado.setFechaSalida(dateSalida);
+        VueloSeleccionado.setFechaLlegada(dateLlegada);
+        
+        long Distancia = Long.parseLong(txt_distancia.getText());
+        float Duracion = Float.parseFloat(txt_duracion.getText());
+        
+        VueloSeleccionado.setAeropuerto(txt_destino.getText());
+        VueloSeleccionado.setDistancia(Distancia);
+        VueloSeleccionado.setDuracion(Duracion);
+        
+        if (cb_buscarAvion.getValue().equals("Por id")) 
+        {
+            long Id = Long.parseLong(txt_avion.getText());
+            VueloSeleccionado.setAvion(AvionWebService.getAvionById(Id, token));
+        }
+        else
+        {VueloSeleccionado.setAvion(AvionWebService.getAvionByMatricula(txt_avion.getText(), token).get(0));}
+
+        VueloSeleccionado.setEstado(true);
+        
+        if (BotonGuardar == true) 
+        {VueloWebService.updateVuelo(VueloSeleccionado, VueloSeleccionado.getId(), token);}
+        if (BotonGuardar == false) 
+        {
+           VueloWebService.createVuelo(VueloSeleccionado, token);
+        }
+        
+        LimpiaBarraInferior();    
     }
 
     private void CargaLogicaBusqueda(){
@@ -303,6 +398,19 @@ public class VueloController extends Controller implements Initializable {
             
         }
         });
+    }
+    
+    private void LimpiaBarraInferior()
+    {
+        txt_destino.setText("");
+        txt_avion.setText("");
+        txt_distancia.setText("");
+        txt_duracion.setText("");
+        txt_horaSalida.setText("");
+        txt_horaLlegada.setText("");
+        cb_buscarAvion.setValue(""); 
+        dpk_fechaLlegada.setValue(null);
+        dpk_fechaSalida.setValue(null);             
     }
     
     @Data
