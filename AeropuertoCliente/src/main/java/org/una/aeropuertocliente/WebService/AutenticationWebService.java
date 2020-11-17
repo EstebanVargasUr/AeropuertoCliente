@@ -35,8 +35,13 @@ public class AutenticationWebService {
                     .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
             CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());            
             System.out.println(response.get().body());
-            
+            if(response.get().statusCode() == 500)
+                System.out.println("Usuario No Encontrado");
+            else
+            {
             AuthenticationResponse authenticationResponse = JSONUtils.covertFromJsonToObject(response.get().body(), AuthenticationResponse.class);
             return authenticationResponse;
+            }
+            return null;
     }
 }

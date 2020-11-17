@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,8 +26,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import org.una.aeropuertocliente.DTOs.AerolineaDTO;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoAvionDTO;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoDTO;
@@ -46,75 +50,49 @@ import org.una.aeropuertocliente.utility.FlowController;
  */
 public class AvionController extends Controller implements Initializable {
 
-    @FXML
-    private VBox root;
-    @FXML
-    private JFXTextField txt_buscar;
-    @FXML
-    private JFXTextField txt_matricula;
-    @FXML
-    private JFXTextField txt_recorridoMax;
-    @FXML
-    private JFXTextField txt_aerolinea;
-    @FXML
-    private DatePicker dP_FechaInicial;
-    @FXML
-    private DatePicker dp_FechaFinal;
-    @FXML
-    private JFXComboBox<String> cb_filtroEstado;
-    @FXML
-    private JFXComboBox<String> cb_filtroTipo;
-    @FXML
-    private JFXComboBox<String> cb_filtro;
-    @FXML
-    private JFXComboBox<String> cb_estado;
-    @FXML
-    private JFXComboBox<String> cb_tipo;
-    @FXML
-    private JFXComboBox<String> cb_zonaActual;
-    @FXML
-    private JFXComboBox<String> cb_aerolinea;
-    @FXML
-    private TableView<AvionC> tablaAviones;
-    @FXML
-    private TableColumn<AvionC, Long> tbc_id;
-    @FXML
-    private TableColumn<AvionC, String> tbc_matricula;
-    @FXML
-    private TableColumn<AvionC, String> tbc_tipo;
-    @FXML
-    private TableColumn<AvionC, String> tbc_aerolinea;
-    @FXML
-    private TableColumn<AvionC, String> tbc_recorridoActual;
-    @FXML
-    private TableColumn<AvionC, String> tbc_recorridoMaximo;
-    @FXML
-    private TableColumn<AvionC, String> tbc_zonaActual;
-    @FXML
-    private TableColumn<AvionC, String> tbc_fechaRegistro;
-    @FXML
-    private TableColumn<AvionC, String> tbc_fechaModificacion;
-    @FXML
-    private TableColumn<AvionC, String> tbc_estado;
-    @FXML
-    private TableColumn<AvionC, String> tbc_modificar;
-    @FXML
-    private VBox vb_barraInferior;
-    @FXML
-    private JFXButton btn_nuevo;
+    @FXML private StackPane root;
+    @FXML private JFXTextField txt_buscar;
+    @FXML private JFXTextField txt_matricula;
+    @FXML private JFXTextField txt_recorridoMax;
+    @FXML private JFXTextField txt_aerolinea;
+    @FXML private DatePicker dP_FechaInicial;
+    @FXML private DatePicker dp_FechaFinal;
+    @FXML private JFXComboBox<String> cb_filtroEstado;
+    @FXML private JFXComboBox<String> cb_filtroTipo;
+    @FXML private JFXComboBox<String> cb_filtro;
+    @FXML private JFXComboBox<String> cb_estado;
+    @FXML private JFXComboBox<String> cb_tipo;
+    @FXML private JFXComboBox<String> cb_zonaActual;
+    @FXML private JFXComboBox<String> cb_aerolinea;
+    @FXML private TableView<AvionC> tablaAviones;
+    @FXML private TableColumn<AvionC, Long> tbc_id;
+    @FXML private TableColumn<AvionC, String> tbc_matricula;
+    @FXML private TableColumn<AvionC, String> tbc_tipo;
+    @FXML private TableColumn<AvionC, String> tbc_aerolinea;
+    @FXML private TableColumn<AvionC, String> tbc_recorridoActual;
+    @FXML private TableColumn<AvionC, String> tbc_recorridoMaximo;
+    @FXML private TableColumn<AvionC, String> tbc_zonaActual;
+    @FXML private TableColumn<AvionC, String> tbc_fechaRegistro;
+    @FXML private TableColumn<AvionC, String> tbc_fechaModificacion;
+    @FXML private TableColumn<AvionC, String> tbc_estado;
+    @FXML private TableColumn<AvionC, String> tbc_modificar;
+    @FXML private VBox vb_barraInferior;
+    @FXML private JFXButton btn_nuevo;
+    @FXML private ImageView cargando;
    
     public static AerolineaC aerolineaActual;
+    public static ObservableList<AvionC> DatosAviones;
     private AuthenticationResponse authenticationResponse;
     private AvionC AvionSeleccionado;
-    public static ObservableList<AvionC> DatosAviones;
     boolean BotonGuardar;
+    String EstadoAvion;
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        ModificarFormaCargando();
         initTabla();
         initComboBox();
     }    
@@ -131,6 +109,13 @@ public class AvionController extends Controller implements Initializable {
     public Node getRoot() {
         return root;
     } 
+    
+    private void ModificarFormaCargando(){
+        Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
+        clip.setArcWidth(40);
+        clip.setArcHeight(40);
+        cargando.setClip(clip);
+    }
     
     private void initTabla(){
         initColumnas();
@@ -190,98 +175,99 @@ public class AvionController extends Controller implements Initializable {
     
     @FXML
     private void buscar(MouseEvent event) {
-        RealizarBusqueda();
+        CargaLogicaBusqueda();
     }
 
     private void RealizarBusqueda() {
         LimpiaDatos();
         DatosAviones = FXCollections.observableArrayList();
-        String EstadoAvion = "Inactivo";
+        EstadoAvion = "Inactivo";    
         try{
-        if(cb_filtro.getValue().equals("Id")) {        
-            AvionDTO avion;
-            long Id = Long.parseLong(txt_buscar.getText());    
-            avion = AvionWebService.getAvionById(Id, authenticationResponse.getJwt());
-            AreaTrabajoAvionDTO avionTrabajo = AreaTrabajoAvionWebService.getAreaTrabajoAvionById(Id, authenticationResponse.getJwt());
-
-            if (avion.getEstado().toString().equals("true")) 
-                EstadoAvion = "Activo";
+            if(cb_filtro.getValue().equals("Id"))      
+                busquedaIndividual();
+            else
+                busquedaLista();
             
+            tablaAviones.setItems(DatosAviones);
+        } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AvionController.class.getName()).log(Level.SEVERE, null, ex);}
+    }
+    
+    private void busquedaIndividual() throws InterruptedException, IOException, ExecutionException {
+        AvionDTO avion;
+        long Id = Long.parseLong(txt_buscar.getText());    
+        avion = AvionWebService.getAvionById(Id, authenticationResponse.getJwt());
+        AreaTrabajoAvionDTO avionTrabajo = AreaTrabajoAvionWebService.getAreaTrabajoAvionById(Id, authenticationResponse.getJwt());
+
+        if (avion.getEstado().toString().equals("true")) 
+            EstadoAvion = "Activo";
+
+        AvionC avion1 = new AvionC(avion.getId(),avion.getMatricula(),avion.getTipoAvion(),avion.getAerolinea().getNombreAerolinea(),avion.getRecorrido()+"",
+        avion.getRecorridoMaximo()+"",avionTrabajo.getAreaTrabajo().getNombreArea(),avion.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+        avion.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,new JFXButton("Modificar"));
+
+        DatosAviones.add(avion1);
+    }
+    
+    private void busquedaLista() throws InterruptedException, IOException, ExecutionException {
+        List<AvionDTO> ListaAvion = null;
+
+        switch(cb_filtro.getValue()){
+            case "Matricula":
+                ListaAvion = AvionWebService.getAvionByMatricula(txt_buscar.getText(), authenticationResponse.getJwt());
+            break;
+
+            case "Tipo":
+                ListaAvion = AvionWebService.getAvionByTipoAvion(txt_buscar.getText(), authenticationResponse.getJwt());
+            break;
+
+            case "Estado":
+                Boolean Estado;
+                if(cb_filtroEstado.getValue().equals("Activo")) 
+                    Estado = true;
+                else
+                    Estado = false;
+                ListaAvion = AvionWebService.getAvionByEstado(Estado, authenticationResponse.getJwt());
+            break;
+
+            case "Fecha de Registro":
+                LocalDate localDate = dP_FechaInicial.getValue();
+                Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+                Date inicio = Date.from(instant);
+
+                LocalDate localDate2 = dp_FechaFinal.getValue();
+                Instant instant2 = Instant.from(localDate2.atStartOfDay(ZoneId.systemDefault()));
+                Date fin = Date.from(instant2);
+
+                ListaAvion = AvionWebService.getAvionByFechaRegistroBetween(inicio,fin, authenticationResponse.getJwt());
+            break;
+
+            case "AerolineaId":
+                ListaAvion = AvionWebService.getAvionByAerolineaId(txt_buscar.getText(), authenticationResponse.getJwt());
+            break;
+            default:
+                break;
+
+        }
+        for(AvionDTO avion : ListaAvion) {
+            if(avion.getEstado().toString().equals("true")) 
+                EstadoAvion = "Activo";
+
+            AreaTrabajoAvionDTO avionTrabajo = AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId(avion.getId(), authenticationResponse.getJwt());
+
             AvionC avion1 = new AvionC(avion.getId(),avion.getMatricula(),avion.getTipoAvion(),avion.getAerolinea().getNombreAerolinea(),avion.getRecorrido()+"",
             avion.getRecorridoMaximo()+"",avionTrabajo.getAreaTrabajo().getNombreArea(),avion.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
             avion.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,new JFXButton("Modificar"));
 
             DatosAviones.add(avion1);
         }
-        
-        else
-        {
-            List<AvionDTO> ListaAvion = null;
-            
-            switch(cb_filtro.getValue()){
-                case "Matricula":
-                    ListaAvion = AvionWebService.getAvionByMatricula(txt_buscar.getText(), authenticationResponse.getJwt());
-                break;
-                
-                case "Tipo":
-                    ListaAvion = AvionWebService.getAvionByTipoAvion(txt_buscar.getText(), authenticationResponse.getJwt());
-                break;
-                
-                case "Estado":
-                    Boolean Estado;
-                    if(cb_filtroEstado.getValue().equals("Activo")) 
-                        Estado = true;
-                    else
-                        Estado = false;
-                    ListaAvion = AvionWebService.getAvionByEstado(Estado, authenticationResponse.getJwt());
-                break;
-  
-                case "Fecha de Registro":
-                    LocalDate localDate = dP_FechaInicial.getValue();
-                    Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
-                    Date inicio = Date.from(instant);
-
-                    LocalDate localDate2 = dp_FechaFinal.getValue();
-                    Instant instant2 = Instant.from(localDate2.atStartOfDay(ZoneId.systemDefault()));
-                    Date fin = Date.from(instant2);
-
-                    ListaAvion = AvionWebService.getAvionByFechaRegistroBetween(inicio,fin, authenticationResponse.getJwt());
-                break;
-                
-                case "AerolineaId":
-                    ListaAvion = AvionWebService.getAvionByAerolineaId(txt_buscar.getText(), authenticationResponse.getJwt());
-                break;
-                default:
-                    break;
-                
-            }
-            for(AvionDTO avion : ListaAvion)
-            {
-                if (avion.getEstado().toString().equals("true")) 
-                EstadoAvion = "Activo";
-            
-            AreaTrabajoAvionDTO avionTrabajo = AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId(avion.getId(), authenticationResponse.getJwt());
-            
-            AvionC avion1 = new AvionC(avion.getId(),avion.getMatricula(),avion.getTipoAvion(),avion.getAerolinea().getNombreAerolinea(),avion.getRecorrido()+"",
-            avion.getRecorridoMaximo()+"",avionTrabajo.getAreaTrabajo().getNombreArea(),avion.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-            avion.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,new JFXButton("Modificar"));
-
-                DatosAviones.add(avion1);
-            }
-        }
-        
-        tablaAviones.setItems(DatosAviones);
-        } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AvionController.class.getName()).log(Level.SEVERE, null, ex);}
     }
-    
+     
     @FXML
     private void nuevo(MouseEvent event) {
         LimpiaBarraInferior();
         BotonGuardar = true;
         cb_estado.setValue("Activo");
-        vb_barraInferior.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
-        vb_barraInferior.setMinSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
-        vb_barraInferior.setVisible(true);
+        configurarBarraInferior(true);
     }
 
     @FXML
@@ -292,59 +278,70 @@ public class AvionController extends Controller implements Initializable {
     @FXML
     private void cancelar(MouseEvent event) {
         LimpiaBarraInferior();
-        vb_barraInferior.setPrefSize(0, 0);
-        vb_barraInferior.setMinSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
-        vb_barraInferior.setVisible(false);
+        configurarBarraInferior(false);
     }
 
-    @FXML
-    private void guardar(MouseEvent event) throws InterruptedException, ExecutionException, IOException{
-        
-        vb_barraInferior.setPrefSize(0, 0);
-        vb_barraInferior.setMinSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
-        vb_barraInferior.setVisible(false);
-
-        AvionDTO avionAccion = new AvionDTO();
-        AerolineaDTO aerolinea = new AerolineaDTO();
-        AreaTrabajoDTO areaTrabajo = AreaTrabajoWebService.getAreaTrabajoByNombreArea(cb_zonaActual.getValue(), authenticationResponse.getJwt()).get(0);
-        Boolean Estado;
-        
-        if(cb_aerolinea.getValue().equals("Nombre"))
-           aerolinea = AerolineaWebService.getAerolineaByNombreAerolinea(txt_aerolinea.getText(), authenticationResponse.getJwt()).get(0);
-        else if(cb_aerolinea.getValue().equals("Id"))
-           aerolinea = AerolineaWebService.getAerolineaById(Long.parseLong(txt_aerolinea.getText()), authenticationResponse.getJwt());
-        
-        if (cb_estado.getValue().equals("Activo")) 
-            Estado = true;
-        else
-            Estado = false;
-        
-        avionAccion.setEstado(Estado);        
-        avionAccion.setMatricula(txt_matricula.getText());
-        avionAccion.setTipoAvion(cb_tipo.getValue());
-        avionAccion.setRecorrido(0);
-        avionAccion.setRecorridoMaximo(Integer.parseInt(txt_recorridoMax.getText()) );
-        avionAccion.setAerolinea(aerolinea);
-        
-        if (!BotonGuardar) {
-            avionAccion.setId(AvionSeleccionado.getId());
-            AvionWebService.updateAvion(avionAccion, AvionSeleccionado.getId(), authenticationResponse.getJwt());
-            AreaTrabajoAvionWebService.updateAreaTrabajoAvion(areaTrabajo, avionAccion, AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId
-            (AvionSeleccionado.getId(), authenticationResponse.getJwt()).getId(), authenticationResponse.getJwt());
-         }
-        else{
-            AvionSeleccionado = new AvionC();
-            AvionWebService.createAvion(avionAccion, authenticationResponse.getJwt());
-            avionAccion = AvionWebService.getAvionByMatricula(avionAccion.getMatricula(), authenticationResponse.getJwt()).get(0);
-            AreaTrabajoAvionWebService.createAreaTrabajoAvion(areaTrabajo, avionAccion, authenticationResponse.getJwt());
+    private void configurarBarraInferior(boolean modo){
+        if(modo){
+            vb_barraInferior.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
+            vb_barraInferior.setMinSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
+            vb_barraInferior.setVisible(true);
         }
-
-        LimpiaBarraInferior();
-        LimpiaDatos();
+        else{
+            vb_barraInferior.setPrefSize(0, 0);
+            vb_barraInferior.setMinSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
+            vb_barraInferior.setVisible(false);
+        }
+            
     }
     
-    private void LimpiaBarraInferior()
-    {
+    @FXML
+    private void guardar(MouseEvent event) {
+        CargaLogicaGuardar();
+    }
+    
+    private void RealizarGuardar() {
+        configurarBarraInferior(false);
+        try{
+            AvionDTO avionAccion = new AvionDTO();
+            AerolineaDTO aerolinea = new AerolineaDTO();
+            AreaTrabajoDTO areaTrabajo = AreaTrabajoWebService.getAreaTrabajoByNombreArea(cb_zonaActual.getValue(), authenticationResponse.getJwt()).get(0);
+            Boolean Estado;
+
+            if(cb_aerolinea.getValue().equals("Nombre"))
+               aerolinea = AerolineaWebService.getAerolineaByNombreAerolinea(txt_aerolinea.getText(), authenticationResponse.getJwt()).get(0);
+            else if(cb_aerolinea.getValue().equals("Id"))
+               aerolinea = AerolineaWebService.getAerolineaById(Long.parseLong(txt_aerolinea.getText()), authenticationResponse.getJwt());
+
+            if(cb_estado.getValue().equals("Activo")) 
+                Estado = true;
+            else
+                Estado = false;
+
+            avionAccion.setEstado(Estado);        
+            avionAccion.setMatricula(txt_matricula.getText());
+            avionAccion.setTipoAvion(cb_tipo.getValue());
+            avionAccion.setRecorrido(0);
+            avionAccion.setRecorridoMaximo(Integer.parseInt(txt_recorridoMax.getText()) );
+            avionAccion.setAerolinea(aerolinea);
+
+            if (!BotonGuardar) {
+                avionAccion.setId(AvionSeleccionado.getId());
+                AvionWebService.updateAvion(avionAccion, AvionSeleccionado.getId(), authenticationResponse.getJwt());
+                AreaTrabajoAvionWebService.updateAreaTrabajoAvion(areaTrabajo, avionAccion, AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId
+                (AvionSeleccionado.getId(), authenticationResponse.getJwt()).getId(), authenticationResponse.getJwt());
+            }
+            else{
+                AvionSeleccionado = new AvionC();
+                AvionWebService.createAvion(avionAccion, authenticationResponse.getJwt());
+                avionAccion = AvionWebService.getAvionByMatricula(avionAccion.getMatricula(), authenticationResponse.getJwt()).get(0);
+                AreaTrabajoAvionWebService.createAreaTrabajoAvion(areaTrabajo, avionAccion, authenticationResponse.getJwt());
+            }
+
+        } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaController.class.getName()).log(Level.SEVERE, null, ex);}
+    }
+    
+    private void LimpiaBarraInferior() {
         txt_matricula.clear();
         txt_recorridoMax.clear();
         cb_tipo.setValue("");
@@ -387,6 +384,46 @@ public class AvionController extends Controller implements Initializable {
         }
     }
      
+    private void CargaLogicaBusqueda(){
+        Thread t = new Thread(new Runnable(){
+        public void run(){
+            cargando.setVisible(true);
+            root.setDisable(true);
+            
+            RealizarBusqueda(); 
+            
+            cargando.setVisible(false);
+            root.setDisable(false);
+        }
+        });
+        t.start();
+    }
+    
+    private void CargaLogicaGuardar(){
+        Thread t = new Thread(new Runnable(){
+        public void run(){
+            cargando.setVisible(true);
+            root.setDisable(true);
+            
+            RealizarGuardar(); 
+            CargaGraficaGuardar();
+            
+            cargando.setVisible(false);
+            root.setDisable(false);
+        }
+        });
+        t.start();
+    }
+    
+    private void CargaGraficaGuardar(){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {    
+            LimpiaBarraInferior();
+            LimpiaDatos();
+        }
+        });
+    }
+    
     public class AvionC {
     
         Long Id;  
@@ -422,9 +459,7 @@ public class AvionController extends Controller implements Initializable {
                     if(avion.getModificar() == Modificar){
                         LimpiaBarraInferior();
                         BotonGuardar = false;
-                        vb_barraInferior.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
-                        vb_barraInferior.setMinSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
-                        vb_barraInferior.setVisible(true);
+                        configurarBarraInferior(true);
                         
                         AvionSeleccionado = avion;
                         txt_matricula.setText(avion.getMatricula());

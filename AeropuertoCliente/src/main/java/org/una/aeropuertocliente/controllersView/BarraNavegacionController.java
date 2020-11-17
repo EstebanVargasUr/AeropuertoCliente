@@ -9,7 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.DTOs.UsuarioAreaTrabajoDTO;
 import org.una.aeropuertocliente.utility.FlowController;
@@ -21,14 +21,10 @@ import org.una.aeropuertocliente.utility.FlowController;
  */
 public class BarraNavegacionController extends Controller implements Initializable {
 
-    @FXML
-    private VBox root;
-    @FXML
-    private Label lbl_areaTrabajo;
-    @FXML
-    private Label lbl_rol;
-    @FXML
-    private Label lbl_usuario;
+    @FXML private StackPane root;
+    @FXML private Label lbl_areaTrabajo;
+    @FXML private Label lbl_rol;
+    @FXML private Label lbl_usuario;
 
     private AuthenticationResponse authenticationResponse;
     private String AreaTrabajo;
@@ -53,8 +49,6 @@ public class BarraNavegacionController extends Controller implements Initializab
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-      //  lbl_areaTrabajo.setText(usuario);
-        // TODO
     }    
     
     @Override
@@ -68,19 +62,15 @@ public class BarraNavegacionController extends Controller implements Initializab
         if(authenticationResponse.getRoles().getNombre().equals("Gestor")){
             FlowController.getInstance().goView("MenuGestor");
         }
-        
         else if(authenticationResponse.getRoles().getNombre().equals("Gerente")){
             FlowController.getInstance().goView("MenuGerente");
         }
-        
         else if(authenticationResponse.getRoles().getNombre().equals("Administrador")){
             FlowController.getInstance().goView("MenuAdministrador");
         }
-        
         else if(authenticationResponse.getRoles().getNombre().equals("Auditor")){
             FlowController.getInstance().goView("MenuAuditor");
         }
-        
         else{
             FlowController.getInstance().goView("MenuEmpleado");
         }
@@ -94,6 +84,7 @@ public class BarraNavegacionController extends Controller implements Initializab
     @FXML
     private void salir(MouseEvent event) {
         FlowController.getInstance().authenticationResponse = null;
+        FlowController.getInstance().initialize();
         FlowController.getInstance().goView("login");
         root.setVisible(false);
         root.setPrefSize(0, 0);

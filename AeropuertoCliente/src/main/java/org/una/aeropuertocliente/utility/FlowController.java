@@ -12,7 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -26,7 +26,7 @@ public class FlowController {
     private static ResourceBundle idioma;
     private static HashMap<String, FXMLLoader> loaders = new HashMap<>();
     public List<UsuarioAreaTrabajoDTO> areaTrabajo;
-    public AuthenticationResponse authenticationResponse= new AuthenticationResponse();
+    public AuthenticationResponse authenticationResponse;
     //FMLLoader: interfaz y controlador de la interfaz grafica
     private FlowController() {
     }
@@ -125,24 +125,24 @@ public class FlowController {
         }
         switch (location) {
             case "Center":
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().clear();
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().add(loader.getRoot());
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().clear();   
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getCenter()).getChildren().add(loader.getRoot()); 
                 break;
             case "Top":
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getTop()).getChildren().clear();
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getTop()).getChildren().add(loader.getRoot());
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getTop()).getChildren().clear();
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getTop()).getChildren().add(loader.getRoot());
                 break;
             case "Bottom":
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getBottom()).getChildren().clear();
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getBottom()).getChildren().add(loader.getRoot());
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getBottom()).getChildren().clear();
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getBottom()).getChildren().add(loader.getRoot());
                 break;
             case "Right":
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getRight()).getChildren().clear();
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getRight()).getChildren().add(loader.getRoot());
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getRight()).getChildren().clear();
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getRight()).getChildren().add(loader.getRoot());
                 break;
             case "Left":
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getLeft()).getChildren().clear();
-                ((VBox) ((BorderPane) stage.getScene().getRoot()).getLeft()).getChildren().add(loader.getRoot());
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getLeft()).getChildren().clear();
+                ((StackPane) ((BorderPane) stage.getScene().getRoot()).getLeft()).getChildren().add(loader.getRoot());
                 break;
                 
             default:

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import java.net.URLEncoder;
 import org.una.aeropuertocliente.DTOs.AerolineaDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -59,7 +60,8 @@ public class AerolineaWebService {
     
     public static List<AerolineaDTO> getAerolineaByNombreAerolinea(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreAerolinea/"+nombre))
+        String nombreAdaptado = URLEncoder.encode(nombre, "UTF-8");
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreAerolinea/"+nombreAdaptado))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
@@ -71,7 +73,8 @@ public class AerolineaWebService {
     
     public static List<AerolineaDTO> getAerolineaByNombreResponsable(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreResponsable/"+nombre))
+        String nombreAdaptado = URLEncoder.encode(nombre, "UTF-8");
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByNombreResponsable/"+nombreAdaptado))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
