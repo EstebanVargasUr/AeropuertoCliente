@@ -103,12 +103,20 @@ public class AvionController extends Controller implements Initializable {
         cb_filtro.setValue("AerolineaId");
         txt_buscar.setText(aerolineaActual.getId()+"");
         root.styleProperty().set("-fx-background-color: #4AB19D");    
+        ModoDesarrollador();
     }
 
     @Override
     public Node getRoot() {
         return root;
     } 
+    
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V02-G-AVI");
+        else
+            FlowController.getInstance().titulo("Gestión de Aviones");
+    }
     
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());

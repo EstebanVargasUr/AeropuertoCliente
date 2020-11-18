@@ -35,7 +35,7 @@ public class LoginController extends Controller implements Initializable {
     
     @Override
     public void initialize() {
-        
+        ModoDesarrollador();
     }
 
     @Override
@@ -48,6 +48,13 @@ public class LoginController extends Controller implements Initializable {
         return root;
     }    
 
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V04-L-USU");
+        else
+            FlowController.getInstance().titulo("Inicio de Sesión");
+    }
+    
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);

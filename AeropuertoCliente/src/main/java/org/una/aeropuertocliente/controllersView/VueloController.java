@@ -90,12 +90,20 @@ public class VueloController extends Controller implements Initializable {
     @Override
     public void initialize() {
         root.styleProperty().set("-fx-background-color: #4AB19D");
+        ModoDesarrollador();
     }
 
     @Override
     public Node getRoot() {
         return root;
     }     
+    
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V13-G-VUE");
+        else
+            FlowController.getInstance().titulo("Gestión de Vuelos");
+    }
     
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());

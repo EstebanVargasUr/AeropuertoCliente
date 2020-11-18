@@ -57,6 +57,7 @@ public class PerfilUsuarioController extends Controller implements Initializable
 
     @Override
     public void initialize() {
+        ModoDesarrollador();
         hb_password.setVisible(false);
         hb_password.setPrefSize(0,0);
         btn_operacion.setText("Modificar");
@@ -83,6 +84,13 @@ public class PerfilUsuarioController extends Controller implements Initializable
         return root;
     } 
 
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V09-M-PRF");
+        else
+            FlowController.getInstance().titulo("Perfil de Usuario");
+    }
+    
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);

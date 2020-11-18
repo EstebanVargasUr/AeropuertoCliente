@@ -38,7 +38,7 @@ public class ParametroSistemaWebService {
         response.join();
     }
      
-    public static void getParametroSistemaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static ParametroSistemaDTO getParametroSistemaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -52,8 +52,10 @@ public class ParametroSistemaWebService {
         {
             ParametroSistemaDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), ParametroSistemaDTO.class);
             System.out.println(bean);
+            return bean;
         }
         response.join();
+        return null;
     }
     
      public static void getParametroSistemaByNombre(String nombre, String finalToken) throws InterruptedException, ExecutionException, IOException

@@ -24,6 +24,7 @@ import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.WebService.HoraMarcajeWebService;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -40,8 +41,9 @@ public class MenuGerenteController extends Controller implements Initializable {
     @FXML private Label lbl_ultimaHora2;
     @FXML private Label lbl_ultimaHora;
      
-    UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
-    String token = FlowController.getInstance().authenticationResponse.getJwt();
+    private final UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
+    private final String token = FlowController.getInstance().authenticationResponse.getJwt();
+    private final Mensaje mensaje = new Mensaje();
 
     /**
      * Initializes the controller class.
@@ -62,6 +64,20 @@ public class MenuGerenteController extends Controller implements Initializable {
         return root;
     }
     
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V06-M-GER");
+        else
+            FlowController.getInstance().titulo("Menu Gerente");
+    }
+    
+    private void ModificarFormaCargando(){
+        Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
+        clip.setArcWidth(40);
+        clip.setArcHeight(40);
+        cargando.setClip(clip);
+    }
+     
      private void CargaLogicaMenuGerente(){
         Thread t = new Thread(new Runnable(){
         public void run(){
@@ -92,13 +108,10 @@ public class MenuGerenteController extends Controller implements Initializable {
        });
     }
 
-     private void ModificarFormaCargando(){
-        Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
-        clip.setArcWidth(40);
-        clip.setArcHeight(40);
-        cargando.setClip(clip);
+    @FXML
+    private void averia(MouseEvent event) {
+         mensaje.reporteAveria(root, cargando);
     }
-     
 
     @FXML
     private void marcarEntrada(MouseEvent event) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {

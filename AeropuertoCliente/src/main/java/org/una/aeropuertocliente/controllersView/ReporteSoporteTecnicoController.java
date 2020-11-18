@@ -16,6 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import org.una.aeropuertocliente.utility.FlowController;
 
 /**
  * FXML Controller class
@@ -43,7 +44,7 @@ public class ReporteSoporteTecnicoController extends Controller implements Initi
 
     @Override
     public void initialize() {
-        
+        ModoDesarrollador();
     }
 
     @Override
@@ -56,6 +57,13 @@ public class ReporteSoporteTecnicoController extends Controller implements Initi
         return root;
     }   
 
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V10-G-RPA");
+        else
+            FlowController.getInstance().titulo("Reportes de Averias");
+    }
+    
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);

@@ -94,12 +94,20 @@ public class UsuarioController extends Controller implements Initializable {
     public void initialize() {
         authenticationResponse = FlowController.getInstance().authenticationResponse;
         root.styleProperty().set("-fx-background-color: #4AB19D"); 
+        ModoDesarrollador();
     }
 
     @Override
     public Node getRoot() {
         return root;
     }   
+    
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V12-G-USU");
+        else
+            FlowController.getInstance().titulo("Gestión de Usuarios");
+    }
     
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());

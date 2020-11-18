@@ -113,6 +113,7 @@ public class ServicioController extends Controller implements  Initializable {
     @Override
     public void initialize() {
         root.styleProperty().set("-fx-background-color: #4AB19D");
+        ModoDesarrollador();
     }
 
     @Override
@@ -120,6 +121,13 @@ public class ServicioController extends Controller implements  Initializable {
         return root;
     }     
 
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V11-G-SER");
+        else
+            FlowController.getInstance().titulo("Gestión de Servicios");
+    }
+    
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);

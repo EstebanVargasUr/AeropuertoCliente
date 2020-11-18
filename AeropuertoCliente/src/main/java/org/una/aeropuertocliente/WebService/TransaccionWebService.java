@@ -97,12 +97,13 @@ public class TransaccionWebService {
         response.join();
     }
      
-    public static void createTransaccion(String informacion, UsuarioDTO usuarioId, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createTransaccion(String informacion,String tipo, UsuarioDTO usuarioId, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         TransaccionDTO bean = new TransaccionDTO();
         
         bean.setInformacion(informacion);
         bean.setUsuario(usuarioId);
+        bean.setTipo(tipo);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))

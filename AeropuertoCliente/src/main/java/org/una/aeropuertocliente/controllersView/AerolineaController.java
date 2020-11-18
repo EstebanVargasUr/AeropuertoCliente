@@ -71,12 +71,20 @@ public class AerolineaController extends Controller implements Initializable {
     public void initialize() {
         authenticationResponse = FlowController.getInstance().authenticationResponse;
         root.styleProperty().set("-fx-background-color: #4AB19D"); 
+        ModoDesarrollador();
         
     }
 
     @Override
     public Node getRoot() {
         return root;
+    }
+    
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V01-G-AER");
+        else
+           FlowController.getInstance().titulo("Gestión de Aerolineas");
     }
     
     private void ModificarFormaCargando(){

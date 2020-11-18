@@ -56,7 +56,7 @@ public class HorarioController extends Controller implements Initializable {
     
     @Override
     public void initialize() {
-        
+        ModoDesarrollador();
     }
 
     @Override
@@ -70,6 +70,13 @@ public class HorarioController extends Controller implements Initializable {
     @Override
     public Node getRoot() {
         return root;
+    }
+    
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V03-H-EMP");
+        else
+            FlowController.getInstance().titulo("Horario de Empleado");
     }
     
     private void ModificarFormaCargando(){

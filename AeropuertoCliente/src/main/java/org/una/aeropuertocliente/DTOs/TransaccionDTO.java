@@ -15,6 +15,7 @@ public class TransaccionDTO {
     private Long id; 
     private String informacion; 
     private boolean estado; 
+    private String tipo;
     private Date fechaRegistro;
     private UsuarioDTO usuario;
      

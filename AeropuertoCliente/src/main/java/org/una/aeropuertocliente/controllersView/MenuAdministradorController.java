@@ -1,7 +1,6 @@
 package org.una.aeropuertocliente.controllersView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.jfoenix.controls.JFXButton;
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
@@ -24,6 +23,7 @@ import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.WebService.HoraMarcajeWebService;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -33,19 +33,18 @@ import org.una.aeropuertocliente.utility.FlowController;
 public class MenuAdministradorController extends Controller implements Initializable {
 
     @FXML private StackPane root;
-    @FXML private JFXButton btnAutorizar;
-    @FXML private JFXButton btnDesarrollo;
     @FXML private Label lbl_ultimaHora;
     @FXML private ImageView cargando;
-    @FXML
-    private Label lbl_ultimaHora2;
+    @FXML private Label lbl_ultimaHora2;
+    
+    private final Mensaje mensaje = new Mensaje();
 
     UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
     String token = FlowController.getInstance().authenticationResponse.getJwt();
     
     @Override
     public void initialize() {
-        
+       ModoDesarrollador();
     }
 
     @Override
@@ -59,6 +58,13 @@ public class MenuAdministradorController extends Controller implements Initializ
         return root;
     }     
     
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V05-M-ADM");
+        else
+            FlowController.getInstance().titulo("Menu Administrador");
+    }
+    
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);
@@ -67,12 +73,23 @@ public class MenuAdministradorController extends Controller implements Initializ
     }
     
     @FXML
-    private void autorizarRoles(MouseEvent event) {
+    private void autorizarRoles(MouseEvent event) {     
     }
 
     @FXML
-    private void modoDesarrollo(MouseEvent event) {   
+    private void reportesAverias(MouseEvent event) {
     }
+
+    @FXML
+    private void parametrosSistema(MouseEvent event) {
+        FlowController.getInstance().goView("ParametroSistema");
+    }
+    
+    @FXML
+    private void averia(MouseEvent event) {
+        mensaje.reporteAveria(root, cargando);
+    }
+    
     
     private void CargaLogicaMenuAdministrador(){
         Thread t = new Thread(new Runnable(){
@@ -173,6 +190,18 @@ public class MenuAdministradorController extends Controller implements Initializ
         else
         {
             lbl_ultimaHora2.setText("Salida: " + UltimaHoraMarcaje.getHoraSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+        }
+    }
+
+    @FXML
+    private void modoDesarrollador(MouseEvent event) {
+        if(FlowController.getInstance().modoDesarrollo == true){
+            FlowController.getInstance().modoDesarrollo = false;
+            FlowController.getInstance().titulo("Menu Administrador");
+        }
+        else{
+            FlowController.getInstance().modoDesarrollo = true;
+            FlowController.getInstance().titulo("V01-M-ADM");
         }
     }
 }

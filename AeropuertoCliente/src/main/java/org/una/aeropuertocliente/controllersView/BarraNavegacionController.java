@@ -84,6 +84,7 @@ public class BarraNavegacionController extends Controller implements Initializab
     @FXML
     private void salir(MouseEvent event) {
         FlowController.getInstance().authenticationResponse = null;
+        FlowController.getInstance().modoDesarrollo = false;
         FlowController.getInstance().initialize();
         FlowController.getInstance().goView("login");
         root.setVisible(false);
