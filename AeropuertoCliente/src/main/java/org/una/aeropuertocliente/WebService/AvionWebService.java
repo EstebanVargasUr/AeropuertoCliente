@@ -41,7 +41,7 @@ public class AvionWebService {
 
     public static AvionDTO getAvionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        AvionDTO bean = null;
+        AvionDTO bean = new AvionDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -52,8 +52,13 @@ public class AvionWebService {
 
         else
         {
-            bean = JSONUtils.covertFromJsonToObject(response.get().body(), AvionDTO.class);
-            System.out.println(bean);
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen vuelos con este Id");
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), AvionDTO.class);
+                System.out.println(bean);
+            }
         }
         response.join();
         return bean;

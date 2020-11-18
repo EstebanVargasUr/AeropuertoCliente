@@ -31,6 +31,7 @@ import org.una.aeropuertocliente.DTOs.HorarioDTO;
 import org.una.aeropuertocliente.WebService.HorarioWebService;
 import org.una.aeropuertocliente.controllersView.UsuarioController.UsuarioC;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -52,6 +53,7 @@ public class HorarioController extends Controller implements Initializable {
     
     ObservableList<HorarioC> DatosHorarios = FXCollections.observableArrayList();
     AuthenticationResponse authenticationResponse = FlowController.getInstance().authenticationResponse;
+    Mensaje msg = new Mensaje();
     public static UsuarioC usuarioActual;
     
     @Override
@@ -120,37 +122,43 @@ public class HorarioController extends Controller implements Initializable {
         try{
             ObservableList items = FXCollections.observableArrayList(); 
             tablaHorario.setItems(items);    
-
+            
             if (cb_filtro.getValue().equals("Todos los horarios")) {
                 BuscaTodos();
             }
-            else{
-                DatosHorarios = FXCollections.observableArrayList();
-                List<HorarioDTO> horarios = null;
-                String EstadoHorario = "-";
-
-                Boolean Estado = false;
-                if (cb_estado.getValue().equals("Activo")) 
-                    Estado = true;
-                else
-                    Estado = false;
-
-                horarios = HorarioWebService.getHorarioByEstadoAndUsuario(Estado,FlowController.getInstance().
-                authenticationResponse.getUsuario().getId(),FlowController.getInstance().authenticationResponse.getJwt());
-
-                for (int i = 0; i < horarios.toArray().length; i++) {
-                    if (horarios.get(i).getEstado().toString().equals("true")) 
-                    EstadoHorario = "Activo";
-                    else EstadoHorario = "Inactivo";
-
-                    HorarioC horario1 = new HorarioC(DeterminaDia(horarios.get(i).getDiaEntrada()),
-                            DeterminaDia(horarios.get(i).getDiaEntrada()),horarios.get(i).getHoraEntrada().toString(),
-                    horarios.get(i).getHoraSalida().toString(),EstadoHorario);
-
-                    DatosHorarios.add(horario1);
+            else {
+                if (cb_estado.getValue() == null) 
+                {
+                    CargaGraficaMsg("Por favor complete los campos respectivos");
                 }
-                tablaHorario.setItems(DatosHorarios);
+                else {
+                    DatosHorarios = FXCollections.observableArrayList();
+                    List<HorarioDTO> horarios = null;
+                    String EstadoHorario = "-";
+
+                    Boolean Estado = false;
+                    if (cb_estado.getValue().equals("Activo")) 
+                        Estado = true;
+                    else
+                        Estado = false;
+
+                    horarios = HorarioWebService.getHorarioByEstadoAndUsuario(Estado,FlowController.getInstance().
+                    authenticationResponse.getUsuario().getId(),FlowController.getInstance().authenticationResponse.getJwt());
+
+                    for (int i = 0; i < horarios.toArray().length; i++) {
+                        if (horarios.get(i).getEstado().toString().equals("true")) 
+                        EstadoHorario = "Activo";
+                        else EstadoHorario = "Inactivo";
+
+                        HorarioC horario1 = new HorarioC(DeterminaDia(horarios.get(i).getDiaEntrada()),
+                        DeterminaDia(horarios.get(i).getDiaEntrada()),horarios.get(i).getHoraEntrada().toString(),
+                        horarios.get(i).getHoraSalida().toString(),EstadoHorario);
+
+                        DatosHorarios.add(horario1);
+                }
+              }
             }
+            tablaHorario.setItems(DatosHorarios);
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaController.class.getName()).log(Level.SEVERE, null, ex);}
     }
     
@@ -243,6 +251,15 @@ public class HorarioController extends Controller implements Initializable {
         @Override public void run() {
             cargando.setVisible(false);
             root.setDisable(false);
+        }
+        });
+    }
+    
+    private void CargaGraficaMsg(String cuerpo){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
+            
+            msg.alerta(root, "Alerta", cuerpo);
         }
         });
     }

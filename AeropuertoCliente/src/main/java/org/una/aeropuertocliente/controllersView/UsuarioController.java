@@ -39,6 +39,7 @@ import org.una.aeropuertocliente.WebService.RolWebService;
 import org.una.aeropuertocliente.WebService.UsuarioAreaTrabajoWebService;
 import org.una.aeropuertocliente.WebService.UsuarioWebService;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -82,6 +83,7 @@ public class UsuarioController extends Controller implements Initializable {
     boolean BotonGuardar;
     private String EstadoUsuario, JefeUsuario, RolUsuario, AreaTrabajo;
     private List<UsuarioDTO> ListaUsuario;
+    Mensaje msg = new Mensaje();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -169,13 +171,38 @@ public class UsuarioController extends Controller implements Initializable {
             LimpiaDatos();
             DatosUsuarios = FXCollections.observableArrayList();
             EstadoUsuario = "Inactivo"; JefeUsuario = "Sin Jefe"; RolUsuario = "Empleado"; AreaTrabajo = "Funcionamiento General";
-
-            if(cb_filtro.getValue().equals("Id"))     
-                busquedaIndividual();    
+            
+            if(cb_filtro.getValue() == null) 
+            {
+                CargaGraficaMsg("Por favor seleccione un filtro");
+            }
             else
-                busquedaLista(); 
-        
-            tablaUsuarios.setItems(DatosUsuarios);
+            {
+                if(cb_filtro.getValue().equals("Id")) {
+                    
+                    if (txt_buscar.getText().equals("")) 
+                    {CargaGraficaMsg("Por favor complete los campos respectivos");}
+                    else
+                    {busquedaIndividual();}
+                }    
+                else
+                {
+                     if (cb_filtro.getValue().equals("Fecha de Registro")) {
+                        
+                        if (dP_FechaInicial.getValue() == null || dp_FechaFinal.getValue() == null) 
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                        busquedaLista();  
+                    }
+                     else if (cb_filtro.getValue().equals("Cedula") ||cb_filtro.getValue().equals("Nombre")||cb_filtro.getValue().equals("Id del Jefe")) {
+                        if (txt_buscar.getText().equals(""))
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                            busquedaLista();
+                    }
+                }
+          tablaUsuarios.setItems(DatosUsuarios);
+          }
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);}
     }
     
@@ -183,32 +210,39 @@ public class UsuarioController extends Controller implements Initializable {
         long Id = Long.parseLong(txt_buscar.getText());
         UsuarioDTO usuario = UsuarioWebService.getUsuarioById(Id, authenticationResponse.getJwt());
         List<UsuarioAreaTrabajoDTO> usuarioTrabajo = UsuarioAreaTrabajoWebService.getUsuarioAreaTrabajoByUsuarioId(Id, authenticationResponse.getJwt());
+        
+        if (usuario.getId() != null)
+        {
+           if (usuario.getEstado().toString().equals("true")) 
+           {EstadoUsuario = "Activo";}
 
-        if (usuario.getEstado().toString().equals("true")) 
-            EstadoUsuario = "Activo";
+            if(usuario.getUsuarioJefe() != null)
+            {JefeUsuario = usuario.getUsuarioJefe().getNombreCompleto();}
 
-        if(usuario.getUsuarioJefe() != null)
-            JefeUsuario = usuario.getUsuarioJefe().getNombreCompleto();
+            if(usuario.getRol() != null)
+            {RolUsuario = usuario.getRol().getNombre();}
 
-        if(usuario.getRol() != null)
-            RolUsuario = usuario.getRol().getNombre();
+            for(UsuarioAreaTrabajoDTO usuario2 : usuarioTrabajo)
+                if(usuario2.getAreaTrabajo() != null)
+                    AreaTrabajo = usuario2.getAreaTrabajo().getNombreArea()+"  ";   
 
-        for(UsuarioAreaTrabajoDTO usuario2 : usuarioTrabajo)
-            if(usuario2.getAreaTrabajo() != null)
-                AreaTrabajo = usuario2.getAreaTrabajo().getNombreArea()+"  ";   
+            UsuarioC usuario1 = new UsuarioC(usuario.getId(),usuario.getCedula(),usuario.getNombreCompleto(),usuario.getTelefono(),AreaTrabajo,
+            JefeUsuario,RolUsuario,usuario.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+            usuario.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoUsuario,new JFXButton("Horario"),new JFXButton("Modificar"));
 
-        UsuarioC usuario1 = new UsuarioC(usuario.getId(),usuario.getCedula(),usuario.getNombreCompleto(),usuario.getTelefono(),AreaTrabajo,
-        JefeUsuario,RolUsuario,usuario.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-        usuario.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoUsuario,new JFXButton("Horario"),new JFXButton("Modificar"));
-
-        DatosUsuarios.add(usuario1);
+            DatosUsuarios.add(usuario1); 
+        }
+        else
+        {CargaGraficaMsg("No se encontraron usuarios");}    
+        
     }
      
     private void busquedaLista() throws InterruptedException, IOException, ExecutionException {
         ListaUsuario = null;
         obtenerUsuarios();
         
-        for(UsuarioDTO usuario : ListaUsuario) {
+        if (ListaUsuario.toArray().length != 0) {
+            for(UsuarioDTO usuario : ListaUsuario) {
             AreaTrabajo = "Funcionamiento General";
             if (usuario.getEstado().toString().equals("true")) 
                 EstadoUsuario = "Activo";
@@ -232,6 +266,9 @@ public class UsuarioController extends Controller implements Initializable {
 
             DatosUsuarios.add(usuario1);
         }
+      }
+        else
+        {CargaGraficaMsg("No se encontraron usuarios");}  
     }
       
     private void obtenerUsuarios() throws InterruptedException, IOException, ExecutionException{
@@ -298,7 +335,14 @@ public class UsuarioController extends Controller implements Initializable {
      
     @FXML
     private void guardar(MouseEvent event) {
-        CargaLogicaGuardar();
+        if (txt_cedula.getText().equals("")||txt_nombre.getText().equals("")||txt_telefono.getText().equals("")||
+        txt_cedulaJefe.getText().equals("")||cb_areaTrabajo.getValue() == null) 
+        {
+           CargaGraficaMsg("Por favor complete los campos necesarios para crear el vuelo");
+        }
+        else{
+            CargaLogicaGuardar();
+        }
     }
     
     private void RealizarGuardar() {
@@ -345,7 +389,8 @@ public class UsuarioController extends Controller implements Initializable {
         dP_FechaInicial.setPrefWidth(0);  dP_FechaInicial.setVisible(false);
         dp_FechaFinal.setPrefWidth(0);    dp_FechaFinal.setVisible(false);
         txt_buscar.setDisable(false);    txt_buscar.setPromptText("Digite lo que desea buscar");   
-
+        txt_buscar.setText("");
+          
         if(cb_filtro.getValue().equals("Fecha de Registro"))
         {
             dP_FechaInicial.setPrefWidth(130);
@@ -411,6 +456,15 @@ public class UsuarioController extends Controller implements Initializable {
         });
     }
      
+    private void CargaGraficaMsg(String cuerpo){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
+            
+            msg.alerta(root, "Alerta", cuerpo);
+        }
+        });
+    }
+    
     public class UsuarioC {
     
         Long Id;  

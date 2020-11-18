@@ -18,7 +18,6 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.una.aeropuertocliente.DTOs.RolDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -44,6 +43,7 @@ public class UsuarioWebService {
 
     public static UsuarioDTO getUsuarioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        UsuarioDTO bean = new UsuarioDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -54,11 +54,16 @@ public class UsuarioWebService {
 
         else
         {
-            UsuarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
-            System.out.println(bean);
-            return bean;
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen usuarios con este Id");
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
+                System.out.println(bean);
+            }
         }
-        return null;
+        response.join();
+        return bean;
     }
     
     public static List<UsuarioDTO> getUsuarioByCedulaAproximate(String cedula, String finalToken) throws InterruptedException, ExecutionException, IOException

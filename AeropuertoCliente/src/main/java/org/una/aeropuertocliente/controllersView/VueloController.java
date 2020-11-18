@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -37,6 +38,7 @@ import org.una.aeropuertocliente.DTOs.VueloDTO;
 import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.WebService.VueloWebService;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -71,6 +73,8 @@ public class VueloController extends Controller implements Initializable {
     @FXML private ImageView cargando;
     @FXML private JFXTextField txt_horaSalida;
     @FXML private JFXTextField txt_horaLlegada;
+    @FXML private Label lblModfEstado;
+    @FXML private JFXComboBox<String> cb_ModfEstado;
     
     private String token, EstadoVuelo;
     private ObservableList<VueloC> DatosServicios;
@@ -78,6 +82,8 @@ public class VueloController extends Controller implements Initializable {
     
     VueloDTO VueloSeleccionado = new VueloDTO();
     boolean BotonGuardar = false;
+    Mensaje msg = new Mensaje();
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -142,9 +148,11 @@ public class VueloController extends Controller implements Initializable {
         cb_filtroEstado.getItems().add("Activo"); 
         cb_filtroEstado.getItems().add("Inactivo");
         
+        cb_ModfEstado.getItems().add("Activo"); 
+        cb_ModfEstado.getItems().add("Inactivo");
+        
         cb_buscarAvion.getItems().add("Por id");  
         cb_buscarAvion.getItems().add("Por matricula");
-
     }
     
     @FXML
@@ -156,40 +164,79 @@ public class VueloController extends Controller implements Initializable {
         try{
             DatosServicios = FXCollections.observableArrayList();
             EstadoVuelo = "-";
-
-            if(cb_filtro.getValue().equals("Id"))      
-                busquedaIndividual();
+            if(cb_filtro.getValue() == null) 
+            {
+                CargaGrafica("Por favor seleccione un filtro");
+            }
             else
-                busquedaLista();    
-
+            {
+                if(cb_filtro.getValue().equals("Id"))      
+                {   
+                    if (txt_buscar.getText().equals("")) 
+                    {CargaGrafica("Por favor complete los campos respectivos");}
+                    else
+                    {busquedaIndividual();}  
+                }
+                else
+                {
+                    if (cb_filtro.getValue().equals("Id del avion") || cb_filtro.getValue().equals("Aeropuerto de destino")) {
+                        
+                        if (txt_buscar.getText().equals(""))
+                        CargaGrafica("Por favor complete los campos respectivos");
+                        else
+                            busquedaLista();
+                    }
+                    else if (cb_filtro.getValue().equals("Estado")) {
+                        
+                        if (cb_filtroEstado.getValue() == null) 
+                        CargaGrafica("Por favor complete los campos respectivos");
+                        else
+                            busquedaLista(); 
+                    }
+                    else if (cb_filtro.getValue().equals("Fecha de llegada") || cb_filtro.getValue().equals("Fecha de salida")) {
+                        
+                        if (datePFechaFinal.getValue() == null || datePFechaInicial.getValue() == null) 
+                        CargaGrafica("Por favor complete los campos respectivos");
+                        else
+                           busquedaLista();  
+                    }
+                }    
             tablaVuelos.setItems(DatosServicios);
+            }     
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(VueloController.class.getName()).log(Level.SEVERE, null, ex);}
     }
      
     private void busquedaIndividual() throws InterruptedException, IOException, ExecutionException {
         long Id = Long.parseLong(txt_buscar.getText());
-        VueloDTO vuelo = VueloWebService.getVueloById(Id, token);
-
-        if (vuelo.getEstado().toString().equals("true")) 
-            EstadoVuelo = "Activo";
-        else 
-            EstadoVuelo = "Inactivo";
+        VueloDTO vuelo_ = VueloWebService.getVueloById(Id, token);
         
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm:ss");
+        if (vuelo_.getId() != null) 
+        {
+            if (vuelo_.getEstado().toString().equals("true")) 
+            {EstadoVuelo = "Activo";}
+            else 
+            {EstadoVuelo = "Inactivo";}
         
-        VueloC vuelo1 = new VueloC(vuelo.getId(),vuelo.getDuracion(),vuelo.getAeropuerto(),
-        vuelo.getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).format(formatter),
-        vuelo.getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter),vuelo.getDistancia(),
-        EstadoVuelo,vuelo.getAvion().getMatricula());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm:ss");
 
-        DatosServicios.add(vuelo1);
+            VueloC vuelo1 = new VueloC(vuelo_.getId(),vuelo_.getDuracion(),vuelo_.getAeropuerto(),
+            vuelo_.getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).format(formatter),
+            vuelo_.getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter),vuelo_.getDistancia(),
+            EstadoVuelo,vuelo_.getAvion().getMatricula());
+
+            DatosServicios.add(vuelo1);
+        }
+        else
+        {CargaGrafica("No se encontraron vuelos");}
     }
      
     private void busquedaLista() throws InterruptedException, IOException, ExecutionException {
         vuelo = null;
 
-        filtoBusqueda();
-
+        filtroBusqueda();
+        
+        if (vuelo.toArray().length != 0) {
+         
         for (int i = 0; i < vuelo.toArray().length; i++) 
         {
             if (vuelo.get(i).getEstado().toString().equals("true")) 
@@ -206,9 +253,12 @@ public class VueloController extends Controller implements Initializable {
 
             DatosServicios.add(vuelo1);
         }
+      }  
+        else 
+        {CargaGrafica("No se encontraron vuelos");}  
     }
      
-    private void filtoBusqueda() throws InterruptedException, IOException, ExecutionException{
+    private void filtroBusqueda() throws InterruptedException, IOException, ExecutionException{
          switch (cb_filtro.getValue()) {
             case "Estado":
                 Boolean Estado = false;
@@ -279,29 +329,43 @@ public class VueloController extends Controller implements Initializable {
     }
     
     @FXML
-    private void modificar(MouseEvent event) {
+    private void modificar(MouseEvent event) {        
         
-        LimpiaBarraInferior();
-        BotonGuardar = true;
-        vb_barraInferior.setPrefHeight(200);
-        vb_barraInferior.setVisible(true);
-        
-        cb_buscarAvion.setValue("Por matricula");
-        
-        txt_distancia.setText(VueloSeleccionado.getDistancia().toString());
-        txt_duracion.setText(VueloSeleccionado.getDuracion().toString());
-        txt_destino.setText(VueloSeleccionado.getAeropuerto());
-        txt_avion.setText(VueloSeleccionado.getAvion().getMatricula());
-        
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        txt_horaSalida.setText(VueloSeleccionado.getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
-        txt_horaLlegada.setText(VueloSeleccionado.getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
-        
-        dpk_fechaLlegada.setValue(VueloSeleccionado.getFechaLlegada().toInstant()
-       .atZone(ZoneId.systemDefault()).toLocalDate());
-        dpk_fechaSalida.setValue(VueloSeleccionado.getFechaSalida().toInstant()
-       .atZone(ZoneId.systemDefault()).toLocalDate());
+        if (VueloSeleccionado.getId() == null) {
+            CargaGrafica("Por favor seleccione un vuelo para modificar");
+        }
+        else
+        {   LimpiaBarraInferior();
+            BotonGuardar = true;
+            vb_barraInferior.setPrefHeight(200);
+            vb_barraInferior.setVisible(true);
+
+            lblModfEstado.setVisible(true);
+            cb_ModfEstado.setVisible(true);
+
+            cb_buscarAvion.setValue("Por matricula");
+
+            if (VueloSeleccionado.getEstado() == true) {
+                cb_ModfEstado.setValue("Activo");
+            }
+            else {
+                cb_ModfEstado.setValue("Inactivo");
+            }
+
+            txt_distancia.setText(VueloSeleccionado.getDistancia().toString());
+            txt_duracion.setText(VueloSeleccionado.getDuracion().toString());
+            txt_destino.setText(VueloSeleccionado.getAeropuerto());
+            txt_avion.setText(VueloSeleccionado.getAvion().getMatricula());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            txt_horaSalida.setText(VueloSeleccionado.getFechaSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+            txt_horaLlegada.setText(VueloSeleccionado.getFechaLlegada().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+
+            dpk_fechaLlegada.setValue(VueloSeleccionado.getFechaLlegada().toInstant()
+           .atZone(ZoneId.systemDefault()).toLocalDate());
+            dpk_fechaSalida.setValue(VueloSeleccionado.getFechaSalida().toInstant()
+           .atZone(ZoneId.systemDefault()).toLocalDate());
+        }  
     }
 
 
@@ -323,50 +387,68 @@ public class VueloController extends Controller implements Initializable {
     
     @FXML
     private void guardar(MouseEvent event) throws ParseException, InterruptedException, ExecutionException, IOException {
-    if (BotonGuardar == false) 
-        {VueloSeleccionado = new VueloDTO();}
-        
-        vb_barraInferior.setPrefHeight(0);
-        vb_barraInferior.setVisible(false);
-
-        String horaSalida = txt_horaSalida.getText();
-        String FechaHoraSalida = dpk_fechaSalida.getValue().toString() + " " + horaSalida;
-        Date dateSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraSalida);  
-        System.out.println("Fecha a insertar: " + dateSalida);
-        
-        String horaLlegada = txt_horaLlegada.getText();
-        String FechaHoraLlegada = dpk_fechaLlegada.getValue().toString() + " " + horaLlegada;
-        Date dateLlegada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraLlegada);  
-        System.out.println("Fecha a insertar: " + dateLlegada);
-            
-        VueloSeleccionado.setFechaSalida(dateSalida);
-        VueloSeleccionado.setFechaLlegada(dateLlegada);
-        
-        long Distancia = Long.parseLong(txt_distancia.getText());
-        float Duracion = Float.parseFloat(txt_duracion.getText());
-        
-        VueloSeleccionado.setAeropuerto(txt_destino.getText());
-        VueloSeleccionado.setDistancia(Distancia);
-        VueloSeleccionado.setDuracion(Duracion);
-        
-        if (cb_buscarAvion.getValue().equals("Por id")) 
+        if (txt_horaSalida.getText().equals("")||dpk_fechaSalida.getValue() == null||txt_horaLlegada.getText().equals("")||dpk_fechaLlegada.getValue() == null||
+                txt_distancia.getText().equals("")||txt_duracion.getText().equals("")||txt_destino.getText().equals("")||cb_buscarAvion.getValue() == null||
+                txt_avion.getText().equals("")||cb_ModfEstado.getValue() == null) 
         {
-            long Id = Long.parseLong(txt_avion.getText());
-            VueloSeleccionado.setAvion(AvionWebService.getAvionById(Id, token));
+           CargaGrafica("Por favor complete los campos necesarios para crear el vuelo");
         }
         else
-        {VueloSeleccionado.setAvion(AvionWebService.getAvionByMatricula(txt_avion.getText(), token).get(0));}
-
-        VueloSeleccionado.setEstado(true);
-        
-        if (BotonGuardar == true) 
-        {VueloWebService.updateVuelo(VueloSeleccionado, VueloSeleccionado.getId(), token);}
-        if (BotonGuardar == false) 
         {
-           VueloWebService.createVuelo(VueloSeleccionado, token);
+         if (BotonGuardar == false) 
+            {VueloSeleccionado = new VueloDTO();}
+
+            String horaSalida = txt_horaSalida.getText();
+            String horaLlegada = txt_horaLlegada.getText();
+            
+            
+            if (horaSalida.toCharArray().length !=8 || horaLlegada.toCharArray().length !=8) {
+                CargaGrafica("Por favor ingrese la hora con el formato correcto\n\nHH:mm:ss\n\nEjemplo: 22:55:10");
+            }
+            else {
+                
+            String FechaHoraSalida = dpk_fechaSalida.getValue().toString() + " " + horaSalida;
+            Date dateSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraSalida);  
+            System.out.println("Fecha a insertar: " + dateSalida);
+            String FechaHoraLlegada = dpk_fechaLlegada.getValue().toString() + " " + horaLlegada;
+            Date dateLlegada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraLlegada);  
+            System.out.println("Fecha a insertar: " + dateLlegada);
+            
+            VueloSeleccionado.setFechaSalida(dateSalida);
+            VueloSeleccionado.setFechaLlegada(dateLlegada);
+
+            long Distancia = Long.parseLong(txt_distancia.getText());
+            float Duracion = Float.parseFloat(txt_duracion.getText());
+
+            VueloSeleccionado.setAeropuerto(txt_destino.getText());
+            VueloSeleccionado.setDistancia(Distancia);
+            VueloSeleccionado.setDuracion(Duracion);
+
+            if (cb_buscarAvion.getValue().equals("Por id")) 
+            {
+                long Id = Long.parseLong(txt_avion.getText());
+                VueloSeleccionado.setAvion(AvionWebService.getAvionById(Id, token));
+            }
+            else
+            {VueloSeleccionado.setAvion(AvionWebService.getAvionByMatricula(txt_avion.getText(), token).get(0));}
+
+            if (BotonGuardar == true) 
+            {   
+                if (cb_ModfEstado.getValue().equals("Activo")) 
+                    VueloSeleccionado.setEstado(true);
+                else
+                    VueloSeleccionado.setEstado(false);
+                
+                VueloWebService.updateVuelo(VueloSeleccionado, VueloSeleccionado.getId(), token); 
+            }
+            if (BotonGuardar == false) 
+            {VueloWebService.createVuelo(VueloSeleccionado, token);}
+
+             LimpiaBarraInferior();
+             vb_barraInferior.setPrefHeight(0);
+             vb_barraInferior.setVisible(false);
+            }
         }
-        
-        LimpiaBarraInferior();    
     }
 
     private void CargaLogicaBusqueda(){
@@ -400,10 +482,11 @@ public class VueloController extends Controller implements Initializable {
         t.start();
     }*/
     
-    private void CargaGrafica(){
+    private void CargaGrafica(String cuerpo){
         Platform.runLater(new Runnable() {
         @Override public void run() {
             
+            msg.alerta(root, "Alerta", cuerpo);
         }
         });
     }
@@ -417,8 +500,11 @@ public class VueloController extends Controller implements Initializable {
         txt_horaSalida.setText("");
         txt_horaLlegada.setText("");
         cb_buscarAvion.setValue(""); 
+        cb_ModfEstado.setValue(""); 
         dpk_fechaLlegada.setValue(null);
-        dpk_fechaSalida.setValue(null);             
+        dpk_fechaSalida.setValue(null);
+        lblModfEstado.setVisible(false);
+        cb_ModfEstado.setVisible(false);
     }
     
     @Data

@@ -36,7 +36,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <JFXTextField fx:id="txt_buscar" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
+                              <JFXTextField fx:id="txt_buscar" disable="true" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets left="20.0" right="10.0" />
                                  </HBox.margin>
@@ -128,8 +128,10 @@
                         <Label alignment="TOP_CENTER" styleClass="label2" text="Destino:" HBox.hgrow="ALWAYS" />
                         <JFXTextField fx:id="txt_destino" prefHeight="30.0" prefWidth="180.0" promptText="Digite el aeropuerto de destino" />
                         <Label styleClass="label2" text="Avión:" />
-                        <JFXComboBox fx:id="cb_buscarAvion" prefHeight="26.0" prefWidth="100.0" promptText="Buscar por:" />
-                        <JFXTextField fx:id="txt_avion" prefHeight="30.0" prefWidth="180.0" promptText="Digite el valor correspondiente" />
+                        <JFXComboBox fx:id="cb_buscarAvion" prefHeight="26.0" prefWidth="158.0" promptText="Buscar por:" />
+                        <JFXTextField fx:id="txt_avion" prefHeight="26.0" prefWidth="121.0" promptText="Digite el valor correspondiente" />
+                        <Label fx:id="lblModfEstado" styleClass="label2" text="Estado:" visible="false" />
+                        <JFXComboBox fx:id="cb_ModfEstado" prefHeight="26.0" prefWidth="100.0" promptText="Estado" visible="false" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">

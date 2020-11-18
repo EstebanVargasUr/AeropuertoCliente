@@ -18,7 +18,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.UsuarioController">
    <children>
       <VBox alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" styleClass="Pane">
@@ -37,7 +36,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="633.0" spacing="10.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <JFXTextField fx:id="txt_buscar" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
+                              <JFXTextField fx:id="txt_buscar" disable="true" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets left="20.0" />
                                  </HBox.margin>
@@ -84,16 +83,16 @@
                      <children>
                         <TableView fx:id="tablaUsuarios" onMouseClicked="#tablaUsuariosClicked" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="tbc_id" prefWidth="112.79997861385345" text="ID" />
-                              <TableColumn fx:id="tbc_cedula" prefWidth="75.0" text="Cédula" />
-                              <TableColumn fx:id="tbc_nombre" minWidth="0.0" prefWidth="136.00006103515625" text="Nombre" />
-                              <TableColumn fx:id="tbc_telefono" minWidth="0.0" prefWidth="136.00006103515625" text="Teléfono" />
-                              <TableColumn fx:id="tbc_areaTrabajo" prefWidth="98.40003204345703" text="Area Trabajo" />
-                              <TableColumn fx:id="tbc_jefe" prefWidth="75.0" text="Jefe Directo" />
-                              <TableColumn fx:id="tbc_rol" prefWidth="88.79998779296875" text="Rol" />
-                              <TableColumn fx:id="tbc_fechaRegistro" prefWidth="94.4000244140625" text="Fecha Registro" />
-                              <TableColumn fx:id="tbc_fechaModificacion" prefWidth="94.40005493164062" text="Fecha Modificación" />
-                              <TableColumn fx:id="tbc_estado" minWidth="0.0" prefWidth="98.39996337890625" text="Estado" />
+                              <TableColumn fx:id="tbc_id" prefWidth="112.79997861385345" style="-fx-alignment: center;" text="ID" />
+                              <TableColumn fx:id="tbc_cedula" prefWidth="75.0" style="-fx-alignment: center;" text="Cédula" />
+                              <TableColumn fx:id="tbc_nombre" minWidth="0.0" prefWidth="136.00006103515625" style="-fx-alignment: center;" text="Nombre" />
+                              <TableColumn fx:id="tbc_telefono" minWidth="0.0" prefWidth="136.00006103515625" style="-fx-alignment: center;" text="Teléfono" />
+                              <TableColumn fx:id="tbc_areaTrabajo" prefWidth="98.40003204345703" style="-fx-alignment: center;" text="Area Trabajo" />
+                              <TableColumn fx:id="tbc_jefe" prefWidth="75.0" style="-fx-alignment: center;" text="Jefe Directo" />
+                              <TableColumn fx:id="tbc_rol" prefWidth="88.79998779296875" style="-fx-alignment: center;" text="Rol" />
+                              <TableColumn fx:id="tbc_fechaRegistro" prefWidth="94.4000244140625" style="-fx-alignment: center;" text="Fecha Registro" />
+                              <TableColumn fx:id="tbc_fechaModificacion" prefWidth="94.40005493164062" style="-fx-alignment: center;" text="Fecha Modificación" />
+                              <TableColumn fx:id="tbc_estado" minWidth="0.0" prefWidth="98.39996337890625" style="-fx-alignment: center;" text="Estado" />
                               <TableColumn fx:id="tbc_horario" minWidth="0.0" prefWidth="98.39996337890625" style="-fx-alignment: center;" text="Horario" />
                               <TableColumn fx:id="tbc_modificar" minWidth="0.0" prefWidth="98.39996337890625" style="-fx-alignment: center;" text="Modificar" />
                            </columns>

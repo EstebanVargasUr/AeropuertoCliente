@@ -39,20 +39,25 @@ public class AerolineaWebService {
     }
 
     public static AerolineaDTO getAerolineaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
-    {
+    {   
+        AerolineaDTO bean=new AerolineaDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-        AerolineaDTO bean=new AerolineaDTO();
-
+        
         if(response.get().statusCode() == 500)
             System.out.println("Aerolinea No Encontrada");
 
         else
         {
-            bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
-            System.out.println(bean);
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen aerolineas con este Id");
+            }
+            else{
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
+                System.out.println(bean);
+            }
         }
         response.join();
         return bean;

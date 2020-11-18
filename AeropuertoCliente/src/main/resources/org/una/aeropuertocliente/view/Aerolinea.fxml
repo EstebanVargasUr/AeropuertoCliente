@@ -17,7 +17,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.AerolineaController">
    <children>
       <VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane">
@@ -36,7 +35,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <JFXTextField fx:id="txt_buscar" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
+                              <JFXTextField fx:id="txt_buscar" disable="true" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets left="20.0" />
                                  </HBox.margin>
@@ -110,26 +109,26 @@
                <children>
                   <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label styleClass="label2" text="Nombre:" HBox.hgrow="ALWAYS" />
+                        <Label prefHeight="23.0" prefWidth="82.0" styleClass="label2" text="Nombre:" HBox.hgrow="ALWAYS" />
                         <JFXTextField fx:id="txt_nombre" prefHeight="30.0" prefWidth="200.0" promptText="Digite el nombre de la aerolinea" HBox.hgrow="ALWAYS" />
-                        <Label styleClass="label2" text="Encargado:" HBox.hgrow="ALWAYS" />
+                        <Label prefHeight="23.0" prefWidth="105.0" styleClass="label2" text="Encargado:" HBox.hgrow="ALWAYS" />
                         <JFXTextField fx:id="txt_encargado" prefHeight="30.0" prefWidth="250.0" promptText="Digite el nombre del encargado" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                         </JFXTextField>
-                        <Label styleClass="label2" text="Estado:" HBox.hgrow="ALWAYS" />
-                        <JFXComboBox fx:id="cb_estado" prefHeight="26.0" prefWidth="90.0" promptText="Elija estado" HBox.hgrow="ALWAYS" />
-                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onMouseClicked="#cancelar" prefHeight="49.0" prefWidth="215.0" text="Cancelar" HBox.hgrow="ALWAYS">
+                        <Label prefHeight="23.0" prefWidth="72.0" styleClass="label2" text="Estado:" HBox.hgrow="ALWAYS" />
+                        <JFXComboBox fx:id="cb_estado" prefHeight="26.0" prefWidth="112.0" promptText="Elija estado" HBox.hgrow="ALWAYS" />
+                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onMouseClicked="#cancelar" prefHeight="30.0" prefWidth="140.0" text="Cancelar" HBox.hgrow="ALWAYS">
                            <styleClass>
                               <String fx:value="jfx-buttonStandard1" />
                               <String fx:value="label2" />
                            </styleClass>
                            <HBox.margin>
-                              <Insets left="50.0" />
+                              <Insets left="30.0" />
                            </HBox.margin>
                         </JFXButton>
-                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onMouseClicked="#guardar" prefHeight="49.0" prefWidth="215.0" text="Guardar" HBox.hgrow="ALWAYS">
+                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onMouseClicked="#guardar" prefHeight="30.0" prefWidth="140.0" text="Guardar" HBox.hgrow="ALWAYS">
                            <styleClass>
                               <String fx:value="jfx-buttonStandard1" />
                               <String fx:value="label2" />

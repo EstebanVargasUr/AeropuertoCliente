@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.DTOs.VueloDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -28,7 +27,7 @@ public class VueloWebService {
 
     public static VueloDTO getVueloById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        VueloDTO bean = null;
+        VueloDTO bean = new VueloDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -39,8 +38,13 @@ public class VueloWebService {
 
         else
         {
-            bean = JSONUtils.covertFromJsonToObject(response.get().body(), VueloDTO.class);
-            System.out.println(bean);
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen vuelos con este Id");
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), VueloDTO.class);
+                System.out.println(bean);
+            }
         }
         response.join();
         return bean;

@@ -41,6 +41,7 @@ import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.WebService.PrecioWebService;
 import org.una.aeropuertocliente.WebService.TipoServicioWebService;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -93,8 +94,9 @@ public class ServicioController extends Controller implements  Initializable {
     final ToggleGroup GrEstadoCobro = new ToggleGroup();       
     public static ObservableList<ServicioP> DatosServicios;
     List<ServicioDTO> servicio;
-    ServicioDTO ServicioSeleccionado;
+    ServicioDTO ServicioSeleccionado = new ServicioDTO();
     boolean BotonGuardar = false;
+    Mensaje msg = new Mensaje();
     String EstadoServicio;
     String EstadoCobro; 
     String token;
@@ -195,37 +197,77 @@ public class ServicioController extends Controller implements  Initializable {
         EstadoServicio = "-";
         EstadoCobro = "-"; 
         try{
-            if(cb_filtro.getValue().equals("Id")) 
-               busquedaIndividual();
-            else 
-                busquedaLista();
-
+            if(cb_filtro.getValue() == null) 
+            {
+                CargaGraficaMsg("Por favor seleccione un filtro");
+            }
+            else
+            {
+                if(cb_filtro.getValue().equals("Id"))      
+                {   
+                    if (txt_buscar.getText().equals("")) 
+                    {CargaGraficaMsg("Por favor complete los campos respectivos");}
+                    else
+                    {busquedaIndividual();}
+                }
+                else
+                {
+                    if (cb_filtro.getValue().equals("Id del avion") || cb_filtro.getValue().equals("Id del tipo de servicio")) {
+                        if (txt_buscar.getText().equals("")) 
+                        {CargaGraficaMsg("Por favor complete los campos respectivos");}
+                        else
+                        {busquedaLista();}
+                    }
+                    if (cb_filtro.getValue().equals("Id del tipo de servicio y Id del avion")) {
+                        if (txt_buscar.getText().equals("") || txt_buscarIdAvion.getText().equals("")) 
+                        {CargaGraficaMsg("Por favor complete los campos respectivos");}
+                        else
+                        {busquedaLista();}
+                    }
+                    if (cb_filtro.getValue().equals("Estado")||cb_filtro.getValue().equals("Estado del cobro")) {
+                        if (cb_filtroEstado.getValue()==null) 
+                        {CargaGraficaMsg("Por favor complete los campos respectivos");}
+                        else
+                        {busquedaLista();}
+                    }
+                    if (cb_filtro.getValue().equals("Fecha de registro")) {
+                        if (datePFechaFinal.getValue() == null || datePFechaInicial.getValue() == null) 
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                        {busquedaLista();}  
+                    }
+                }
             tablaServicios.setItems(DatosServicios);
+            }
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(ServicioController.class.getName()).log(Level.SEVERE, null, ex);}
     }
     
     private void busquedaIndividual() throws InterruptedException, IOException, ExecutionException {
         long Id = Long.parseLong(txt_buscar.getText());
-        ServicioDTO servicio = ServicioWebService.getServicioById(Id, token);
+        ServicioDTO servicio_ = ServicioWebService.getServicioById(Id, token);
+        
+        if (servicio_.getId() != null) {
+            if (servicio_.getEstado().toString().equals("true")) 
+            EstadoServicio = "Activo";
+            else EstadoServicio = "Inactivo";
+            if (servicio_.getEstadoCobro().toString().equals("true")) 
+            EstadoCobro = "Activo";
+            else EstadoCobro = "Inactivo";
 
-        if (servicio.getEstado().toString().equals("true")) 
-        EstadoServicio = "Activo";
-        else EstadoServicio = "Inactivo";
-        if (servicio.getEstadoCobro().toString().equals("true")) 
-        EstadoCobro = "Activo";
-        else EstadoCobro = "Inactivo";
+            ServicioP servicio1 = new ServicioP(servicio_.getId(),servicio_.getTipoServicio().getNombre(),servicio_.getTipoServicio().getDuracion(),
+            servicio_.getFactura(),servicio_.getNombreResponsable(),servicio_.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+            servicio_.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoServicio,EstadoCobro);
 
-        ServicioP servicio1 = new ServicioP(servicio.getId(),servicio.getTipoServicio().getNombre(),servicio.getTipoServicio().getDuracion(),
-        servicio.getFactura(),servicio.getNombreResponsable(),servicio.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-        servicio.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoServicio,EstadoCobro);
-
-        DatosServicios.add(servicio1);
+            DatosServicios.add(servicio1);
+        }
+        else
+        {CargaGraficaMsg("No se encontraron servicios");}    
     }
     
     private void busquedaLista() throws InterruptedException, IOException, ExecutionException {
-        servicio = null;
-            
-        if (cb_filtro.getValue().equals("Estado")) {
+            servicio = null;
+ 
+            if (cb_filtro.getValue().equals("Estado")) {
             Boolean Estado = false;
             if (cb_filtroEstado.getValue().equals("Activo")) 
             {Estado = true;}
@@ -233,37 +275,43 @@ public class ServicioController extends Controller implements  Initializable {
             {Estado = false;}
 
             servicio = ServicioWebService.getServicioByEstado(Estado, token);
+            }
+            
+            if (cb_filtro.getValue().equals("Estado del cobro")) {
+                Boolean Estado = false;
+                if (cb_filtroEstado.getValue().equals("Activo")) 
+                {Estado = true;}
+                else
+                {Estado = false;}
+
+                servicio = ServicioWebService.getServicioByEstadoCobro(Estado, token);
+            }
+            
+            filtroBusqueda();
+            
+            if (servicio.toArray().length != 0) {
+                
+            for (int i = 0; i < servicio.toArray().length; i++) 
+            {
+                if (servicio.get(i).getEstado().toString().equals("true")) 
+                EstadoServicio = "Activo";
+                else EstadoServicio = "Inactivo";
+                if (servicio.get(i).getEstadoCobro().toString().equals("true")) 
+                EstadoCobro = "Activo";
+                else EstadoCobro = "Inactivo";
+
+                ServicioP servicio1 = new ServicioP(servicio.get(i).getId(),servicio.get(i).getTipoServicio().getNombre(),servicio.get(i).getTipoServicio().getDuracion(),
+                servicio.get(i).getFactura(),servicio.get(i).getNombreResponsable(),servicio.get(i).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+                servicio.get(i).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoServicio,EstadoCobro);
+
+                DatosServicios.add(servicio1);
+            }
         }
-        if (cb_filtro.getValue().equals("Estado del cobro")) {
-            Boolean Estado = false;
-            if (cb_filtroEstado.getValue().equals("Activo")) 
-            {Estado = true;}
-            else
-            {Estado = false;}
-
-            servicio = ServicioWebService.getServicioByEstadoCobro(Estado, token);
-        }
-        
-        filtoBusqueda();
-
-        for (int i = 0; i < servicio.toArray().length; i++) 
-        {
-            if (servicio.get(i).getEstado().toString().equals("true")) 
-            EstadoServicio = "Activo";
-            else EstadoServicio = "Inactivo";
-            if (servicio.get(i).getEstadoCobro().toString().equals("true")) 
-            EstadoCobro = "Activo";
-            else EstadoCobro = "Inactivo";
-
-            ServicioP servicio1 = new ServicioP(servicio.get(i).getId(),servicio.get(i).getTipoServicio().getNombre(),servicio.get(i).getTipoServicio().getDuracion(),
-            servicio.get(i).getFactura(),servicio.get(i).getNombreResponsable(),servicio.get(i).getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-            servicio.get(i).getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoServicio,EstadoCobro);
-
-            DatosServicios.add(servicio1);
-        }
+        else 
+        {CargaGraficaMsg("No se encontraron servicios");}  
     }
     
-    private void filtoBusqueda() throws InterruptedException, IOException, ExecutionException{
+    private void filtroBusqueda() throws InterruptedException, IOException, ExecutionException{
          switch (cb_filtro.getValue()) {
             case "Id del tipo de servicio":
             {
@@ -331,8 +379,7 @@ public class ServicioController extends Controller implements  Initializable {
     @FXML
     private void tablaServiciosClic(MouseEvent event) {
         if(tablaServicios.getSelectionModel().getSelectedItem() != null)
-            CargaLogicaAvionPrecio();
-        
+            CargaLogicaAvionPrecio(); 
     }
     
     private void RealizarBusquedaAvionPrecio(){
@@ -397,27 +444,32 @@ public class ServicioController extends Controller implements  Initializable {
     }
     @FXML
     private void modificarServicio(MouseEvent event) {
-        LimpiaBarraInferior();
-        BotonGuardar = true;
-        vb_barraInferior.setPrefHeight(200);
-        vb_barraInferior.setVisible(true);
-        
-        txt_factura.setText(ServicioSeleccionado.getFactura());
-        txt_responsable.setText(ServicioSeleccionado.getNombreResponsable());
-        txt_observacionesInferior.setText(ServicioSeleccionado.getObservacion());
-        
-        if (ServicioSeleccionado.getEstado().toString().equals("true")) 
-            rb_ESActivo.setSelected(true);
-        else
-            rb_ESInactivo.setSelected(true);
-        
-        if (ServicioSeleccionado.getEstadoCobro().toString().equals("true")) 
-            rb_ECActivo.setSelected(true);
-        else
-            rb_ECInactivo.setSelected(true);
-        
-        cb_tipoServicio.setValue(ServicioSeleccionado.getTipoServicio().getNombre());
-        cb_buscarAvion.setValue("Por id");  txt_avion.setText(ServicioSeleccionado.getId().toString());
+        if (ServicioSeleccionado.getId() == null) {
+            CargaGraficaMsg("Por favor seleccione un servicio para modificar");
+        }
+        else{
+            LimpiaBarraInferior();
+            BotonGuardar = true;
+            vb_barraInferior.setPrefHeight(200);
+            vb_barraInferior.setVisible(true);
+
+            txt_factura.setText(ServicioSeleccionado.getFactura());
+            txt_responsable.setText(ServicioSeleccionado.getNombreResponsable());
+            txt_observacionesInferior.setText(ServicioSeleccionado.getObservacion());
+
+            if (ServicioSeleccionado.getEstado().toString().equals("true")) 
+                rb_ESActivo.setSelected(true);
+            else
+                rb_ESInactivo.setSelected(true);
+
+            if (ServicioSeleccionado.getEstadoCobro().toString().equals("true")) 
+                rb_ECActivo.setSelected(true);
+            else
+                rb_ECInactivo.setSelected(true);
+
+            cb_tipoServicio.setValue(ServicioSeleccionado.getTipoServicio().getNombre());
+            cb_buscarAvion.setValue("Por id");  txt_avion.setText(ServicioSeleccionado.getId().toString());
+        } 
     }
  
     
@@ -430,7 +482,16 @@ public class ServicioController extends Controller implements  Initializable {
 
     @FXML
     private void guardar(MouseEvent event) {
-        CargaLogicaGuardar();
+        
+        if (!rb_ECInactivo.isSelected() && !rb_ECActivo.isSelected()||!rb_ECInactivo.isSelected() && !rb_ECActivo.isSelected()||
+                !rb_ESInactivo.isSelected() && !rb_ESActivo.isSelected()||!rb_ESInactivo.isSelected() && !rb_ESActivo.isSelected()||
+                txt_factura.getText().equals("")||txt_observacionesInferior.getText().equals("")||txt_responsable.getText().equals("")||
+                cb_tipoServicio.getValue() == null||cb_buscarAvion.getValue() == null||txt_avion.getText().equals("")) 
+        {
+           CargaGraficaMsg("Por favor complete los campos necesarios para crear el servicio");
+        }
+        else
+            CargaLogicaGuardar();
     }
     
     private void RealizarGuardar() {
@@ -544,6 +605,15 @@ public class ServicioController extends Controller implements  Initializable {
         @Override public void run() {
             LimpiaBarraInferior();
             LimpiaDatos();
+        }
+        });
+    }
+    
+    private void CargaGraficaMsg(String cuerpo){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
+            
+            msg.alerta(root, "Alerta", cuerpo);
         }
         });
     }

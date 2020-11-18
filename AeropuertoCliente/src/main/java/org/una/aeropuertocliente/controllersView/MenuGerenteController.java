@@ -2,6 +2,8 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
@@ -11,6 +13,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -20,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.WebService.HoraMarcajeWebService;
@@ -41,13 +46,12 @@ public class MenuGerenteController extends Controller implements Initializable {
     @FXML private Label lbl_ultimaHora2;
     @FXML private Label lbl_ultimaHora;
      
-    private final UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
-    private final String token = FlowController.getInstance().authenticationResponse.getJwt();
+    UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
+    String token = FlowController.getInstance().authenticationResponse.getJwt();
+    Mensaje msg = new Mensaje();
+    int TipoMarcaje = 0; // 1 = Entrada | 2 = Salida
     private final Mensaje mensaje = new Mensaje();
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ModificarFormaCargando();
@@ -107,18 +111,35 @@ public class MenuGerenteController extends Controller implements Initializable {
        }
        });
     }
+    
+    private void CargaGraficaMsgConfimar(String cuerpo){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
 
+            MsgConfirmarMarcaje("Confirmación", cuerpo);
+
+       }
+       });
+    }
+   
     @FXML
     private void averia(MouseEvent event) {
-         mensaje.reporteAveria(root, cargando);
+         mensaje.reporteAveria(root, cargando);}
+    
+    @FXML
+    private void marcarEntrada(MouseEvent event) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
+        TipoMarcaje = 1;
+        CargaGraficaMsgConfimar("¿Desea realizar el marcaje de la entrada?"); 
     }
 
     @FXML
-    private void marcarEntrada(MouseEvent event) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Información");
-        
+    private void marcarSalida(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
+        TipoMarcaje = 2;
+        CargaGraficaMsgConfimar("¿Desea realizar el marcaje de la salida?");
+    }
+    
+    private void MarcaEntrada() throws InterruptedException, ExecutionException, JsonProcessingException, IOException 
+    {     
         HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
         UltimaHoraMarcaje = HoraMarcajeWebService.getUltimaHoraMarcajeByUsuarioId(usuario.getId(), token);
         
@@ -129,21 +150,13 @@ public class MenuGerenteController extends Controller implements Initializable {
             HoraMarcajeWebService.createHoraMarcaje(horaMarcaje, usuario, token);
         }
         else
-        {
-           
-            alert.setContentText("YA SE MARCÓ HORA DE ENTRADA");
-            alert.showAndWait();
-        }
+        {msg.alerta(root, "Información", "Ya existe una hora de entrada en el sistema");}
         
         MostrarUltimaHoraMarcaje();
     }
-
-    @FXML
-    private void marcarSalida(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Información");
-         
+    
+    private void MarcaSalida() throws InterruptedException, ExecutionException, IOException 
+    {
         HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
         UltimaHoraMarcaje = HoraMarcajeWebService.getUltimaHoraMarcajeByUsuarioId(usuario.getId(), token);
         
@@ -152,11 +165,7 @@ public class MenuGerenteController extends Controller implements Initializable {
             HoraMarcajeWebService.updateHoraMarcaje(UltimaHoraMarcaje, UltimaHoraMarcaje.getId(), token);
         }
         else
-        {
-            alert.setContentText("YA SE MARCÓ HORA DE SALIDA");
-            alert.showAndWait();
-            
-        } 
+        {msg.alerta(root, "Información", "Ya existe una hora de salida resgistrada en el sistema");}
         
         MostrarUltimaHoraMarcaje();
     }
@@ -196,4 +205,45 @@ public class MenuGerenteController extends Controller implements Initializable {
     private void alertasNotificaciones(MouseEvent event) {
     }
     
+    private void MsgConfirmarMarcaje(String titulo,String cuerpo)
+    {
+        JFXDialogLayout contenido = new JFXDialogLayout();
+        contenido.setHeading(new Text(titulo));
+        contenido.setBody(new Text(cuerpo));
+        JFXDialog dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
+        JFXButton botonAceptar = new JFXButton("Aceptar");
+        JFXButton botonCancelar = new JFXButton("Cancelar");
+        
+        botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                
+                try {
+                    
+                    if (TipoMarcaje == 1) {
+                        MarcaEntrada();
+                    }
+                    if (TipoMarcaje == 2) {
+                        MarcaSalida();
+                    }
+                    
+                    TipoMarcaje = 0;
+                    
+                } catch (InterruptedException | ExecutionException | IOException ex) {
+                    Logger.getLogger(MenuGestorController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                dialogo.close();
+            }
+        });
+        
+        botonCancelar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                dialogo.close();
+            }
+        });
+        contenido.setActions(botonAceptar,botonCancelar);
+        dialogo.show();
+    }
 }

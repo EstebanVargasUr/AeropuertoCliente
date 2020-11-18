@@ -42,6 +42,7 @@ import org.una.aeropuertocliente.WebService.AreaTrabajoWebService;
 import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.controllersView.AerolineaController.AerolineaC;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -84,6 +85,7 @@ public class AvionController extends Controller implements Initializable {
     public static ObservableList<AvionC> DatosAviones;
     private AuthenticationResponse authenticationResponse;
     private AvionC AvionSeleccionado;
+    Mensaje msg = new Mensaje();
     boolean BotonGuardar;
     String EstadoAvion;
     
@@ -100,8 +102,9 @@ public class AvionController extends Controller implements Initializable {
     @Override
     public void initialize() {
         authenticationResponse = FlowController.getInstance().authenticationResponse;
-        cb_filtro.setValue("AerolineaId");
+        cb_filtro.setValue("Id de la Aerolinea");
         txt_buscar.setText(aerolineaActual.getId()+"");
+        CargaLogicaBusqueda();
         root.styleProperty().set("-fx-background-color: #4AB19D");    
         ModoDesarrollador();
     }
@@ -153,7 +156,7 @@ public class AvionController extends Controller implements Initializable {
         cb_filtro.getItems().add("Tipo");
         cb_filtro.getItems().add("Fecha de Registro");
         cb_filtro.getItems().add("Estado");
-        cb_filtro.getItems().add("AerolineaId");
+        cb_filtro.getItems().add("Id de la Aerolinea");
         
         cb_filtroEstado.getItems().add("Activo");
         cb_filtroEstado.getItems().add("Inactivo");
@@ -191,29 +194,68 @@ public class AvionController extends Controller implements Initializable {
         DatosAviones = FXCollections.observableArrayList();
         EstadoAvion = "Inactivo";    
         try{
-            if(cb_filtro.getValue().equals("Id"))      
-                busquedaIndividual();
+            if(cb_filtro.getValue() == null) 
+            {
+                CargaGraficaMsg("Por favor seleccione un filtro");
+            }
             else
-                busquedaLista();
-            
+            {
+                if(cb_filtro.getValue().equals("Id"))      
+                {   
+                    if (txt_buscar.getText().equals("")) 
+                    {CargaGraficaMsg("Por favor complete los campos respectivos");}
+                    else
+                    {busquedaIndividual();}
+                }
+                else
+                {
+                    if (cb_filtro.getValue().equals("Matricula") || cb_filtro.getValue().equals("Tipo") || cb_filtro.getValue().equals("Id de la Aerolinea")) {
+                        
+                        if (txt_buscar.getText().equals(""))
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                            busquedaLista();
+                    }
+                    else if (cb_filtro.getValue().equals("Estado")) {
+                        
+                        if (cb_filtroEstado.getValue() == null) 
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                            busquedaLista(); 
+                    }
+                    else if (cb_filtro.getValue().equals("Fecha de Registro")) {
+                        
+                        if (dP_FechaInicial.getValue() == null || dp_FechaFinal.getValue() == null) 
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                           busquedaLista();  
+                    }
+                }
             tablaAviones.setItems(DatosAviones);
+            }       
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AvionController.class.getName()).log(Level.SEVERE, null, ex);}
     }
     
     private void busquedaIndividual() throws InterruptedException, IOException, ExecutionException {
-        AvionDTO avion;
-        long Id = Long.parseLong(txt_buscar.getText());    
-        avion = AvionWebService.getAvionById(Id, authenticationResponse.getJwt());
+       
+        long Id = Long.parseLong(txt_buscar.getText());
+        AvionDTO avion = AvionWebService.getAvionById(Id, authenticationResponse.getJwt());
         AreaTrabajoAvionDTO avionTrabajo = AreaTrabajoAvionWebService.getAreaTrabajoAvionById(Id, authenticationResponse.getJwt());
 
-        if (avion.getEstado().toString().equals("true")) 
-            EstadoAvion = "Activo";
+        if (avion.getId() != null) {
+            if (avion.getEstado().toString().equals("true")) 
+            {EstadoAvion = "Activo";}
+            else
+            {EstadoAvion = "Inactivo";}
 
-        AvionC avion1 = new AvionC(avion.getId(),avion.getMatricula(),avion.getTipoAvion(),avion.getAerolinea().getNombreAerolinea(),avion.getRecorrido()+"",
-        avion.getRecorridoMaximo()+"",avionTrabajo.getAreaTrabajo().getNombreArea(),avion.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-        avion.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,new JFXButton("Modificar"));
+            AvionC avion1 = new AvionC(avion.getId(),avion.getMatricula(),avion.getTipoAvion(),avion.getAerolinea().getNombreAerolinea(),avion.getRecorrido()+"",
+            avion.getRecorridoMaximo()+"",avionTrabajo.getAreaTrabajo().getNombreArea(),avion.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+            avion.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,new JFXButton("Modificar"));
 
-        DatosAviones.add(avion1);
+            DatosAviones.add(avion1);
+        }
+        else 
+        {CargaGraficaMsg("No se encontraron aviones");}    
     }
     
     private void busquedaLista() throws InterruptedException, IOException, ExecutionException {
@@ -249,16 +291,19 @@ public class AvionController extends Controller implements Initializable {
                 ListaAvion = AvionWebService.getAvionByFechaRegistroBetween(inicio,fin, authenticationResponse.getJwt());
             break;
 
-            case "AerolineaId":
+            case "Id de la Aerolinea":
                 ListaAvion = AvionWebService.getAvionByAerolineaId(txt_buscar.getText(), authenticationResponse.getJwt());
             break;
             default:
                 break;
 
         }
-        for(AvionDTO avion : ListaAvion) {
+        if (ListaAvion.toArray().length != 0) {
+            for(AvionDTO avion : ListaAvion) {
             if(avion.getEstado().toString().equals("true")) 
-                EstadoAvion = "Activo";
+            {EstadoAvion = "Activo";}
+            else
+            {EstadoAvion = "Inactivo";}
 
             AreaTrabajoAvionDTO avionTrabajo = AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId(avion.getId(), authenticationResponse.getJwt());
 
@@ -267,7 +312,10 @@ public class AvionController extends Controller implements Initializable {
             avion.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAvion,new JFXButton("Modificar"));
 
             DatosAviones.add(avion1);
+            }
         }
+        else
+        {CargaGraficaMsg("No se encontraron los aviones");}  
     }
      
     @FXML
@@ -299,13 +347,18 @@ public class AvionController extends Controller implements Initializable {
             vb_barraInferior.setPrefSize(0, 0);
             vb_barraInferior.setMinSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
             vb_barraInferior.setVisible(false);
-        }
-            
+        }  
     }
     
     @FXML
     private void guardar(MouseEvent event) {
-        CargaLogicaGuardar();
+        if (txt_matricula.getText().equals("")||txt_recorridoMax.getText().equals("")||txt_aerolinea.getText().equals("")||
+        cb_estado.getValue() == null||cb_aerolinea.getValue() == null|| cb_tipo.getValue() == null|| cb_zonaActual.getValue() == null) 
+        {
+           CargaGraficaMsg("Por favor complete los campos necesarios para registrar el avión");
+        }
+        else
+        {CargaLogicaGuardar();}
     }
     
     private void RealizarGuardar() {
@@ -317,16 +370,16 @@ public class AvionController extends Controller implements Initializable {
             Boolean Estado;
 
             if(cb_aerolinea.getValue().equals("Nombre"))
-               aerolinea = AerolineaWebService.getAerolineaByNombreAerolinea(txt_aerolinea.getText(), authenticationResponse.getJwt()).get(0);
+            {aerolinea = AerolineaWebService.getAerolineaByNombreAerolinea(txt_aerolinea.getText(), authenticationResponse.getJwt()).get(0);}
             else if(cb_aerolinea.getValue().equals("Id"))
-               aerolinea = AerolineaWebService.getAerolineaById(Long.parseLong(txt_aerolinea.getText()), authenticationResponse.getJwt());
-
+            {aerolinea = AerolineaWebService.getAerolineaById(Long.parseLong(txt_aerolinea.getText()), authenticationResponse.getJwt());}
+            
             if(cb_estado.getValue().equals("Activo")) 
-                Estado = true;
+            {Estado = true;}
             else
-                Estado = false;
-
-            avionAccion.setEstado(Estado);        
+            {Estado = false;}
+            
+            avionAccion.setEstado(Estado); 
             avionAccion.setMatricula(txt_matricula.getText());
             avionAccion.setTipoAvion(cb_tipo.getValue());
             avionAccion.setRecorrido(0);
@@ -428,6 +481,15 @@ public class AvionController extends Controller implements Initializable {
         @Override public void run() {    
             LimpiaBarraInferior();
             LimpiaDatos();
+        }
+        });
+    }
+    
+    private void CargaGraficaMsg(String cuerpo){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
+            
+            msg.alerta(root, "Alerta", cuerpo);
         }
         });
     }
