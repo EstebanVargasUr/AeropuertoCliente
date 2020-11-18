@@ -78,6 +78,7 @@ public class MenuAdministradorController extends Controller implements Initializ
 
     @FXML
     private void reportesAverias(MouseEvent event) {
+        FlowController.getInstance().goView("ReporteSoporteTecnico");
     }
 
     @FXML

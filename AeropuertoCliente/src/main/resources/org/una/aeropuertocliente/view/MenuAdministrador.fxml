@@ -102,7 +102,7 @@
                                     <Image url="@../resources/ReportesAverias.png" />
                                  </image>
                                  <effect>
-                                    <ColorAdjust saturation="0.3" />
+                                    <ColorAdjust saturation="0.2" />
                                  </effect>
                               </ImageView>
                            </graphic>
