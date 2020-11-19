@@ -2,6 +2,9 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
@@ -16,11 +19,13 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -30,11 +35,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.DTOs.UsuarioAreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.WebService.AreaTrabajoWebService;
+import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.RolWebService;
 import org.una.aeropuertocliente.WebService.UsuarioAreaTrabajoWebService;
 import org.una.aeropuertocliente.WebService.UsuarioWebService;
@@ -83,6 +90,10 @@ public class UsuarioController extends Controller implements Initializable {
     boolean BotonGuardar;
     private String EstadoUsuario, JefeUsuario, RolUsuario, AreaTrabajo;
     private List<UsuarioDTO> ListaUsuario;
+    private JFXDialogLayout contenido = new JFXDialogLayout();
+    private JFXDialog dialogo;
+    private JFXTextField cedula;
+    private JFXPasswordField password;
     Mensaje msg = new Mensaje();
     
     @Override
@@ -217,7 +228,7 @@ public class UsuarioController extends Controller implements Initializable {
            {EstadoUsuario = "Activo";}
 
             if(usuario.getUsuarioJefe() != null)
-            {JefeUsuario = usuario.getUsuarioJefe().getNombreCompleto();}
+            {JefeUsuario = usuario.getUsuarioJefe().getCedula();}
 
             if(usuario.getRol() != null)
             {RolUsuario = usuario.getRol().getNombre();}
@@ -248,7 +259,9 @@ public class UsuarioController extends Controller implements Initializable {
                 EstadoUsuario = "Activo";
 
             if(usuario.getUsuarioJefe() != null)
-                JefeUsuario = usuario.getUsuarioJefe().getNombreCompleto();
+                JefeUsuario = usuario.getUsuarioJefe().getCedula();
+                else
+                    JefeUsuario = "Sin Jefe";
 
             if(usuario.getRol() != null)
                 RolUsuario = usuario.getRol().getNombre();
@@ -338,10 +351,10 @@ public class UsuarioController extends Controller implements Initializable {
         if (txt_cedula.getText().equals("")||txt_nombre.getText().equals("")||txt_telefono.getText().equals("")||
         txt_cedulaJefe.getText().equals("")||cb_areaTrabajo.getValue() == null) 
         {
-           CargaGraficaMsg("Por favor complete los campos necesarios para crear el vuelo");
+           CargaGraficaMsg("Por favor complete los campos necesarios para crear el usuario");
         }
         else{
-            CargaLogicaGuardar();
+            loginEncargado();
         }
     }
     
@@ -356,11 +369,12 @@ public class UsuarioController extends Controller implements Initializable {
             usuarioAccion.setTelefono(txt_telefono.getText());
        
             if(!txt_cedulaJefe.getText().equals("Sin Jefe"))
-                usuarioAccion.setUsuarioJefe(UsuarioWebService.getUsuarioByNombreCompletoAproximateIgnoreCase(txt_cedulaJefe.getText(), authenticationResponse.getJwt()).get(0));
+                usuarioAccion.setUsuarioJefe(UsuarioWebService.getUsuarioByCedulaAproximate(txt_cedulaJefe.getText(), authenticationResponse.getJwt()).get(0));
             if(!cb_rol.getValue().equals("Empleado"))
                 usuarioAccion.setRol(RolWebService.getRolByNombre(cb_rol.getValue(), authenticationResponse.getJwt()).get(0));
             if(!BotonGuardar) {
                 usuarioAccion.setId(UsuarioSeleccionado.getId());
+                System.out.println(UsuarioSeleccionado.getId());
                 UsuarioWebService.updateUsuario(usuarioAccion, UsuarioSeleccionado.getId(), authenticationResponse.getJwt());
                 UsuarioAreaTrabajoWebService.updateUsuarioAreaTrabajo(areaTrabajo, usuarioAccion, UsuarioAreaTrabajoWebService.getUsuarioAreaTrabajoByUsuarioId
                 (UsuarioSeleccionado.getId(), authenticationResponse.getJwt()).get(0).getId(), authenticationResponse.getJwt());
@@ -368,6 +382,7 @@ public class UsuarioController extends Controller implements Initializable {
             else{
                 UsuarioSeleccionado = new UsuarioC();
                 UsuarioWebService.createUsuario(usuarioAccion, authenticationResponse.getJwt());
+                usuarioAccion = UsuarioWebService.getUsuarioByCedulaAproximate(usuarioAccion.getCedula(), authenticationResponse.getJwt()).get(0);
                 UsuarioAreaTrabajoWebService.createUsuarioAreaTrabajo(areaTrabajo, usuarioAccion, authenticationResponse.getJwt());
             }
 
@@ -480,7 +495,7 @@ public class UsuarioController extends Controller implements Initializable {
         JFXButton horario;
         JFXButton modificar;
 
-        public UsuarioC(long Id, String Cedula, String NombreCompleto, String Telefono, String AreaTrabajo,
+        public UsuarioC(Long Id, String Cedula, String NombreCompleto, String Telefono, String AreaTrabajo,
                 String JefeDirecto, String Rol, String FechaRegistro, String FechaModificacion, String Estado, JFXButton horario, JFXButton modificar) {
             this.Id = Id;
             this.Cedula = Cedula;
@@ -580,5 +595,73 @@ public class UsuarioController extends Controller implements Initializable {
             return modificar;
         }
   }
+    
+    public void cuerpoLoginEncargado(){
+        contenido.setHeading(new Text("Aprovación del Gerente"));
+        
+        cedula = new JFXTextField();
+        password = new JFXPasswordField();
+    
+        VBox vbox = new VBox();
+        vbox.getChildren().add(new Label("Cedula: "));
+        vbox.getChildren().add(cedula);
+        vbox.getChildren().add(new Label("Contraseña: "));
+        vbox.getChildren().add(password);
+        vbox.setSpacing(20);
+        
+        contenido.setBody(vbox);
+    }
+    
+    public void realizarLoginEncargado(){
+        if(cedula.getText().equals("") || password.getText().equals(""))
+            msg.alerta(root, "Alerta", "Por favor complete los campos necesarios");
+        else{
+            Thread thread = new Thread(new Runnable(){
+            public void run(){
+                cargando.setVisible(true);
+                root.setDisable(true);
+                try{
+                    AuthenticationResponse authenticationResponse = AutenticationWebService.login(cedula.getText(), password.getText(), root);
+                    if(authenticationResponse != null)
+                        if(authenticationResponse.getUsuario().getId().equals(FlowController.getInstance().authenticationResponse.getUsuario().getUsuarioJefe().getId())){
+                            CargaLogicaGuardar();
+                            dialogo.close();
+                        }
+                        else{
+                            CargaGraficaMsg("El usuario autenticado no corresponde a su jefe directo");
+                        }
+                            
+                } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, ex);}
+
+                cargando.setVisible(false);
+                root.setDisable(false);
+                dialogo.close();
+            }
+            });
+            thread.start();
+        }
+    }
+    
+     public void loginEncargado(){
+        cuerpoLoginEncargado();
+        
+        dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
+        JFXButton botonAceptar = new JFXButton("Aceptar");
+        JFXButton botonCancelar = new JFXButton("Cancelar");
+        botonCancelar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+               dialogo.close();
+            }
+        });
+        botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                realizarLoginEncargado();
+            }
+        });
+        contenido.setActions(botonCancelar,botonAceptar);
+        dialogo.show();
+    }
     
 }

@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
+import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -155,6 +156,14 @@ public class UsuarioWebService {
         .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
+        if(response.get().statusCode() == 500)
+            System.out.println("No se pudo crear el usuario");
+
+        else {
+            TransaccionWebService.createTransaccion("Creación de Usuario.\nNombre: "+bean.getNombreCompleto()+"\nCédula: "+bean.getCedula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
+        }
+        response.join();
 
     }
 
@@ -170,6 +179,8 @@ public class UsuarioWebService {
             System.out.println("No se pudo actualizar el Usuario");
 
         else {
+            TransaccionWebService.createTransaccion("Modificación de Usuario.\nNombre: "+bean.getNombreCompleto()+"\nCédula: "+bean.getCedula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
             bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioDTO.class);
             System.out.println(bean);
         }

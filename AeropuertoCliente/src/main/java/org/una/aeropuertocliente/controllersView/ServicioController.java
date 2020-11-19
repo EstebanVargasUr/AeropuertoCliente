@@ -2,6 +2,9 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -18,6 +21,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -33,10 +37,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import lombok.*;
+import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.DTOs.PrecioDTO;
 import org.una.aeropuertocliente.WebService.ServicioWebService;
 import org.una.aeropuertocliente.DTOs.ServicioDTO;
+import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.WebService.PrecioWebService;
 import org.una.aeropuertocliente.WebService.TipoServicioWebService;
@@ -96,6 +103,10 @@ public class ServicioController extends Controller implements  Initializable {
     List<ServicioDTO> servicio;
     ServicioDTO ServicioSeleccionado = new ServicioDTO();
     boolean BotonGuardar = false;
+    private JFXDialogLayout contenido = new JFXDialogLayout();
+    private JFXDialog dialogo;
+    private JFXTextField cedula;
+    private JFXPasswordField password;
     Mensaje msg = new Mensaje();
     String EstadoServicio;
     String EstadoCobro; 
@@ -491,7 +502,7 @@ public class ServicioController extends Controller implements  Initializable {
            CargaGraficaMsg("Por favor complete los campos necesarios para crear el servicio");
         }
         else
-            CargaLogicaGuardar();
+            loginEncargado();
     }
     
     private void RealizarGuardar() {
@@ -645,5 +656,73 @@ public class ServicioController extends Controller implements  Initializable {
             this.Estado = Estado;
             this.EstadoCobro = EstadoCobro;
         }
-  }
+    }
+    
+    public void cuerpoLoginEncargado(){
+        contenido.setHeading(new Text("Aprovación del Gerente"));
+        
+        cedula = new JFXTextField();
+        password = new JFXPasswordField();
+    
+        VBox vbox = new VBox();
+        vbox.getChildren().add(new Label("Cedula: "));
+        vbox.getChildren().add(cedula);
+        vbox.getChildren().add(new Label("Contraseña: "));
+        vbox.getChildren().add(password);
+        vbox.setSpacing(20);
+        
+        contenido.setBody(vbox);
+    }
+    
+    public void realizarLoginEncargado(){
+        if(cedula.getText().equals("") || password.getText().equals(""))
+            msg.alerta(root, "Alerta", "Por favor complete los campos necesarios");
+        else{
+            Thread thread = new Thread(new Runnable(){
+            public void run(){
+                cargando.setVisible(true);
+                root.setDisable(true);
+                try{
+                    AuthenticationResponse authenticationResponse = AutenticationWebService.login(cedula.getText(), password.getText(), root);
+                    if(authenticationResponse != null)
+                        if(authenticationResponse.getUsuario().getId().equals(FlowController.getInstance().authenticationResponse.getUsuario().getUsuarioJefe().getId())){
+                            CargaLogicaGuardar();
+                            dialogo.close();
+                        }
+                        else{
+                            CargaGraficaMsg("El usuario autenticado no corresponde a su jefe directo");
+                        }
+                            
+                } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, ex);}
+
+                cargando.setVisible(false);
+                root.setDisable(false);
+                dialogo.close();
+            }
+            });
+            thread.start();
+        }
+    }
+    
+     public void loginEncargado(){
+        cuerpoLoginEncargado();
+        
+        dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
+        JFXButton botonAceptar = new JFXButton("Aceptar");
+        JFXButton botonCancelar = new JFXButton("Cancelar");
+        botonCancelar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+               dialogo.close();
+            }
+        });
+        botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                realizarLoginEncargado();
+            }
+        });
+        contenido.setActions(botonCancelar,botonAceptar);
+        dialogo.show();
+    }
 }

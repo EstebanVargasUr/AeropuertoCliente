@@ -2,6 +2,9 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
@@ -18,11 +21,13 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -31,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import org.una.aeropuertocliente.DTOs.AerolineaDTO;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoAvionDTO;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoDTO;
@@ -39,6 +45,7 @@ import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.WebService.AerolineaWebService;
 import org.una.aeropuertocliente.WebService.AreaTrabajoAvionWebService;
 import org.una.aeropuertocliente.WebService.AreaTrabajoWebService;
+import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.AvionWebService;
 import org.una.aeropuertocliente.controllersView.AerolineaController.AerolineaC;
 import org.una.aeropuertocliente.utility.FlowController;
@@ -85,6 +92,10 @@ public class AvionController extends Controller implements Initializable {
     public static ObservableList<AvionC> DatosAviones;
     private AuthenticationResponse authenticationResponse;
     private AvionC AvionSeleccionado;
+    private JFXDialogLayout contenido = new JFXDialogLayout();
+    private JFXDialog dialogo;
+    private JFXTextField cedula;
+    private JFXPasswordField password;
     Mensaje msg = new Mensaje();
     boolean BotonGuardar;
     String EstadoAvion;
@@ -354,11 +365,9 @@ public class AvionController extends Controller implements Initializable {
     private void guardar(MouseEvent event) {
         if (txt_matricula.getText().equals("")||txt_recorridoMax.getText().equals("")||txt_aerolinea.getText().equals("")||
         cb_estado.getValue() == null||cb_aerolinea.getValue() == null|| cb_tipo.getValue() == null|| cb_zonaActual.getValue() == null) 
-        {
            CargaGraficaMsg("Por favor complete los campos necesarios para registrar el avión");
-        }
         else
-        {CargaLogicaGuardar();}
+            loginEncargado();
     }
     
     private void RealizarGuardar() {
@@ -595,4 +604,72 @@ public class AvionController extends Controller implements Initializable {
         
      }
         
+    public void cuerpoLoginEncargado(){
+        contenido.setHeading(new Text("Aprovación del Gerente"));
+        
+        cedula = new JFXTextField();
+        password = new JFXPasswordField();
+    
+        VBox vbox = new VBox();
+        vbox.getChildren().add(new Label("Cedula: "));
+        vbox.getChildren().add(cedula);
+        vbox.getChildren().add(new Label("Contraseña: "));
+        vbox.getChildren().add(password);
+        vbox.setSpacing(20);
+        
+        contenido.setBody(vbox);
+    }
+    
+    public void realizarLoginEncargado(){
+        if(cedula.getText().equals("") || password.getText().equals(""))
+            msg.alerta(root, "Alerta", "Por favor complete los campos necesarios");
+        else{
+            Thread thread = new Thread(new Runnable(){
+            public void run(){
+                cargando.setVisible(true);
+                root.setDisable(true);
+                try{
+                    AuthenticationResponse authenticationResponse = AutenticationWebService.login(cedula.getText(), password.getText(), root);
+                    if(authenticationResponse != null)
+                        if(authenticationResponse.getUsuario().getId().equals(FlowController.getInstance().authenticationResponse.getUsuario().getUsuarioJefe().getId())){
+                            CargaLogicaGuardar();
+                            dialogo.close();
+                        }
+                        else{
+                            CargaGraficaMsg("El usuario autenticado no corresponde a su jefe directo");
+                        }
+                            
+                } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, ex);}
+
+                cargando.setVisible(false);
+                root.setDisable(false);
+                dialogo.close();
+            }
+            });
+            thread.start();
+        }
+    }
+    
+     public void loginEncargado(){
+        cuerpoLoginEncargado();
+        
+        dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
+        JFXButton botonAceptar = new JFXButton("Aceptar");
+        JFXButton botonCancelar = new JFXButton("Cancelar");
+        botonCancelar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+               dialogo.close();
+            }
+        });
+        botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                realizarLoginEncargado();
+            }
+        });
+        contenido.setActions(botonCancelar,botonAceptar);
+        dialogo.show();
+    }
+
 }
