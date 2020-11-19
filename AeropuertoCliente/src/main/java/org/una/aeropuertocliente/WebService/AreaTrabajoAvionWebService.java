@@ -17,6 +17,7 @@ import java.util.List;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoAvionDTO;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.AvionDTO;
+import org.una.aeropuertocliente.utility.FlowController;
 
 /**
  *
@@ -119,6 +120,14 @@ public class AreaTrabajoAvionWebService {
         .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
+        if(response.get().statusCode() == 500)
+            System.out.println("No se pudo crear el area del avión");
+
+        else {
+            TransaccionWebService.createTransaccion("Asignación de Area a Avión.\nMatricula: "+bean.getAvion().getMatricula()+"\nAerolinea: "+bean.getAvion().getAerolinea().getNombreAerolinea(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
+        }
+        response.join();
 
     }
 

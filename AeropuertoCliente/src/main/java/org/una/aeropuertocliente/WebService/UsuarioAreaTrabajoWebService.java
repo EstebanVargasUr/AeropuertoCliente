@@ -16,6 +16,7 @@ import java.util.List;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioAreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
+import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -113,6 +114,14 @@ public class UsuarioAreaTrabajoWebService {
         .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
+        if(response.get().statusCode() == 500)
+            System.out.println("No se pudo crear el Area de trabajo del usuario");
+
+        else {
+            TransaccionWebService.createTransaccion("Asignación de Area de Trabajo a Usuario.\nNombre: "+bean.getUsuario().getNombreCompleto()+"\nCédula: "+bean.getUsuario().getCedula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
+        }
+        response.join();
 
     }
 
@@ -132,6 +141,8 @@ public class UsuarioAreaTrabajoWebService {
             System.out.println("No se pudo actualizar el Area de trabajo del usuario");
 
         else {
+            TransaccionWebService.createTransaccion("Modificación de Area de Trabajo de Usuario.\nNombre: "+bean.getUsuario().getNombreCompleto()+"\nCédula: "+bean.getUsuario().getCedula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
             bean = JSONUtils.covertFromJsonToObject(response.get().body(), UsuarioAreaTrabajoDTO.class);
             System.out.println(bean);
         }

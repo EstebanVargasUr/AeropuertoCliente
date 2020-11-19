@@ -17,6 +17,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
+import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.TransaccionWebService;
 
 /**
@@ -42,7 +44,7 @@ public class Mensaje {
         dialogo.show();
     }
     
-    public void loginEncargado(StackPane root,String cuerpo){
+    public void loginEncargado(StackPane root, ImageView cargando){
         JFXDialogLayout contenido = new JFXDialogLayout();
         contenido.setHeading(new Text("Aprovación del Gerente"));
         
@@ -71,16 +73,31 @@ public class Mensaje {
         botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                System.out.println(cedula.getText());
-                /*try{
-                    TransaccionWebService.createTransaccion(informacion, usuarioId, finalToken);
-                }*/
-                dialogo.close();
+                if(cedula.getText().equals("") || password.getText().equals(""))
+                    alerta(root, "Alerta", "Por favor complete los campos necesarios");
+                else{
+                    Thread thread = new Thread(new Runnable(){
+                    public void run(){
+                        cargando.setVisible(true);
+                        root.setDisable(true);
+   
+                        try{
+                            AuthenticationResponse authenticationResponse = AutenticationWebService.login(cedula.getText(), password.getText(), root);
+                            if(authenticationResponse != null)
+                                if(authenticationResponse.getUsuario().getId().equals(FlowController.getInstance().authenticationResponse.getUsuario().getUsuarioJefe().getId()))
+                                    dialogo.close();
+                        } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, ex);}
+                        
+                        cargando.setVisible(false);
+                        root.setDisable(false);
+                        dialogo.close();
+                    }
+                    });
+                    thread.start();
+                }
             }
         });
         contenido.setActions(botonCancelar,botonAceptar);
-        
-        
         dialogo.show();
     }
     
