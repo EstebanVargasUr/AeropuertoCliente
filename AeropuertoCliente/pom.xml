@@ -53,6 +53,11 @@
             <version>20200518</version>
             <type>jar</type>
         </dependency>
+  	<dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.16.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -8,131 +8,222 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.MenuAdministradorController">
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.MenuAdministradorController">
    <children>
-      <HBox alignment="CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="100.0" VBox.vgrow="ALWAYS">
+      <VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane">
          <children>
-            <VBox alignment="CENTER" maxHeight="200.0" prefHeight="253.0" prefWidth="275.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+            <HBox alignment="CENTER_LEFT" fillHeight="false" prefHeight="80.0" prefWidth="1280.0">
                <children>
-                  <Label styleClass="LabelTitulo2" text="Autorizar Roles" />
-                  <JFXButton fx:id="btnAutorizar" alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#autorizarRoles" opacity="0.97" prefHeight="217.0" prefWidth="275.0" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/AutorizarRoles.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <VBox alignment="CENTER" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                           <children>
+                              <Label styleClass="label3" text="Desarrollo" />
+                              <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#modoDesarrollador" opacity="0.97" prefHeight="200.0" prefWidth="200.0" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../resources/ModoDesarrollador.png" />
+                                       </image>
+                                       <effect>
+                                          <ColorAdjust brightness="1.0" />
+                                       </effect>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <children>
+                        <VBox alignment="CENTER" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                           <children>
+                              <Label styleClass="label3" text="Averias" />
+                              <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#averia" opacity="0.97" prefHeight="200.0" prefWidth="200.0" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../resources/averia.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
-            </VBox>
-            <VBox alignment="CENTER" maxHeight="200.0" prefHeight="253.0" prefWidth="275.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+               <padding>
+                  <Insets left="20.0" right="20.0" top="20.0" />
+               </padding></HBox>
+            <HBox alignment="CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="50.0" VBox.vgrow="SOMETIMES">
                <children>
-                  <Label styleClass="LabelTitulo2" text="Modo Desarrollo" />
-                  <JFXButton fx:id="btnDesarrollo" alignment="TOP_CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#modoDesarrollo" opacity="0.97" prefHeight="214.0" prefWidth="275.0" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/modDesarrollo.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
+                  <VBox alignment="CENTER" maxHeight="234.0" prefHeight="234.0" prefWidth="281.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Autorizar Roles" />
+                        <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#autorizarRoles" opacity="0.97" prefHeight="217.0" prefWidth="275.0" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/AutorizarRoles.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" maxHeight="234.0" prefHeight="234.0" prefWidth="291.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Reportes Averias" />
+                        <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#reportesAverias" opacity="0.97" prefHeight="194.0" prefWidth="272.0" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/ReportesAverias.png" />
+                                 </image>
+                                 <effect>
+                                    <ColorAdjust saturation="0.2" />
+                                 </effect>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" maxHeight="234.0" prefHeight="234.0" prefWidth="306.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Parametros Sistema" />
+                        <JFXButton alignment="TOP_CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#parametrosSistema" opacity="0.97" prefHeight="214.0" prefWidth="275.0" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/modDesarrollo.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                  </VBox>
                </children>
-            </VBox>
+            </HBox>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="50.0">
+               <children>
+                  <VBox alignment="CENTER" maxHeight="154.0" maxWidth="246.0" prefHeight="154.0" prefWidth="246.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Marcar Entrada" />
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#marcarEntrada" opacity="0.97" textFill="WHITE" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/entrada.png" />
+                                 </image>
+                                 <effect>
+                                    <ColorAdjust brightness="1.0" />
+                                 </effect>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="30.0" left="30.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" maxHeight="150.0" maxWidth="210.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Marcar Salida" />
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#marcarSalida" opacity="0.97" textFill="WHITE" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/salida.png" />
+                                 </image>
+                                 <effect>
+                                    <ColorAdjust brightness="1.0" />
+                                 </effect>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="30.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" maxHeight="160.0" maxWidth="300.0" spacing="20.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Último Marcaje" />
+                        <Label fx:id="lbl_ultimaHora" styleClass="label3" text="-" />
+                        <Label fx:id="lbl_ultimaHora2" styleClass="label3" text="-" />
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="30.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" maxHeight="150.0" maxWidth="210.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Horario" />
+                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#horario" opacity="0.97" textFill="WHITE" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/calendario.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="30.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
          </children>
-      </HBox>
-      <HBox alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="50.0">
-         <children>
-            <VBox alignment="CENTER" maxHeight="150.0" maxWidth="210.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label styleClass="LabelTitulo2" text="Marcar Entrada" />
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#marcarEntrada" opacity="0.97" textFill="WHITE" VBox.vgrow="ALWAYS">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/entrada.png" />
-                           </image>
-                           <effect>
-                              <ColorAdjust brightness="1.0" />
-                           </effect>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-               </children>
-               <HBox.margin>
-                  <Insets bottom="30.0" left="30.0" />
-               </HBox.margin>
-            </VBox>
-            <VBox alignment="CENTER" maxHeight="150.0" maxWidth="210.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label styleClass="LabelTitulo2" text="Marcar Salida" />
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#marcarSalida" opacity="0.97" textFill="WHITE" VBox.vgrow="ALWAYS">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/salida.png" />
-                           </image>
-                           <effect>
-                              <ColorAdjust brightness="1.0" />
-                           </effect>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-               </children>
-               <HBox.margin>
-                  <Insets bottom="30.0" />
-               </HBox.margin>
-            </VBox>
-            <VBox alignment="TOP_CENTER" maxHeight="160.0" maxWidth="300.0" spacing="20.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label styleClass="LabelTitulo2" text="Última Hora Marcaje" />
-                  <Label fx:id="lbl_ultimaHora" styleClass="LabelTitulo2" text="-" />
-               </children>
-               <HBox.margin>
-                  <Insets bottom="30.0" />
-               </HBox.margin>
-            </VBox>
-            <VBox alignment="CENTER" maxHeight="150.0" maxWidth="210.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
-               <children>
-                  <Label styleClass="LabelTitulo2" text="Horario" />
-                  <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#horario" opacity="0.97" textFill="WHITE" VBox.vgrow="ALWAYS">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../resources/calendario.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </JFXButton>
-               </children>
-               <HBox.margin>
-                  <Insets bottom="30.0" />
-               </HBox.margin>
-            </VBox>
-         </children>
-      </HBox>
+         <stylesheets>
+            <URL value="@../resources/WinStyle.css" />
+            <URL value="@../resources/Login.css" />
+         </stylesheets>
+      </VBox>
+      <ImageView fx:id="cargando" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../resources/animacionCargando.gif" />
+         </image>
+         <effect>
+            <ColorAdjust />
+         </effect>
+      </ImageView>
    </children>
-   <stylesheets>
-      <URL value="@../resources/WinStyle.css" />
-      <URL value="@../resources/Login.css" />
-   </stylesheets>
-</VBox>
+</StackPane>

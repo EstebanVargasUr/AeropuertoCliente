@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="recaudacion_servicios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fd1bf575-0222-4ac3-b18f-3be96c15f86d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="Aerolinea" class="java.lang.String"/>
+	<field name="Matricula" class="java.lang.String"/>
+	<field name="Zona" class="java.lang.String"/>
+	<field name="EstadoAvion" class="java.lang.String"/>
+	<field name="FechaRegistro" class="java.lang.String"/>
+	<field name="Nombre" class="java.lang.String"/>
+	<field name="Rol" class="java.lang.String"/>
+	<field name="FechaIni" class="java.lang.String"/>
+	<field name="FechaFinal" class="java.lang.String"/>
+	<field name="TipoAvion" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="103" splitType="Stretch">
+			<staticText>
+				<reportElement x="114" y="0" width="332" height="30" uuid="b4d7a460-0493-41af-b69c-7814e91dafe5"/>
+				<textElement>
+					<font fontName="Century Gothic" size="20"/>
+				</textElement>
+				<text><![CDATA[Reporte de Recorridos de Aviones]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="40" width="110" height="30" uuid="99204696-9ec9-4a63-b412-00553ad45186"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<text><![CDATA[Fecha Inicial:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="175" y="40" width="168" height="30" uuid="8b5b54c0-c533-44b3-a1dd-ef9cc17e4e8e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FechaIni}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="345" y="40" width="100" height="30" uuid="5eb63a5e-40bd-49ce-b45f-d6dc7aaaf03e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<text><![CDATA[Fecha Final:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="445" y="40" width="100" height="30" uuid="a6f554f0-e62b-4625-b178-37770231fa3e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FechaFinal}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="175" y="80" width="172" height="20" uuid="ffa93a4b-3551-4932-aab2-d0994eafb9c4"/>
+				<textElement>
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Aerolinea}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="65" y="80" width="90" height="20" uuid="97650ba2-496b-4b27-a5f0-4dc568328c08"/>
+				<textElement>
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<text><![CDATA[Aerolinea:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="345" y="80" width="50" height="20" uuid="f095f7a7-1712-402a-9707-09dc83e65b5c"/>
+				<textElement>
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<text><![CDATA[Zona:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="395" y="80" width="158" height="20" uuid="6f75a55b-b345-4b16-a0ce-ef2d27d2dcdb"/>
+				<textElement>
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Zona}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="44" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="10" width="560" height="1" uuid="f9100a09-df29-4fd5-bd26-b493895cebcc">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="150" y="11" width="140" height="30" uuid="893865d1-3974-4301-9490-051dcbd603ec"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Tipo de Avión]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="11" width="140" height="30" uuid="e2396f1e-f4f5-4c6a-bf95-acecef43fe9e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Fecha Registro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="11" width="130" height="31" uuid="4b25d025-f879-4465-9063-d96fe719bb7d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Estado del Avion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="11" width="148" height="30" uuid="54ef04fa-35f1-4442-968d-d449ef8faf42"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Matricula]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="204" y="0" width="100" height="30" uuid="574a9c41-6011-4e32-86c4-412928e339b9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ea83c59c-d3b4-4c29-9fdc-b2a449e75d9a"/>
+				</reportElement>
+				<text><![CDATA[TipoAvion]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="41" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="560" height="40" uuid="9ba016a5-ba0b-4acb-96b7-f59d02646a3d"/>
+				<textField>
+					<reportElement x="0" y="0" width="150" height="30" uuid="ef8564eb-ef72-4b7f-b338-48df82d18426">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7b68bd30-3a13-49b6-9479-b30d20402682"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Matricula}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="290" y="0" width="140" height="30" uuid="4296edd5-c1ba-49b5-9512-c09da7891ce0">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="60661e27-ff80-4388-99fe-dcfe3d67d7a9"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{FechaRegistro}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="430" y="0" width="130" height="30" uuid="f4c95244-6a1e-44b2-9eb1-84eceb15889f">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="91ce4c5e-4c21-450a-8c87-4fd72bb5661f"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{EstadoAvion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="150" y="0" width="140" height="30" uuid="d4f4a20e-f99b-402e-9fa3-9bcd8de96e68">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ea83c59c-d3b4-4c29-9fdc-b2a449e75d9a"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{TipoAvion}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="8" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="560" height="4" uuid="e9e9c34b-bf1a-45a6-84c0-edbe2a961c8d"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="26" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="-21" y="1" width="596" height="24" forecolor="#D0B48E" backcolor="#F2EBDF" uuid="033e4f5b-fde5-43fd-9904-75fc62103fa2"/>
+				<textField evaluationTime="Report">
+					<reportElement x="520" y="2" width="40" height="20" forecolor="#736343" uuid="9e2e1f7a-b70b-4101-8ef8-1f9ce491dc7c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="440" y="2" width="80" height="20" forecolor="#736343" uuid="7c4549ff-4318-4dc2-b3ca-b5b28ea8bbf9"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="22" y="1" width="197" height="20" forecolor="#736343" uuid="53b66e15-fb9c-416e-80b9-3a3121099d85"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="220" y="2" width="120" height="18" forecolor="#736343" uuid="2f0715bd-1974-4dd7-9b82-1997fb1aa784"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{Nombre}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="340" y="2" width="100" height="18" forecolor="#736343" uuid="66385164-a17b-485d-a41c-a264211781e1"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{Rol}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

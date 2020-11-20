@@ -14,9 +14,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.DTOs.ServicioDTO;
-import org.una.aeropuertocliente.DTOs.TipoServicioDTO;
+import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -29,7 +28,7 @@ public class ServicioWebService {
     
     public static ServicioDTO getServicioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        ServicioDTO bean = null;
+        ServicioDTO bean = new ServicioDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -40,8 +39,13 @@ public class ServicioWebService {
 
         else
         {
-            bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
-            System.out.println(bean);
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen vuelos con este Id");
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
+                System.out.println(bean);
+            }
         }
         response.join();
         return bean;
@@ -124,6 +128,48 @@ public class ServicioWebService {
         return servicios; 
     }
     
+    public static List<ServicioDTO> getServicioByFechaRegistroBetweenAndTipoServicioId(Date fechaInicial, Date fechaFinal, long idTipoAvion, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetweenAndTipoServicioId/"+stringDate+"/"+stringDate2+"/"+idTipoAvion))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+        List<ServicioDTO> servicios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<ServicioDTO>>() {});
+        servicios.forEach(System.out::println);
+        response.join();
+        return servicios; 
+    }
+    
+    public static ServicioDTO getUltimoServicioByUsuarioIdAndTipoServicioId(long idAvion, long idTipo, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        ServicioDTO bean = new ServicioDTO();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findUltimoServicioByAvionIdAndTipoId/"+idAvion+"/"+idTipo))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Servicio No Encontrado");
+
+        else
+        {
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen servicios con la informacion solicitada");
+                return null;
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
+                System.out.println(bean);
+            }
+        }
+        response.join();
+        return bean;
+    }
+    
     public static void createServicio(ServicioDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
@@ -132,6 +178,14 @@ public class ServicioWebService {
         .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
+        if(response.get().statusCode() == 500)
+            System.out.println("No se pudo crear el servicio");
+
+        else {
+            TransaccionWebService.createTransaccion("Creación de Servicio.\nFactura: "+bean.getFactura()+"\nAvión: "+bean.getAvion().getMatricula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
+        }
+        response.join();
 
     }
 
@@ -147,6 +201,8 @@ public class ServicioWebService {
             System.out.println("No se pudo actualizar el Servicio");
 
         else {
+            TransaccionWebService.createTransaccion("Modificación de Servicio.\nFactura: "+bean.getFactura()+"\nAvión: "+bean.getAvion().getMatricula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
             bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
             System.out.println(bean);
         }

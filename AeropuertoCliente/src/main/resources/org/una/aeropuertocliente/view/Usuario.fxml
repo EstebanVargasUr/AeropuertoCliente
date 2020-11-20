@@ -2,10 +2,12 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -13,151 +15,166 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" styleClass="Pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.UsuarioController">
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.UsuarioController">
    <children>
-      <VBox alignment="CENTER" prefHeight="388.0" prefWidth="1010.0" spacing="20.0" styleClass="VBoxTarjeta2" VBox.vgrow="ALWAYS">
+      <VBox alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" styleClass="Pane">
          <children>
-            <VBox alignment="CENTER" styleClass="LabelTitulo3">
+            <VBox alignment="CENTER" prefHeight="388.0" prefWidth="1010.0" spacing="20.0" styleClass="VBoxTarjeta2" VBox.vgrow="ALWAYS">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LabelTitulo" text="Gestión de Usuarios" />
+                  <VBox alignment="CENTER" styleClass="LabelTitulo3">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="LabelTitulo" text="Gestión de Usuarios" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="633.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <JFXTextField fx:id="txt_buscar" disable="true" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets left="20.0" />
+                                 </HBox.margin>
+                              </JFXTextField>
+                              <DatePicker fx:id="dP_FechaInicial" minWidth="-Infinity" prefWidth="0.0" promptText="Fecha inicial" visible="false" />
+                              <DatePicker fx:id="dp_FechaFinal" minWidth="-Infinity" prefWidth="0.0" promptText="Fecha final" visible="false" />
+                              <JFXComboBox fx:id="cb_filtro" onAction="#cb_filtroAction" promptText="&lt;&lt;Fitrar por&gt;&gt;" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </JFXComboBox>
+                              <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" onMouseClicked="#buscar" styleClass="Boton1" text="Buscar">
+                                 <graphic>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../resources/buscar.png" />
+                                       </image>
+                                       <effect>
+                                          <ColorAdjust hue="0.46" />
+                                       </effect>
+                                    </ImageView>
+                                 </graphic>
+                                 <HBox.margin>
+                                    <Insets right="40.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="btn_nuevo" onMouseClicked="#nuevo" prefHeight="40.0" prefWidth="100.0" text="Nuevo">
+                                 <styleClass>
+                                    <String fx:value="jfx-buttonStandard1" />
+                                    <String fx:value="label1" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets right="20.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <VBox prefHeight="526.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="tablaUsuarios" onMouseClicked="#tablaUsuariosClicked" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="tbc_id" maxWidth="331.2000297307968" minWidth="51.20000684261322" prefWidth="51.20000684261322" style="-fx-alignment: center;" text="ID" />
+                              <TableColumn fx:id="tbc_cedula" minWidth="0.0" prefWidth="174.39998626708984" style="-fx-alignment: center;" text="Cédula" />
+                              <TableColumn fx:id="tbc_nombre" minWidth="0.0" prefWidth="136.00006103515625" style="-fx-alignment: center;" text="Nombre" />
+                              <TableColumn fx:id="tbc_telefono" minWidth="0.0" prefWidth="136.00006103515625" style="-fx-alignment: center;" text="Teléfono" />
+                              <TableColumn fx:id="tbc_areaTrabajo" prefWidth="98.40003204345703" style="-fx-alignment: center;" text="Area Trabajo" />
+                              <TableColumn fx:id="tbc_jefe" prefWidth="75.0" style="-fx-alignment: center;" text="Jefe Directo" />
+                              <TableColumn fx:id="tbc_rol" prefWidth="88.79998779296875" style="-fx-alignment: center;" text="Rol" />
+                              <TableColumn fx:id="tbc_fechaRegistro" prefWidth="94.4000244140625" style="-fx-alignment: center;" text="Fecha Registro" />
+                              <TableColumn fx:id="tbc_fechaModificacion" prefWidth="94.40005493164062" style="-fx-alignment: center;" text="Fecha Modificación" />
+                              <TableColumn fx:id="tbc_estado" minWidth="0.0" prefWidth="98.39996337890625" style="-fx-alignment: center;" text="Estado" />
+                              <TableColumn fx:id="tbc_horario" minWidth="0.0" prefWidth="98.39996337890625" style="-fx-alignment: center;" text="Horario" />
+                              <TableColumn fx:id="tbc_modificar" minWidth="0.0" prefWidth="98.39996337890625" style="-fx-alignment: center;" text="Modificar" />
+                              <TableColumn fx:id="tbc_horaMarcaje" minWidth="0.0" prefWidth="98.39996337890625" style="-fx-alignment: center;" text="Hora Marcaje" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </VBox>
                </children>
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
                </VBox.margin>
             </VBox>
-            <VBox alignment="CENTER">
+            <VBox fx:id="vb_barraInferior" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" spacing="30.0" styleClass="VBoxTarjeta2" visible="false">
                <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="633.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <JFXTextField fx:id="txt_buscar" prefHeight="26.0" prefWidth="397.0" promptText="Digite lo que desea buscar" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin></JFXTextField>
-                        <JFXComboBox fx:id="cb_filtro" promptText="&lt;&lt;Fitrar por&gt;&gt;" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </JFXComboBox>
-                        <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" onKeyPressed="#buscar" onMouseClicked="#buscar" styleClass="Boton1" text="Buscar">
-                           <graphic>
-                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../resources/buscar.png" />
-                                 </image>
-                                 <effect>
-                                    <ColorAdjust hue="0.46" />
-                                 </effect>
-                              </ImageView>
-                           </graphic>
-                           <HBox.margin>
-                              <Insets right="40.0" />
-                           </HBox.margin>
-                        </JFXButton>
-                        <JFXButton onMouseClicked="#modificar" prefHeight="40.0" prefWidth="100.0" text="Modificar">
+                        <Label alignment="TOP_CENTER" styleClass="label2" text="Cédula:" HBox.hgrow="ALWAYS" />
+                        <JFXTextField fx:id="txt_cedula" prefHeight="30.0" prefWidth="200.0" promptText="Digite la cédula del empleado" />
+                        <Label styleClass="label2" text="Nombre:" />
+                        <JFXTextField fx:id="txt_nombre" prefHeight="30.0" prefWidth="250.0" promptText="Digite el nombre completo del empleado" />
+                        <Label styleClass="label2" text="Teléfono:" />
+                        <JFXTextField fx:id="txt_telefono" prefHeight="30.0" prefWidth="250.0" promptText="Digite el número de teléfono del empleado" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="label2" text="Jefe Directo:" />
+                        <JFXTextField fx:id="txt_cedulaJefe" prefHeight="30.0" prefWidth="200.0" promptText="Digite la cédula del jefe directo" />
+                        <Label styleClass="label2" text="Area Trabajo:" />
+                        <JFXComboBox fx:id="cb_areaTrabajo" prefHeight="30.0" prefWidth="250.0" promptText="&lt;&lt;Seleccione una area&gt;&gt;" />
+                        <Label styleClass="label2" text="Rol:" />
+                        <JFXComboBox fx:id="cb_rol" prefHeight="30.0" prefWidth="250.0" promptText="&lt;&lt;Seleccione un rol&gt;&gt;" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="label2" text="Contraseña:" HBox.hgrow="ALWAYS" />
+                        <JFXPasswordField fx:id="txt_password" prefHeight="26.0" prefWidth="212.0" promptText="Digite la contraseña del usuario" />
+                        <Label styleClass="label2" text="Estado:" />
+                        <JFXComboBox fx:id="cb_BarEstado" prefHeight="26.0" prefWidth="191.0" promptText="Seleccione el estado" />
+                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onKeyPressed="#cancelarESC" onMouseClicked="#cancelar" prefHeight="49.0" prefWidth="150.0" text="Cancelar" HBox.hgrow="ALWAYS">
                            <styleClass>
                               <String fx:value="jfx-buttonStandard1" />
-                              <String fx:value="label1" />
-                           </styleClass>
-                        </JFXButton>
-                        <JFXButton fx:id="btn_nuevo" onMouseClicked="#nuevo" prefHeight="40.0" prefWidth="100.0" text="Nuevo">
-                           <styleClass>
-                              <String fx:value="jfx-buttonStandard1" />
-                              <String fx:value="label1" />
+                              <String fx:value="label2" />
                            </styleClass>
                            <HBox.margin>
-                              <Insets right="20.0" />
+                              <Insets left="50.0" />
                            </HBox.margin>
+                        </JFXButton>
+                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onKeyPressed="#guardarEnter" onMouseClicked="#guardar" prefHeight="49.0" prefWidth="150.0" text="Guardar" HBox.hgrow="ALWAYS">
+                           <styleClass>
+                              <String fx:value="jfx-buttonStandard1" />
+                              <String fx:value="label2" />
+                           </styleClass>
                         </JFXButton>
                      </children>
                   </HBox>
                </children>
+               <padding>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+               </padding>
                <VBox.margin>
-                  <Insets left="10.0" right="10.0" />
+                  <Insets bottom="30.0" left="30.0" right="30.0" />
                </VBox.margin>
             </VBox>
-            <VBox prefHeight="526.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <TableView fx:id="tablaUsuarios" VBox.vgrow="ALWAYS">
-                     <columns>
-                        <TableColumn fx:id="tbc_id" prefWidth="112.79997861385345" text="ID" />
-                        <TableColumn fx:id="tbc_cedula" prefWidth="75.0" text="Cédula" />
-                        <TableColumn fx:id="tbc_nombre" minWidth="0.0" prefWidth="136.00006103515625" text="Nombre" />
-                        <TableColumn fx:id="tbc_telefono" minWidth="0.0" prefWidth="136.00006103515625" text="Teléfono" />
-                        <TableColumn fx:id="tbc_areaTrabajo" prefWidth="98.40003204345703" text="Area Trabajo" />
-                        <TableColumn fx:id="tbc_jefe" prefWidth="75.0" text="Jefe Directo" />
-                        <TableColumn fx:id="tbc_rol" prefWidth="88.79998779296875" text="Rol" />
-                        <TableColumn fx:id="tbc_fechaRegistro" prefWidth="94.4000244140625" text="Fecha Registro" />
-                        <TableColumn fx:id="tbc_fechaModificacion" prefWidth="94.40005493164062" text="Fecha Modificación" />
-                        <TableColumn fx:id="tbc_estado" minWidth="0.0" prefWidth="98.39996337890625" text="Estado" />
-                     </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
-               </children>
-            </VBox>
          </children>
-         <VBox.margin>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </VBox.margin>
+         <stylesheets>
+            <URL value="@../resources/WinStyle.css" />
+            <URL value="@../resources/Login.css" />
+         </stylesheets>
       </VBox>
-      <VBox fx:id="vb_barraInferior" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" spacing="30.0" styleClass="VBoxTarjeta2" visible="false">
-         <children>
-            <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <Label alignment="TOP_CENTER" styleClass="label2" text="Cédula:" HBox.hgrow="ALWAYS" />
-                  <JFXTextField fx:id="txt_cedula" prefHeight="30.0" prefWidth="200.0" promptText="Digite la cédula del empleado" />
-                  <Label styleClass="label2" text="Nombre:" />
-                  <JFXTextField fx:id="txt_nombre" prefHeight="30.0" prefWidth="250.0" promptText="Digite el nombre completo del empleado" />
-                  <Label styleClass="label2" text="Teléfono:" />
-                  <JFXTextField fx:id="txt_telefono" prefHeight="30.0" prefWidth="250.0" promptText="Digite el número de teléfono del empleado" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <Label styleClass="label2" text="Jefe Directo:" />
-                  <JFXTextField fx:id="txt_cedulaJefe" prefHeight="30.0" prefWidth="200.0" promptText="Digite la cédula del jefe directo" />
-                  <Label styleClass="label2" text="Area Trabajo:" />
-                  <JFXComboBox fx:id="cb_areaTrabajo" prefHeight="30.0" prefWidth="250.0" promptText="&lt;&lt;Seleccione una area&gt;&gt;" />
-                  <Label styleClass="label2" text="Rol:" />
-                  <JFXComboBox fx:id="cb_rol" prefHeight="30.0" prefWidth="250.0" promptText="&lt;&lt;Seleccione un rol&gt;&gt;" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <Label styleClass="label2" text="Contraseña:" HBox.hgrow="ALWAYS" />
-                  <JFXTextField fx:id="txt_password" prefHeight="30.0" prefWidth="150.0" promptText="Digite la contraseña del usuario" HBox.hgrow="ALWAYS" />
-                  <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onKeyPressed="#cancelar" onMouseClicked="#cancelar" prefHeight="49.0" prefWidth="215.0" text="Cancelar" HBox.hgrow="ALWAYS">
-                     <styleClass>
-                        <String fx:value="jfx-buttonStandard1" />
-                        <String fx:value="label2" />
-                     </styleClass>
-                     <HBox.margin>
-                        <Insets left="50.0" />
-                     </HBox.margin>
-                  </JFXButton>
-                  <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onKeyPressed="#guardar" onMouseClicked="#guardar" prefHeight="49.0" prefWidth="215.0" text="Guardar" HBox.hgrow="ALWAYS">
-                     <styleClass>
-                        <String fx:value="jfx-buttonStandard1" />
-                        <String fx:value="label2" />
-                     </styleClass>
-                  </JFXButton>
-               </children>
-            </HBox>
-         </children>
-         <padding>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </padding>
-         <VBox.margin>
-            <Insets bottom="30.0" left="30.0" right="30.0" />
-         </VBox.margin>
-      </VBox>
+      <ImageView fx:id="cargando" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../resources/animacionCargando.gif" />
+         </image>
+         <effect>
+            <ColorAdjust />
+         </effect>
+      </ImageView>
    </children>
-   <stylesheets>
-      <URL value="@../resources/WinStyle.css" />
-      <URL value="@../resources/Login.css" />
-   </stylesheets>
-</VBox>
+</StackPane>
