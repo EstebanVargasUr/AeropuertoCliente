@@ -33,6 +33,7 @@ public class FlowController {
     public Date FechaIni;
     public Date FechaFinal;
     public AuthenticationResponse authenticationResponse;
+    public boolean modoDesarrollo = false;
     //FMLLoader: interfaz y controlador de la interfaz grafica
     private FlowController() {
     }
@@ -222,4 +223,7 @@ public class FlowController {
         this.mainStage.close();
     }
     
+    public void titulo(String titulo) {
+        this.mainStage.setTitle(titulo);
+    }
 }

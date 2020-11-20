@@ -2,6 +2,9 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
@@ -15,10 +18,12 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -27,10 +32,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import org.una.aeropuertocliente.DTOs.AerolineaDTO;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
 import org.una.aeropuertocliente.WebService.AerolineaWebService;
+import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 public class AerolineaController extends Controller implements Initializable {
 
@@ -57,9 +65,14 @@ public class AerolineaController extends Controller implements Initializable {
     public static ObservableList<AerolineaC> DatosAerolineas;
     private AuthenticationResponse authenticationResponse;
     private AerolineaC AerolineaSeleccionada;
-    boolean BotonGuardar;
-    String EstadoAerolinea;
-    
+    private JFXDialogLayout contenido = new JFXDialogLayout();
+    private JFXDialog dialogo;
+    private JFXTextField cedula;
+    private JFXPasswordField password;
+    private Mensaje msg = new Mensaje();
+    private boolean BotonGuardar;
+    private String EstadoAerolinea;
+     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ModificarFormaCargando();
@@ -71,12 +84,20 @@ public class AerolineaController extends Controller implements Initializable {
     public void initialize() {
         authenticationResponse = FlowController.getInstance().authenticationResponse;
         root.styleProperty().set("-fx-background-color: #4AB19D"); 
+        ModoDesarrollador();
         
     }
 
     @Override
     public Node getRoot() {
         return root;
+    }
+    
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V01-G-AER");
+        else
+           FlowController.getInstance().titulo("Gestión de Aerolineas");
     }
     
     private void ModificarFormaCargando(){
@@ -129,13 +150,40 @@ public class AerolineaController extends Controller implements Initializable {
         DatosAerolineas = FXCollections.observableArrayList();
         EstadoAerolinea = "Inactivo";
         try{
-            if(cb_filtro.getValue().equals("Id"))      
-                busquedaIndividual();
+            if(cb_filtro.getValue() == null) 
+            {
+                CargaGraficaMsg("Por favor seleccione un filtro");
+            }
             else
-                busquedaLista();
-
+            {
+                if(cb_filtro.getValue().equals("Id")) {
+                    
+                    if (txt_buscar.getText().equals("")) 
+                    {CargaGraficaMsg("Por favor complete los campos respectivos");}
+                    else
+                    {busquedaIndividual();}
+                } 
+                else {
+                     if (cb_filtro.getValue().equals("Nombre")) {
+                        
+                        if (txt_buscar.getText().equals(""))
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                            busquedaLista();
+                    }
+                    else if (cb_filtro.getValue().equals("Estado")) {
+                        
+                        if (cb_filtroEstado.getValue() == null) 
+                        CargaGraficaMsg("Por favor complete los campos respectivos");
+                        else
+                            busquedaLista(); 
+                    }
+                    else if (cb_filtro.getValue().equals("Todas")) {
+                        busquedaLista(); 
+                    }
+                }
             tablaAerolineas.setItems(DatosAerolineas);
-        
+            }
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaController.class.getName()).log(Level.SEVERE, null, ex);}
     }
 
@@ -144,14 +192,21 @@ public class AerolineaController extends Controller implements Initializable {
         long Id = Long.parseLong(txt_buscar.getText());
         AerolineaDTO aerolinea = AerolineaWebService.getAerolineaById(Id, authenticationResponse.getJwt());
 
-        if (aerolinea.getEstado().toString().equals("true")) 
+        if (aerolinea.getId() != null) {
+            if (aerolinea.getEstado().toString().equals("true")) 
             EstadoAerolinea = "Activo";
+            else
+            {EstadoAerolinea = "Inactivo";}
 
-        AerolineaC aerolinea1 = new AerolineaC(aerolinea.getId(),aerolinea.getNombreAerolinea(),aerolinea.getNombreResponsable(),
-        aerolinea.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-        aerolinea.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAerolinea,new JFXButton("Aviones"),new JFXButton("Modificar"));
+            AerolineaC aerolinea1 = new AerolineaC(aerolinea.getId(),aerolinea.getNombreAerolinea(),aerolinea.getNombreResponsable(),
+            aerolinea.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
+            aerolinea.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAerolinea,new JFXButton("Aviones"),new JFXButton("Modificar"));
 
-        DatosAerolineas.add(aerolinea1);
+            DatosAerolineas.add(aerolinea1);
+        }
+        else
+        {CargaGraficaMsg("No se encontraron aerolineas");}    
+        
     }
     
     private void busquedaLista() throws InterruptedException, IOException, ExecutionException {
@@ -179,16 +234,23 @@ public class AerolineaController extends Controller implements Initializable {
             default:
                 break;
         }
-        for(AerolineaDTO aerolinea : ListaAerolineas){
+        
+        if (ListaAerolineas.toArray().length != 0) {
+            for(AerolineaDTO aerolinea : ListaAerolineas){
             if (aerolinea.getEstado().toString().equals("true")) 
-                EstadoAerolinea = "Activo";
-
+            {EstadoAerolinea = "Activo";}
+            else
+            {EstadoAerolinea = "Inactivo";}
+            
             AerolineaC aerolinea1 = new AerolineaC(aerolinea.getId(),aerolinea.getNombreAerolinea(),aerolinea.getNombreResponsable(),
             aerolinea.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
             aerolinea.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoAerolinea,new JFXButton("Aviones"),new JFXButton("Modificar"));
 
             DatosAerolineas.add(aerolinea1);
+            }
         }
+        else
+        {CargaGraficaMsg("No se encontraron aerolineas");}    
     }
     
     @FXML
@@ -226,7 +288,10 @@ public class AerolineaController extends Controller implements Initializable {
 
     @FXML
     private void guardar(MouseEvent event) {
-        CargaLogicaGuardar();
+        if(txt_nombre.getText().equals("")||txt_encargado.getText().equals("")||cb_estado.getValue() == null) 
+            CargaGraficaMsg("Por favor complete los campos necesarios para crear la aerolinea");
+        else
+            loginEncargado();
     }
     
     private void RealizarGuardar() {  
@@ -326,6 +391,15 @@ public class AerolineaController extends Controller implements Initializable {
         });
     }
     
+    private void CargaGraficaMsg(String cuerpo){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
+            
+            msg.alerta(root, "Alerta", cuerpo);
+        }
+        });
+    }
+    
     public class AerolineaC {
     
         Long Id;  
@@ -361,7 +435,7 @@ public class AerolineaController extends Controller implements Initializable {
 
             });
             
-            Modificar.setOnAction(e -> {
+            Modificar.setOnAction(e -> {           
                 for(AerolineaC aerolinea : DatosAerolineas){
                     if(aerolinea.getModificar() == Modificar){
                         LimpiaBarraInferior();
@@ -414,5 +488,72 @@ public class AerolineaController extends Controller implements Initializable {
             return Modificar;
         }
     }
+    
+    public void cuerpoLoginEncargado(){
+        contenido.setHeading(new Text("Aprovación del Gerente"));
+        
+        cedula = new JFXTextField();
+        password = new JFXPasswordField();
+    
+        VBox vbox = new VBox();
+        vbox.getChildren().add(new Label("Cedula: "));
+        vbox.getChildren().add(cedula);
+        vbox.getChildren().add(new Label("Contraseña: "));
+        vbox.getChildren().add(password);
+        vbox.setSpacing(20);
+        
+        contenido.setBody(vbox);
+    }
+    
+    public void realizarLoginEncargado(){
+        if(cedula.getText().equals("") || password.getText().equals(""))
+            msg.alerta(root, "Alerta", "Por favor complete los campos necesarios");
+        else{
+            Thread thread = new Thread(new Runnable(){
+            public void run(){
+                cargando.setVisible(true);
+                root.setDisable(true);
+                try{
+                    AuthenticationResponse authenticationResponse = AutenticationWebService.login(cedula.getText(), password.getText(), root);
+                    if(authenticationResponse != null)
+                        if(authenticationResponse.getUsuario().getId().equals(FlowController.getInstance().authenticationResponse.getUsuario().getUsuarioJefe().getId())){
+                            CargaLogicaGuardar();
+                            dialogo.close();
+                        }
+                        else{
+                            CargaGraficaMsg("El usuario autenticado no corresponde a su jefe directo");
+                        }
+                            
+                } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, ex);}
 
+                cargando.setVisible(false);
+                root.setDisable(false);
+                dialogo.close();
+            }
+            });
+            thread.start();
+        }
+    }
+    
+     public void loginEncargado(){
+        cuerpoLoginEncargado();
+        
+        dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
+        JFXButton botonAceptar = new JFXButton("Aceptar");
+        JFXButton botonCancelar = new JFXButton("Cancelar");
+        botonCancelar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+               dialogo.close();
+            }
+        });
+        botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                realizarLoginEncargado();
+            }
+        });
+        contenido.setActions(botonCancelar,botonAceptar);
+        dialogo.show();
+    }
 }

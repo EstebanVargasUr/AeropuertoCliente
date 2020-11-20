@@ -35,7 +35,7 @@ public class LoginController extends Controller implements Initializable {
     
     @Override
     public void initialize() {
-        
+        ModoDesarrollador();
     }
 
     @Override
@@ -48,6 +48,13 @@ public class LoginController extends Controller implements Initializable {
         return root;
     }    
 
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V04-L-USU");
+        else
+            FlowController.getInstance().titulo("Inicio de Sesión");
+    }
+    
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);
@@ -66,7 +73,7 @@ public class LoginController extends Controller implements Initializable {
             cargando.setVisible(true);
             root.setDisable(true);
             try {
-                AuthenticationResponse authenticationResponse = AutenticationWebService.login(txtCedula.getText(), txtPassword.getText());
+                AuthenticationResponse authenticationResponse = AutenticationWebService.login(txtCedula.getText(), txtPassword.getText(),root);
                 if(authenticationResponse != null)
                 {
                     FlowController.getInstance().areaTrabajo = UsuarioAreaTrabajoWebService.getUsuarioAreaTrabajoByUsuarioId
@@ -74,7 +81,11 @@ public class LoginController extends Controller implements Initializable {
                     FlowController.getInstance().authenticationResponse = authenticationResponse;
                     
                     CargaGrafica();
-                }   
+                }
+                else 
+                {
+                    
+                }
                
             } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);}
             cargando.setVisible(false);
@@ -92,7 +103,7 @@ public class LoginController extends Controller implements Initializable {
        }
        });
     }
-             
+                
     private void cargarVentanas(){
         switch (FlowController.getInstance().authenticationResponse.getRoles().getNombre()){
             case "Gestor":

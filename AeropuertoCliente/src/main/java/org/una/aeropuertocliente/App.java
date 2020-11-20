@@ -18,7 +18,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         FlowController.getInstance().InitializeFlow(stage, null);
         stage.getIcons().add(new Image("org/una/aeropuertocliente/resources/IconoAvion.png"));
-        stage.setTitle("Aeropuerto");
+        stage.setTitle("Inicio de Sesión");
         FlowController.getInstance().goMain();
         FlowController.getInstance().goView("login");
     } 

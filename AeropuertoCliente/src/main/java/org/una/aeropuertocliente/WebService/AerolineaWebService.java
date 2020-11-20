@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import java.net.URLEncoder;
 import org.una.aeropuertocliente.DTOs.AerolineaDTO;
+import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -39,20 +40,25 @@ public class AerolineaWebService {
     }
 
     public static AerolineaDTO getAerolineaById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
-    {
+    {   
+        AerolineaDTO bean=new AerolineaDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-        AerolineaDTO bean=new AerolineaDTO();
-
+        
         if(response.get().statusCode() == 500)
             System.out.println("Aerolinea No Encontrada");
 
         else
         {
-            bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
-            System.out.println(bean);
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen aerolineas con este Id");
+            }
+            else{
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
+                System.out.println(bean);
+            }
         }
         response.join();
         return bean;
@@ -104,7 +110,14 @@ public class AerolineaWebService {
         .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
+         if(response.get().statusCode() == 500)
+            System.out.println("No se pudo crear la Aerolinea");
 
+        else {
+            TransaccionWebService.createTransaccion("Creación de Aerolinea.\nNombre: "+bean.getNombreAerolinea(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
+        }
+        response.join();
     }
 
     public static void updateAerolinea(AerolineaDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
@@ -119,6 +132,8 @@ public class AerolineaWebService {
             System.out.println("No se pudo actualizar la Aerolinea");
 
         else {
+            TransaccionWebService.createTransaccion("Modificación de Aerolinea.\nNombre: "+bean.getNombreAerolinea(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
             bean = JSONUtils.covertFromJsonToObject(response.get().body(), AerolineaDTO.class);
             System.out.println(bean);
         }

@@ -62,8 +62,9 @@ public class HoraMarcajeWebService {
         response.join();
     }
     
-    public static void getHoraMarcajeByUsuarioId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<HoraMarcajeDTO> getHoraMarcajeByUsuarioId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        List<HoraMarcajeDTO> beans = null;
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioId/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -74,10 +75,19 @@ public class HoraMarcajeWebService {
 
         else
         {
-             List<HoraMarcajeDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<HoraMarcajeDTO>>() {});
-            beans.forEach(System.out::println);
+            if (response.get().body().isBlank()) 
+            {
+                System.out.println("NO TIENE HORAS DE MARCAJE");
+            }
+            else
+            {
+                beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<HoraMarcajeDTO>>() {});
+                beans.forEach(System.out::println);
+            }
+             
         }
         response.join();
+        return beans;
     }
     
     public static HoraMarcajeDTO getUltimaHoraMarcajeByUsuarioId(long idUsuario, String finalToken) throws InterruptedException, ExecutionException, IOException

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.PerfilUsuarioController">
    <children>
@@ -78,12 +77,12 @@
                               <Label fx:id="lbl_rol" styleClass="label3" text="Sin asignar" />
                            </children>
                         </HBox>
-                        <HBox fx:id="hb_password" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" spacing="10.0" visible="false" VBox.vgrow="ALWAYS">
+                        <HBox fx:id="hb_password" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" spacing="10.0" VBox.vgrow="ALWAYS">
                            <children>
                               <Label styleClass="label3" text="Contraseña Actual:" HBox.hgrow="ALWAYS" />
-                              <JFXTextField fx:id="txt_passwordActual" prefWidth="230.0" promptText="Digite la contraseña actual" style="-fx-prompt-text-fill: white;" styleClass="label3" unFocusColor="WHITE" />
+                              <JFXPasswordField fx:id="txt_passwordActual" promptText="Digite la contraseña actual" style="-fx-prompt-text-fill: white;" styleClass="label3" unFocusColor="WHITE" />
                               <Label styleClass="label3" text="Nueva Contraseña:" />
-                              <JFXTextField fx:id="txt_passwordNueva" prefWidth="230.0" promptText="Digite la nueva contraseña" style="-fx-prompt-text-fill: white;" styleClass="label3" unFocusColor="WHITE" />
+                              <JFXPasswordField fx:id="txt_passwordNueva" promptText="Digite la nueva contraseña" style="-fx-prompt-text-fill: white;" styleClass="label3" unFocusColor="WHITE" />
                            </children>
                         </HBox>
                      </children>
@@ -99,7 +98,7 @@
                               <String fx:value="label2" />
                            </styleClass>
                         </JFXButton>
-                        <JFXButton fx:id="btn_operacion" onMouseClicked="#operacion" ripplerFill="#333645" text="Modificar" HBox.hgrow="ALWAYS">
+                        <JFXButton fx:id="btn_operacion" maxWidth="210.0" onMouseClicked="#operacion" prefWidth="250.0" ripplerFill="#333645" text="Modificar contraseña" HBox.hgrow="ALWAYS">
                            <styleClass>
                               <String fx:value="jfx-buttonStandard" />
                               <String fx:value="label2" />

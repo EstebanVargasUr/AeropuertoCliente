@@ -2,6 +2,8 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
@@ -11,6 +13,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -20,10 +24,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.WebService.HoraMarcajeWebService;
 import org.una.aeropuertocliente.utility.FlowController;
+import org.una.aeropuertocliente.utility.Mensaje;
 
 /**
  * FXML Controller class
@@ -33,19 +39,18 @@ import org.una.aeropuertocliente.utility.FlowController;
 public class MenuAdministradorController extends Controller implements Initializable {
 
     @FXML private StackPane root;
-    @FXML private JFXButton btnAutorizar;
-    @FXML private JFXButton btnDesarrollo;
     @FXML private Label lbl_ultimaHora;
     @FXML private ImageView cargando;
-    @FXML
-    private Label lbl_ultimaHora2;
+    @FXML private Label lbl_ultimaHora2;
 
     UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
     String token = FlowController.getInstance().authenticationResponse.getJwt();
+    Mensaje msg = new Mensaje();
+    int TipoMarcaje = 0; // 1 = Entrada | 2 = Salida
     
     @Override
     public void initialize() {
-        
+       ModoDesarrollador();
     }
 
     @Override
@@ -59,6 +64,13 @@ public class MenuAdministradorController extends Controller implements Initializ
         return root;
     }     
     
+    private void ModoDesarrollador(){
+        if(FlowController.getInstance().modoDesarrollo)
+           FlowController.getInstance().titulo("V05-M-ADM");
+        else
+            FlowController.getInstance().titulo("Menu Administrador");
+    }
+    
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);
@@ -67,13 +79,29 @@ public class MenuAdministradorController extends Controller implements Initializ
     }
     
     @FXML
-    private void autorizarRoles(MouseEvent event) {
+    private void autorizarRoles(MouseEvent event) {     
     }
 
     @FXML
-    private void modoDesarrollo(MouseEvent event) {   
+    private void reportesAverias(MouseEvent event) {
+        FlowController.getInstance().goView("ReporteSoporteTecnico");
+    }
+
+    @FXML
+    private void parametrosSistema(MouseEvent event) {
+        FlowController.getInstance().goView("ParametroSistema");
     }
     
+    @FXML
+    private void averia(MouseEvent event) {
+        msg.reporteAveria(root, cargando);
+    }
+    
+    
+    @FXML
+    private void horario(MouseEvent event) {
+        FlowController.getInstance().goView("Horario");
+    }
     private void CargaLogicaMenuAdministrador(){
         Thread t = new Thread(new Runnable(){
         public void run(){
@@ -102,15 +130,35 @@ public class MenuAdministradorController extends Controller implements Initializ
        }
        });
     }
+    
+    private void CargaGraficaMsgConfimar(String cuerpo){
+        Platform.runLater(new Runnable() {
+        @Override public void run() {
 
+            MsgConfirmarMarcaje("Confirmación", cuerpo);
+
+       }
+       });
+    }
 
     @FXML
     private void marcarEntrada(MouseEvent event) throws InterruptedException, ExecutionException, JsonProcessingException, IOException 
     {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Información");
-        
+        TipoMarcaje = 1;
+        CargaGraficaMsgConfimar("¿Desea realizar el marcaje de la entrada?");  
+    }
+
+    @FXML
+    private void marcarSalida(MouseEvent event) throws InterruptedException, ExecutionException, IOException 
+    {
+        TipoMarcaje = 2;
+        CargaGraficaMsgConfimar("¿Desea realizar el marcaje de la salida?"); 
+    }
+
+    
+    
+    private void MarcaEntrada() throws InterruptedException, ExecutionException, JsonProcessingException, IOException 
+    {     
         HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
         UltimaHoraMarcaje = HoraMarcajeWebService.getUltimaHoraMarcajeByUsuarioId(usuario.getId(), token);
         
@@ -121,22 +169,13 @@ public class MenuAdministradorController extends Controller implements Initializ
             HoraMarcajeWebService.createHoraMarcaje(horaMarcaje, usuario, token);
         }
         else
-        {
-           
-            alert.setContentText("YA SE MARCÓ HORA DE ENTRADA");
-            alert.showAndWait();
-        }
+        {msg.alerta(root, "Información", "Ya existe una hora de entrada en el sistema");}
         
         MostrarUltimaHoraMarcaje();
     }
-
-    @FXML
-    private void marcarSalida(MouseEvent event) throws InterruptedException, ExecutionException, IOException 
+    
+    private void MarcaSalida() throws InterruptedException, ExecutionException, IOException 
     {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Información");
-         
         HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
         UltimaHoraMarcaje = HoraMarcajeWebService.getUltimaHoraMarcajeByUsuarioId(usuario.getId(), token);
         
@@ -145,17 +184,9 @@ public class MenuAdministradorController extends Controller implements Initializ
             HoraMarcajeWebService.updateHoraMarcaje(UltimaHoraMarcaje, UltimaHoraMarcaje.getId(), token);
         }
         else
-        {
-            alert.setContentText("YA SE MARCÓ HORA DE SALIDA");
-            alert.showAndWait(); 
-        } 
+        {msg.alerta(root, "Información", "Ya existe una hora de salida resgistrada en el sistema");}
         
         MostrarUltimaHoraMarcaje();
-    }
-
-    @FXML
-    private void horario(MouseEvent event) {
-        FlowController.getInstance().goView("Horario");
     }
     
     private void MostrarUltimaHoraMarcaje( ) throws InterruptedException, ExecutionException, IOException
@@ -173,6 +204,60 @@ public class MenuAdministradorController extends Controller implements Initializ
         else
         {
             lbl_ultimaHora2.setText("Salida: " + UltimaHoraMarcaje.getHoraSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
+        }
+    }
+    
+    private void MsgConfirmarMarcaje(String titulo,String cuerpo)
+    {
+        JFXDialogLayout contenido = new JFXDialogLayout();
+        contenido.setHeading(new Text(titulo));
+        contenido.setBody(new Text(cuerpo));
+        JFXDialog dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
+        JFXButton botonAceptar = new JFXButton("Aceptar");
+        JFXButton botonCancelar = new JFXButton("Cancelar");
+        
+        botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                
+                try {
+                    
+                    if (TipoMarcaje == 1) {
+                        MarcaEntrada();
+                    }
+                    if (TipoMarcaje == 2) {
+                        MarcaSalida();
+                    }
+                    
+                    TipoMarcaje = 0;
+                    
+                } catch (InterruptedException | ExecutionException | IOException ex) {
+                    Logger.getLogger(MenuGestorController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                dialogo.close();
+            }
+        });
+        
+        botonCancelar.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                dialogo.close();
+            }
+        });
+        contenido.setActions(botonAceptar,botonCancelar);
+        dialogo.show();
+    }
+
+    @FXML
+    private void modoDesarrollador(MouseEvent event) {
+        if(FlowController.getInstance().modoDesarrollo == true){
+            FlowController.getInstance().modoDesarrollo = false;
+            FlowController.getInstance().titulo("Menu Administrador");
+        }
+        else{
+            FlowController.getInstance().modoDesarrollo = true;
+            FlowController.getInstance().titulo("V01-M-ADM");
         }
     }
 }

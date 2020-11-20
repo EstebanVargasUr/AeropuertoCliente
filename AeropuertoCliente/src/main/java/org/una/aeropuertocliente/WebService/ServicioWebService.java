@@ -14,9 +14,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import org.una.aeropuertocliente.DTOs.AvionDTO;
 import org.una.aeropuertocliente.DTOs.ServicioDTO;
-import org.una.aeropuertocliente.DTOs.TipoServicioDTO;
+import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -29,7 +28,7 @@ public class ServicioWebService {
     
     public static ServicioDTO getServicioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        ServicioDTO bean = null;
+        ServicioDTO bean = new ServicioDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -40,8 +39,13 @@ public class ServicioWebService {
 
         else
         {
-            bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
-            System.out.println(bean);
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen vuelos con este Id");
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
+                System.out.println(bean);
+            }
         }
         response.join();
         return bean;
@@ -148,6 +152,14 @@ public class ServicioWebService {
         .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
+        if(response.get().statusCode() == 500)
+            System.out.println("No se pudo crear el servicio");
+
+        else {
+            TransaccionWebService.createTransaccion("Creación de Servicio.\nFactura: "+bean.getFactura()+"\nAvión: "+bean.getAvion().getMatricula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
+        }
+        response.join();
 
     }
 
@@ -163,6 +175,8 @@ public class ServicioWebService {
             System.out.println("No se pudo actualizar el Servicio");
 
         else {
+            TransaccionWebService.createTransaccion("Modificación de Servicio.\nFactura: "+bean.getFactura()+"\nAvión: "+bean.getAvion().getMatricula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
             bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
             System.out.println(bean);
         }
