@@ -70,9 +70,9 @@
                <padding>
                   <Insets left="20.0" right="20.0" top="20.0" />
                </padding></HBox>
-            <HBox alignment="CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="100.0" VBox.vgrow="SOMETIMES">
+            <HBox alignment="CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="50.0" VBox.vgrow="SOMETIMES">
                <children>
-                  <VBox alignment="CENTER" maxHeight="200.0" prefHeight="253.0" prefWidth="275.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                  <VBox alignment="CENTER" maxHeight="234.0" prefHeight="234.0" prefWidth="281.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                      <children>
                         <Label styleClass="LabelTitulo2" text="Autorizar Roles" />
                         <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#autorizarRoles" opacity="0.97" prefHeight="217.0" prefWidth="275.0" textFill="WHITE">
@@ -88,11 +88,14 @@
                            </graphic>
                         </JFXButton>
                      </children>
+                     <HBox.margin>
+                        <Insets left="30.0" />
+                     </HBox.margin>
                   </VBox>
-                  <VBox alignment="CENTER" maxHeight="200.0" prefHeight="253.0" prefWidth="275.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                  <VBox alignment="CENTER" maxHeight="234.0" prefHeight="234.0" prefWidth="291.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                      <children>
                         <Label styleClass="LabelTitulo2" text="Reportes Averias" />
-                        <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#reportesAverias" opacity="0.97" prefHeight="217.0" prefWidth="275.0" textFill="WHITE">
+                        <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#reportesAverias" opacity="0.97" prefHeight="194.0" prefWidth="272.0" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -109,7 +112,7 @@
                         </JFXButton>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" maxHeight="200.0" prefHeight="253.0" prefWidth="275.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
+                  <VBox alignment="CENTER" maxHeight="234.0" prefHeight="234.0" prefWidth="306.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                      <children>
                         <Label styleClass="LabelTitulo2" text="Parametros Sistema" />
                         <JFXButton alignment="TOP_CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#parametrosSistema" opacity="0.97" prefHeight="214.0" prefWidth="275.0" textFill="WHITE">
@@ -130,7 +133,7 @@
             </HBox>
             <HBox alignment="BOTTOM_CENTER" prefHeight="170.0" prefWidth="1280.0" spacing="50.0">
                <children>
-                  <VBox alignment="CENTER" maxHeight="150.0" maxWidth="210.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
+                  <VBox alignment="CENTER" maxHeight="154.0" maxWidth="246.0" prefHeight="154.0" prefWidth="246.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" HBox.hgrow="ALWAYS">
                      <children>
                         <Label styleClass="LabelTitulo2" text="Marcar Entrada" />
                         <JFXButton buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#marcarEntrada" opacity="0.97" textFill="WHITE" VBox.vgrow="ALWAYS">

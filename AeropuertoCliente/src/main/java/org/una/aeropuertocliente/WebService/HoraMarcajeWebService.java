@@ -11,9 +11,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
+import org.una.aeropuertocliente.DTOs.HorarioDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
@@ -60,6 +62,29 @@ public class HoraMarcajeWebService {
             beans.forEach(System.out::println);
         }
         response.join();
+    }
+    
+    public static List<HoraMarcajeDTO> getHoraMarcajeByFechaRegistroBetweenAndUsuarioId(Date fechaInicial, Date fechaFinal, long id,String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetweenAndUsuarioId/"+stringDate+"/"+stringDate2+"/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+        System.out.println("Codigo:" + response.get().statusCode() );
+        if(response.get().statusCode() == 500)
+            System.out.println("Hora de marcaje No Encontrada");
+
+        else
+        {
+            List<HoraMarcajeDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<HoraMarcajeDTO>>() {});
+            beans.forEach(System.out::println);
+            return beans;
+        }
+        return null;
     }
     
     public static List<HoraMarcajeDTO> getHoraMarcajeByUsuarioId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
@@ -119,7 +144,8 @@ public class HoraMarcajeWebService {
     }
     
     public static void createHoraMarcaje(HoraMarcajeDTO bean, UsuarioDTO usuario, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
-    {       
+    {     
+        bean.setUsuario(usuario);
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken)

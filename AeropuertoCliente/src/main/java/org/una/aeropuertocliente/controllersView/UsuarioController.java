@@ -2,6 +2,8 @@ package org.una.aeropuertocliente.controllersView;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXPasswordField;
+import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXPasswordField;
@@ -70,6 +72,7 @@ public class UsuarioController extends Controller implements Initializable {
     @FXML private TableColumn<UsuarioC, String> tbc_estado;
     @FXML private TableColumn<UsuarioC, JFXButton> tbc_horario;
     @FXML private TableColumn<UsuarioC, JFXButton> tbc_modificar;
+    @FXML private TableColumn<UsuarioC, JFXButton> tbc_horaMarcaje;
     @FXML private JFXButton btn_nuevo;
     @FXML private TableView<UsuarioC> tablaUsuarios;
     @FXML private VBox vb_barraInferior;
@@ -77,12 +80,13 @@ public class UsuarioController extends Controller implements Initializable {
     @FXML private JFXTextField txt_nombre;
     @FXML private JFXTextField txt_telefono;
     @FXML private JFXTextField txt_cedulaJefe;
-    @FXML private JFXComboBox<String> cb_areaTrabajo;
     @FXML private JFXComboBox<String> cb_rol;
-    @FXML private JFXTextField txt_password;
+    @FXML private JFXPasswordField txt_password;
     @FXML private DatePicker dP_FechaInicial;
     @FXML private DatePicker dp_FechaFinal;
     @FXML private ImageView cargando;
+    @FXML private JFXComboBox<String> cb_BarEstado;
+    @FXML private JFXComboBox<String> cb_areaTrabajo;
     
     private AuthenticationResponse authenticationResponse;
     private UsuarioC UsuarioSeleccionado;
@@ -96,11 +100,16 @@ public class UsuarioController extends Controller implements Initializable {
     private JFXPasswordField password;
     Mensaje msg = new Mensaje();
     
+    
+    
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ModificarFormaCargando();
         initTabla();
         initComboBox();
+        
     }    
 
     @Override
@@ -108,6 +117,8 @@ public class UsuarioController extends Controller implements Initializable {
         authenticationResponse = FlowController.getInstance().authenticationResponse;
         root.styleProperty().set("-fx-background-color: #4AB19D"); 
         ModoDesarrollador();
+        LimitaAccionesRol();
+        LimitaAccionesRolGestor();
     }
 
     @Override
@@ -126,7 +137,7 @@ public class UsuarioController extends Controller implements Initializable {
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);
         clip.setArcHeight(40);
-        cargando.setClip(clip);
+        cargando.setClip(clip);      
     }
 
     private void initTabla(){
@@ -148,6 +159,7 @@ public class UsuarioController extends Controller implements Initializable {
         tbc_estado.setCellValueFactory(new PropertyValueFactory<>("Estado"));
         tbc_horario.setCellValueFactory(new PropertyValueFactory<>("Horario"));
         tbc_modificar.setCellValueFactory(new PropertyValueFactory<>("Modificar"));
+        tbc_horaMarcaje.setCellValueFactory(new PropertyValueFactory<>("HoraMarcaje"));
         
     }
     
@@ -168,7 +180,10 @@ public class UsuarioController extends Controller implements Initializable {
         cb_areaTrabajo.getItems().add("Servicios");
         cb_areaTrabajo.getItems().add("Torre de Control");
         cb_areaTrabajo.getItems().add("Recursos Humanos");
-        cb_areaTrabajo.getItems().add("Funcionamiento General");   
+        cb_areaTrabajo.getItems().add("Funcionamiento General");
+        
+        cb_BarEstado.getItems().add("Activo");
+        cb_BarEstado.getItems().add("Inactivo");
         
     }
     
@@ -239,7 +254,7 @@ public class UsuarioController extends Controller implements Initializable {
 
             UsuarioC usuario1 = new UsuarioC(usuario.getId(),usuario.getCedula(),usuario.getNombreCompleto(),usuario.getTelefono(),AreaTrabajo,
             JefeUsuario,RolUsuario,usuario.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-            usuario.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoUsuario,new JFXButton("Horario"),new JFXButton("Modificar"));
+            usuario.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoUsuario,new JFXButton("Horario"),new JFXButton("Modificar"),new JFXButton("Marcaje"));
 
             DatosUsuarios.add(usuario1); 
         }
@@ -275,7 +290,7 @@ public class UsuarioController extends Controller implements Initializable {
 
             UsuarioC usuario1 = new UsuarioC(usuario.getId(),usuario.getCedula(),usuario.getNombreCompleto(),usuario.getTelefono(),AreaTrabajo,
             JefeUsuario,RolUsuario,usuario.getFechaRegistro().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),
-            usuario.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoUsuario,new JFXButton("Horario"),new JFXButton("Modificar"));
+            usuario.getFechaModificacion().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString(),EstadoUsuario,new JFXButton("Horario"),new JFXButton("Modificar"),new JFXButton("Marcaje"));
 
             DatosUsuarios.add(usuario1);
         }
@@ -334,7 +349,7 @@ public class UsuarioController extends Controller implements Initializable {
     }
 
      private void configurarBarraInferior(boolean modo){
-        if(modo){
+        if(modo){                   
             vb_barraInferior.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
             vb_barraInferior.setMinSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
             vb_barraInferior.setVisible(true);
@@ -349,7 +364,7 @@ public class UsuarioController extends Controller implements Initializable {
     @FXML
     private void guardar(MouseEvent event) {
         if (txt_cedula.getText().equals("")||txt_nombre.getText().equals("")||txt_telefono.getText().equals("")||
-        txt_cedulaJefe.getText().equals("")||cb_areaTrabajo.getValue() == null) 
+        txt_cedulaJefe.getText().equals("")) 
         {
            CargaGraficaMsg("Por favor complete los campos necesarios para crear el usuario");
         }
@@ -368,6 +383,11 @@ public class UsuarioController extends Controller implements Initializable {
             usuarioAccion.setPasswordEncriptado(txt_password.getText());
             usuarioAccion.setTelefono(txt_telefono.getText());
        
+            if (cb_BarEstado.getValue().equals("Activo")) {
+                usuarioAccion.setEstado(true);
+            }else {usuarioAccion.setEstado(false);}
+            
+            
             if(!txt_cedulaJefe.getText().equals("Sin Jefe"))
                 usuarioAccion.setUsuarioJefe(UsuarioWebService.getUsuarioByCedulaAproximate(txt_cedulaJefe.getText(), authenticationResponse.getJwt()).get(0));
             if(!cb_rol.getValue().equals("Empleado"))
@@ -416,6 +436,49 @@ public class UsuarioController extends Controller implements Initializable {
         }
     }
     
+    private void LimitaAccionesRol()
+    {
+        if (authenticationResponse.getRoles().getNombre().equals("Administrador")){
+               List<UsuarioAreaTrabajoDTO> usuarioAreaTrabajo = FlowController.getInstance().areaTrabajo;
+               for (UsuarioAreaTrabajoDTO usuarioTrabajo : usuarioAreaTrabajo) 
+               {AreaTrabajo = usuarioTrabajo.getAreaTrabajo().getNombreArea();
+                    if (AreaTrabajo.equals("Recursos Humanos")) {
+                       btn_nuevo.setDisable(true);
+                       txt_cedula.setDisable(true);
+                       txt_nombre.setDisable(true);
+                       txt_telefono.setDisable(true);
+                       txt_cedulaJefe.setDisable(true);
+                       cb_areaTrabajo.setDisable(true);
+                       txt_password.setDisable(true);
+                       cb_BarEstado.setDisable(true);
+                       break;
+                   }
+                   else {
+                       cb_rol.setDisable(true);
+                   }
+               }
+          }
+          else {cb_rol.setDisable(true);}
+    }
+    
+    private void LimitaAccionesRolGestor()
+    {
+        if (authenticationResponse.getRoles().getNombre().equals("Gestor")){
+               List<UsuarioAreaTrabajoDTO> usuarioAreaTrabajo = FlowController.getInstance().areaTrabajo;
+               for (UsuarioAreaTrabajoDTO usuarioTrabajo : usuarioAreaTrabajo) 
+               {AreaTrabajo = usuarioTrabajo.getAreaTrabajo().getNombreArea();
+               
+                    if (AreaTrabajo.equals("Recursos Humanos")) {
+                      tbc_horaMarcaje.setVisible(true);
+                      break;
+                    }
+                    else {
+                         tbc_horaMarcaje.setVisible(false);
+                    }
+               }
+          }
+          else { tbc_horaMarcaje.setVisible(false);}
+    }
     private void LimpiaBarraInferior(){
         txt_cedula.clear();
         txt_nombre.clear();
@@ -494,9 +557,10 @@ public class UsuarioController extends Controller implements Initializable {
         String Estado;
         JFXButton horario;
         JFXButton modificar;
+        JFXButton horaMarcaje;
 
-        public UsuarioC(Long Id, String Cedula, String NombreCompleto, String Telefono, String AreaTrabajo,
-                String JefeDirecto, String Rol, String FechaRegistro, String FechaModificacion, String Estado, JFXButton horario, JFXButton modificar) {
+        public UsuarioC(long Id, String Cedula, String NombreCompleto, String Telefono, String AreaTrabajo,
+                String JefeDirecto, String Rol, String FechaRegistro, String FechaModificacion, String Estado, JFXButton horario, JFXButton modificar,JFXButton horaMarcaje) {
             this.Id = Id;
             this.Cedula = Cedula;
             this.NombreCompleto = NombreCompleto;
@@ -509,9 +573,11 @@ public class UsuarioController extends Controller implements Initializable {
             this.Estado = Estado;
             this.horario = horario;
             this.modificar = modificar;
+            this.horaMarcaje = horaMarcaje;
 
             horario.getStyleClass().add("jfx-buttonStandard1");
             modificar.getStyleClass().add("jfx-buttonStandard1");
+            horaMarcaje.getStyleClass().add("jfx-buttonStandard1");
             
             horario.setOnAction(e -> {
                 for(UsuarioC usuario : DatosUsuarios){
@@ -537,6 +603,16 @@ public class UsuarioController extends Controller implements Initializable {
                         txt_cedulaJefe.setText(usuario.getJefeDirecto());
                         cb_areaTrabajo.setValue(usuario.getAreaTrabajo());
                         cb_rol.setValue(usuario.getRol());
+                    }
+                }
+
+            });
+            
+            horaMarcaje.setOnAction(e -> {
+                for(UsuarioC usuario : DatosUsuarios){
+                    if(usuario.getHoraMarcaje() == horaMarcaje){  
+                        HoraMarcajeController.usuarioActual = usuario;
+                        FlowController.getInstance().goView("HoraMarcaje");
                     }
                 }
 
@@ -594,10 +670,14 @@ public class UsuarioController extends Controller implements Initializable {
         public JFXButton getModificar() {
             return modificar;
         }
+        
+        public JFXButton getHoraMarcaje() {
+            return horaMarcaje;
+        }
   }
     
     public void cuerpoLoginEncargado(){
-        contenido.setHeading(new Text("Aprovación del Gerente"));
+        contenido.setHeading(new Text("Aprobación del Gerente"));
         
         cedula = new JFXTextField();
         password = new JFXPasswordField();

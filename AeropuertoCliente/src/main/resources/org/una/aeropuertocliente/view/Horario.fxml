@@ -2,6 +2,8 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -14,7 +16,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-
 
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.HorarioController">
    <children>
@@ -53,13 +54,31 @@
                                     <Insets left="20.0" />
                                  </HBox.margin>
                               </JFXButton>
+                              <JFXButton fx:id="btn_nuevo" onMouseClicked="#nuevo" prefWidth="120.0" text="Nuevo">
+                                 <HBox.margin>
+                                    <Insets left="50.0" />
+                                 </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="jfx-buttonStandard1" />
+                                    <String fx:value="label1" />
+                                 </styleClass>
+                              </JFXButton>
+                              <JFXButton fx:id="btn_modificar" onMouseClicked="#modificar" prefWidth="120.0" text="Modificar">
+                                 <styleClass>
+                                    <String fx:value="jfx-buttonStandard1" />
+                                    <String fx:value="label1" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets left="20.0" />
+                                 </HBox.margin>
+                              </JFXButton>
                            </children>
                         </HBox>
                      </children>
                   </VBox>
                   <VBox prefHeight="526.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <TableView fx:id="tablaHorario" style="-fx-alignment: center;" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tablaHorario" onMouseClicked="#tablaHorarioClicked" style="-fx-alignment: center;" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="tbc_diaEntrada" prefWidth="112.79997861385345" style="-fx-alignment: center;" text="Día Entrada" />
                               <TableColumn fx:id="tbc_diaSalida" prefWidth="88.79998779296875" style="-fx-alignment: center;" text="Día Salida" />
@@ -81,11 +100,64 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
             </VBox>
+            <VBox fx:id="vb_barraInferior" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" spacing="30.0" styleClass="VBoxTarjeta2" visible="false">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label alignment="TOP_CENTER" styleClass="label2" text="Dia de entrada:" HBox.hgrow="ALWAYS" />
+                        <JFXComboBox fx:id="cb_diaEntrada" prefHeight="26.0" prefWidth="180.0" promptText="Seleccione el dia de entrada" />
+                        <Label styleClass="label2" text="Dia de salida:" />
+                        <JFXComboBox fx:id="cb_diaSalida" prefHeight="26.0" prefWidth="180.0" promptText="Seleccione el dia de salida" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="label2" text="Hora de entrada:" />
+                        <JFXTextField fx:id="txt_horaEntrada" prefHeight="30.0" prefWidth="200.0" promptText="Digite la hora de entrada" />
+                        <Label styleClass="label2" text="Hora de salida:" />
+                        <JFXTextField fx:id="txt_horaSalida" prefHeight="30.0" prefWidth="200.0" promptText="Digite la hora de entrada" />
+                        <Label styleClass="label2" text="Estado" />
+                        <JFXComboBox fx:id="cb_BInf_estado" prefHeight="30.0" prefWidth="250.0" promptText="Seleccione el estado" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="label2" text="Usuario al que pertenece el horario:" HBox.hgrow="ALWAYS" />
+                        <JFXComboBox fx:id="cb_Usuario" prefHeight="26.0" prefWidth="195.0" promptText="Seleccione el tipo de busqueda" />
+                        <JFXTextField fx:id="txt_Usuario" prefHeight="30.0" prefWidth="150.0" promptText="Digite  el id o la cédula del usuario" HBox.hgrow="ALWAYS" />
+                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onKeyPressed="#cancelarESC" onMouseClicked="#cancelar" prefHeight="49.0" prefWidth="215.0" text="Cancelar" HBox.hgrow="ALWAYS">
+                           <styleClass>
+                              <String fx:value="jfx-buttonStandard1" />
+                              <String fx:value="label2" />
+                           </styleClass>
+                           <HBox.margin>
+                              <Insets left="50.0" />
+                           </HBox.margin>
+                        </JFXButton>
+                        <JFXButton alignment="CENTER" buttonType="RAISED" defaultButton="true" onKeyPressed="#guardarEnter" onMouseClicked="#guardar" prefHeight="49.0" prefWidth="215.0" text="Guardar" HBox.hgrow="ALWAYS">
+                           <styleClass>
+                              <String fx:value="jfx-buttonStandard1" />
+                              <String fx:value="label2" />
+                           </styleClass>
+                        </JFXButton>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets bottom="30.0" left="30.0" right="30.0" />
+               </VBox.margin>
+            </VBox>
          </children>
          <stylesheets>
             <URL value="@../resources/WinStyle.css" />
             <URL value="@../resources/Login.css" />
          </stylesheets>
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
       </VBox>
       <ImageView fx:id="cargando" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>

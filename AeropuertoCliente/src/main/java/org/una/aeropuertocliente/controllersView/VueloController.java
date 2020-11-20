@@ -420,7 +420,7 @@ public class VueloController extends Controller implements Initializable {
                 txt_distancia.getText().equals("")||txt_duracion.getText().equals("")||txt_destino.getText().equals("")||cb_buscarAvion.getValue() == null||
                 txt_avion.getText().equals("")||cb_ModfEstado.getValue() == null) 
         {
-           CargaGraficaMsg("Por favor complete los campos necesarios para crear el vuelo");
+           CargaGraficaMsg("Por favor complete los campos necesarios para registrar el vuelo");
         }
         else
             loginEncargado(); 
@@ -442,10 +442,8 @@ public class VueloController extends Controller implements Initializable {
                 
             String FechaHoraSalida = dpk_fechaSalida.getValue().toString() + " " + horaSalida;
             Date dateSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraSalida);  
-            System.out.println("Fecha a insertar: " + dateSalida);
             String FechaHoraLlegada = dpk_fechaLlegada.getValue().toString() + " " + horaLlegada;
             Date dateLlegada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FechaHoraLlegada);  
-            System.out.println("Fecha a insertar: " + dateLlegada);
             
             VueloSeleccionado.setFechaSalida(dateSalida);
             VueloSeleccionado.setFechaLlegada(dateLlegada);

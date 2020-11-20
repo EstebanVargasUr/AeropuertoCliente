@@ -79,7 +79,8 @@ public class MenuAdministradorController extends Controller implements Initializ
     }
     
     @FXML
-    private void autorizarRoles(MouseEvent event) {     
+    private void autorizarRoles(MouseEvent event) { 
+        FlowController.getInstance().goView("Usuario");
     }
 
     @FXML
@@ -172,8 +173,6 @@ public class MenuAdministradorController extends Controller implements Initializ
         CargaGraficaMsgConfimar("¿Desea realizar el marcaje de la salida?"); 
     }
 
-    
-    
     private void MarcaEntrada() throws InterruptedException, ExecutionException, JsonProcessingException, IOException 
     {     
         HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
