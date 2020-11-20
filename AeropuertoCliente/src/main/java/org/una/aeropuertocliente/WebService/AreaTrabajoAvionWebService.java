@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 import org.una.aeropuertocliente.utility.JSONUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.una.aeropuertocliente.DTOs.AreaTrabajoAvionDTO;
@@ -50,22 +51,18 @@ public class AreaTrabajoAvionWebService {
     
     public static List<AreaTrabajoAvionDTO> getAreaTrabajoAvionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+stringDate+"/"+stringDate2))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
-
-        if(response.get().statusCode() == 500)
-            System.out.println("Area trabajo del avion No Encontrada");
-
-        else
-        {
-            List<AreaTrabajoAvionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoAvionDTO>>() {});
-            beans.forEach(System.out::println);
-            return beans;
-        }
+        List<AreaTrabajoAvionDTO> areasTrabajoAviones = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoAvionDTO>>() {});
+        areasTrabajoAviones.forEach(System.out::println);
         response.join();
-        return null;
+        return areasTrabajoAviones; 
     }
 
     public static AreaTrabajoAvionDTO getAreaTrabajoAvionByAvionId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
@@ -104,6 +101,22 @@ public class AreaTrabajoAvionWebService {
             return beans;
         }
         return null;
+    }
+    
+    public static List<AreaTrabajoAvionDTO> getAreaTrabajoAvionByFechaRegistroAndAerolineaAndZona(Date fechaInicial, Date fechaFinal,long idAero,long idZona, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroAndAerolineaAndZona/"+stringDate+"/"+stringDate2+"/"+idAero+"/"+idZona))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+        List<AreaTrabajoAvionDTO> areasTrabajoAviones = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<AreaTrabajoAvionDTO>>() {});
+        areasTrabajoAviones.forEach(System.out::println);
+        response.join();
+        return areasTrabajoAviones; 
     }
 
     public static void createAreaTrabajoAvion(AreaTrabajoDTO areaTrabajo, AvionDTO avion, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException

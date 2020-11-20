@@ -3,6 +3,7 @@ package org.una.aeropuertocliente.utility;
 import org.una.aeropuertocliente.App;
 import org.una.aeropuertocliente.controllersView.Controller;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,6 +27,11 @@ public class FlowController {
     private static ResourceBundle idioma;
     private static HashMap<String, FXMLLoader> loaders = new HashMap<>();
     public List<UsuarioAreaTrabajoDTO> areaTrabajo;
+    public long idTipoServicio=0;
+    public long idZona=0;
+    public long idAerolinea;
+    public Date FechaIni;
+    public Date FechaFinal;
     public AuthenticationResponse authenticationResponse;
     //FMLLoader: interfaz y controlador de la interfaz grafica
     private FlowController() {

@@ -177,6 +177,7 @@ public class MenuGerenteController extends Controller implements Initializable {
 
     @FXML
     private void listadosGerenciales(MouseEvent event) {
+         FlowController.getInstance().goView("GeneracionReporte");
     }
 
     @FXML

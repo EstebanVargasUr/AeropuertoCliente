@@ -119,6 +119,14 @@
  
 }
 
+.VBoxTarjeta3{
+    -fx-background-color: WHITE;
+    -fx-border-color : #104d94 ;
+    -fx-border-radius: 25px;
+    -fx-border-width: 2;
+}
+
+
 .vBoxGeneral{
     -fx-spacing: 30;
 }

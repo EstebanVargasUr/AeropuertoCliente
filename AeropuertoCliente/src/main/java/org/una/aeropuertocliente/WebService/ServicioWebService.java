@@ -124,6 +124,22 @@ public class ServicioWebService {
         return servicios; 
     }
     
+    public static List<ServicioDTO> getServicioByFechaRegistroBetweenAndTipoServicioId(Date fechaInicial, Date fechaFinal, long idTipoAvion, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetweenAndTipoServicioId/"+stringDate+"/"+stringDate2+"/"+idTipoAvion))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+        List<ServicioDTO> servicios = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<ServicioDTO>>() {});
+        servicios.forEach(System.out::println);
+        response.join();
+        return servicios; 
+    }
+    
     public static void createServicio(ServicioDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
