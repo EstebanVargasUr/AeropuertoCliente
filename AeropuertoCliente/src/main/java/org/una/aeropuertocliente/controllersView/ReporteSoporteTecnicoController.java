@@ -175,7 +175,7 @@ public class ReporteSoporteTecnicoController extends Controller implements Initi
                 Instant instant2 = Instant.from(localDate2.atStartOfDay(ZoneId.systemDefault()));
                 Date fin = Date.from(instant2);
 
-                ListaTransacciones = TransaccionWebService.getTransaccionByFechaRegistroBetweenAndTipo(inicio,fin, authenticationResponse.getJwt());
+                ListaTransacciones = TransaccionWebService.getTransaccionByFechaRegistroBetweenAndTipo(inicio,fin,"Soporte", authenticationResponse.getJwt());
             break;
 
             case "Estado": 
@@ -184,7 +184,7 @@ public class ReporteSoporteTecnicoController extends Controller implements Initi
                     Estado = true;
                 else
                     Estado = false;
-                ListaTransacciones = TransaccionWebService.getTransaccionByEstadoAndTipo(Estado, authenticationResponse.getJwt());
+                ListaTransacciones = TransaccionWebService.getTransaccionByEstadoAndTipo(Estado,"Soporte", authenticationResponse.getJwt());
             break;
 
             default:
@@ -213,11 +213,7 @@ public class ReporteSoporteTecnicoController extends Controller implements Initi
         ObservableList items = FXCollections.observableArrayList(); 
         tablaReporteSoporte.setItems(items);    
     }
-     
-    @FXML
-    private void tablaServiciosClic(MouseEvent event) {
-    }
-    
+
      private void CargaLogicaBusqueda(){
         Thread t = new Thread(new Runnable(){
         public void run(){
@@ -232,7 +228,7 @@ public class ReporteSoporteTecnicoController extends Controller implements Initi
         });
         t.start();
     }
-     
+
     public class ReporteSoporteC {
     
         Long Id;  

@@ -71,13 +71,14 @@ public class PerfilUsuarioController extends Controller implements Initializable
         lbl_nombre.setText(authenticationResponse.getUsuario().getNombreCompleto());
         lbl_rol.setText(authenticationResponse.getRoles().getNombre());
         lbl_telefono.setText(authenticationResponse.getUsuario().getTelefono());
+        AreaTrabajo="";
         
         if(authenticationResponse.getUsuario().getUsuarioJefe() != null)
             lbl_jefe.setText(authenticationResponse.getUsuario().getUsuarioJefe().getNombreCompleto());
         
         for (int i = 0; i < usuarioAreaTrabajo.toArray().length; i++) 
             if(usuarioAreaTrabajo.get(i).getAreaTrabajo() != null)
-                AreaTrabajo = usuarioAreaTrabajo.get(i).getAreaTrabajo().getNombreArea()+"  ";   
+                AreaTrabajo += usuarioAreaTrabajo.get(i).getAreaTrabajo().getNombreArea()+"\n";   
         
         lbl_areaTrabajo.setText(AreaTrabajo);
     }

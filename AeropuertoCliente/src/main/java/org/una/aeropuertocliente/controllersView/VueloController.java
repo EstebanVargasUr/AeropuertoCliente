@@ -40,11 +40,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import lombok.*;
 import org.una.aeropuertocliente.DTOs.AuthenticationResponse;
+import org.una.aeropuertocliente.DTOs.ServicioDTO;
 import org.una.aeropuertocliente.DTOs.VueloDTO;
+import org.una.aeropuertocliente.WebService.AlertaWebService;
 import org.una.aeropuertocliente.WebService.AutenticationWebService;
 import org.una.aeropuertocliente.WebService.AvionWebService;
+import org.una.aeropuertocliente.WebService.ServicioWebService;
 import org.una.aeropuertocliente.WebService.VueloWebService;
 import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.utility.Mensaje;
@@ -463,19 +465,43 @@ public class VueloController extends Controller implements Initializable {
             else
             {VueloSeleccionado.setAvion(AvionWebService.getAvionByMatricula(txt_avion.getText(), token).get(0));}
 
-            if (BotonGuardar == true) 
-            {   
-                if (cb_ModfEstado.getValue().equals("Activo")) 
-                    VueloSeleccionado.setEstado(true);
-                else
-                    VueloSeleccionado.setEstado(false);
-                
-                VueloWebService.updateVuelo(VueloSeleccionado, VueloSeleccionado.getId(), token); 
-            }
-            if (BotonGuardar == false) 
-            {VueloWebService.createVuelo(VueloSeleccionado, token);}
+            
+                if (BotonGuardar == true){  
+                    boolean Estado = cb_ModfEstado.getValue().equals("Activo");
+                    
+                    if(Estado && !VueloSeleccionado.getEstado()){
+                    if(VueloSeleccionado.getDistancia()<=VueloSeleccionado.getAvion().getRecorridoMaximo()){
+                        ServicioDTO servicio = ServicioWebService.getUltimoServicioByUsuarioIdAndTipoServicioId(VueloSeleccionado.getAvion().getId(), 1, token);
+                        VueloDTO vuelo = VueloWebService.getUltimoVueloByAvionId(VueloSeleccionado.getAvion().getId(), token);
 
-            configurarBarraInferior(false);
+                        if(servicio !=null && vuelo != null && servicio.getFechaRegistro().compareTo(vuelo.getFechaLlegada()) > 0){
+                            VueloSeleccionado.setEstado(Estado);
+                            VueloWebService.updateVuelo(VueloSeleccionado, VueloSeleccionado.getId(), token); 
+                            configurarBarraInferior(false);
+                            
+                         }else{
+                            CargaGraficaMsg("El avión seleccionado no ha realizado una recarga de combustible desde el último vuelo,\n"
+                                    + "por lo que no esta capacitado para despegar. Comuniquese con el departamento de servicios para\n"
+                                    + "que le den mantenimiento al avión y pueda realizar el despegue.");
+                            AlertaWebService.createAlerta("Falta de carga de combustible para el despegue", VueloSeleccionado, token);
+                            }
+                    }else{
+                        CargaGraficaMsg("El avión seleccionado no es capaz de realizar distancias tan largas de recorrido.");
+                        AlertaWebService.createAlerta("Exceso de distancia máxima de vuelo", VueloSeleccionado, token);
+                    }
+                    }else{
+                        VueloSeleccionado.setEstado(Estado);
+                        VueloWebService.updateVuelo(VueloSeleccionado, VueloSeleccionado.getId(), token); 
+                        configurarBarraInferior(false);
+                    }
+                }
+                else{
+                    VueloSeleccionado.setEstado(cb_ModfEstado.getValue().equals("Activo"));
+                    VueloWebService.createVuelo(VueloSeleccionado, token);
+                    configurarBarraInferior(false);
+                    
+                }
+            
             }
            
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaController.class.getName()).log(Level.SEVERE, null, ex);} catch (ParseException ex) {

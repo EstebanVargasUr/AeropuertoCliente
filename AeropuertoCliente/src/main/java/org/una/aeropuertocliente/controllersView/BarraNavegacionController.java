@@ -37,11 +37,12 @@ public class BarraNavegacionController extends Controller implements Initializab
         root.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
         authenticationResponse = FlowController.getInstance().authenticationResponse;
         usuarioAreaTrabajo = FlowController.getInstance().areaTrabajo;
+        AreaTrabajo="";
         
         lbl_usuario.setText(authenticationResponse.getUsuario().getNombreCompleto());
         lbl_rol.setText(authenticationResponse.getRoles().getNombre());
         for (UsuarioAreaTrabajoDTO usuarioTrabajo : usuarioAreaTrabajo) 
-            AreaTrabajo = usuarioTrabajo.getAreaTrabajo().getNombreArea()+"  ";   
+            AreaTrabajo+= usuarioTrabajo.getAreaTrabajo().getNombreArea()+",  ";   
         
         lbl_areaTrabajo.setText(AreaTrabajo);
     }

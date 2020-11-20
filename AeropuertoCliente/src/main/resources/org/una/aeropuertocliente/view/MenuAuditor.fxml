@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.MenuGerenteController">
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.MenuAuditorController">
    <children>
       <VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane">
          <children>
@@ -44,8 +44,8 @@
                <children>
                   <VBox alignment="CENTER" maxHeight="200.0" prefHeight="253.0" prefWidth="350.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                      <children>
-                        <Label styleClass="LabelTitulo2" text="Acciones de Gestores" />
-                        <JFXButton fx:id="btnAccion" alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#accionesGestores" opacity="0.97" prefHeight="224.0" prefWidth="361.0" ripplerFill="#36a3da" textFill="WHITE">
+                        <Label styleClass="LabelTitulo2" text="Transacciones Usuarios" />
+                        <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#transaccionesUsuarios" opacity="0.97" prefHeight="224.0" prefWidth="361.0" ripplerFill="#36a3da" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>
@@ -61,8 +61,8 @@
                   </VBox>
                   <VBox alignment="CENTER" maxHeight="200.0" prefHeight="253.0" prefWidth="350.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;">
                      <children>
-                        <Label styleClass="LabelTitulo2" text="Listados Gerenciales" />
-                        <JFXButton fx:id="btnListado" alignment="TOP_CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#listadosGerenciales" opacity="0.97" prefHeight="214.0" prefWidth="364.0" textFill="WHITE">
+                        <Label styleClass="LabelTitulo2" text="Listados de Reportes" />
+                        <JFXButton alignment="TOP_CENTER" buttonType="RAISED" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onMouseClicked="#listadosReportes" opacity="0.97" prefHeight="214.0" prefWidth="364.0" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="20.0" />
                            </font>

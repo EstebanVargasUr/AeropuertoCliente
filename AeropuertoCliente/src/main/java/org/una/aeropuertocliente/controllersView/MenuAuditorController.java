@@ -35,30 +35,32 @@ import org.una.aeropuertocliente.utility.Mensaje;
  *
  * @author Esteban Vargas
  */
-public class MenuGerenteController extends Controller implements Initializable {
+public class MenuAuditorController extends Controller implements Initializable {
 
     @FXML private StackPane root;
-    @FXML private JFXButton btnAccion;
-    @FXML private JFXButton btnListado;
-    @FXML private ImageView cargando;
-    @FXML private Label lbl_ultimaHora2;
     @FXML private Label lbl_ultimaHora;
-     
+    @FXML private Label lbl_ultimaHora2;
+    @FXML private ImageView cargando;
+
     UsuarioDTO usuario = FlowController.getInstance().authenticationResponse.getUsuario();
     String token = FlowController.getInstance().authenticationResponse.getJwt();
     Mensaje msg = new Mensaje();
     int TipoMarcaje = 0; // 1 = Entrada | 2 = Salida
+    
     private final Mensaje mensaje = new Mensaje();
-
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // TODO
         ModificarFormaCargando();
         CargaLogicaMenuGerente();
-    }  
-    
+    }    
+
     @Override
     public void initialize() {
-       ModoDesarrollador();
+        ModoDesarrollador();
     }
 
     @Override
@@ -68,19 +70,19 @@ public class MenuGerenteController extends Controller implements Initializable {
     
     private void ModoDesarrollador(){
         if(FlowController.getInstance().modoDesarrollo)
-           FlowController.getInstance().titulo("V06-M-GER");
+           FlowController.getInstance().titulo("V13-M-AUD");
         else
-            FlowController.getInstance().titulo("Menu Gerente");
+            FlowController.getInstance().titulo("Menu Auditor");
     }
-    
+
     private void ModificarFormaCargando(){
         Rectangle clip = new Rectangle(cargando.getFitWidth(), cargando.getFitHeight());
         clip.setArcWidth(40);
         clip.setArcHeight(40);
         cargando.setClip(clip);
     }
-     
-     private void CargaLogicaMenuGerente(){
+    
+    private void CargaLogicaMenuGerente(){
         Thread t = new Thread(new Runnable(){
         public void run(){
             cargando.setVisible(true);
@@ -119,23 +121,33 @@ public class MenuGerenteController extends Controller implements Initializable {
        }
        });
     }
-   
-    @FXML
-    private void averia(MouseEvent event) {
-         mensaje.reporteAveria(root, cargando);}
     
     @FXML
-    private void marcarEntrada(MouseEvent event) throws InterruptedException, ExecutionException, JsonProcessingException, IOException {
+    private void averia(MouseEvent event) {
+        mensaje.reporteAveria(root, cargando);
+    }
+
+    @FXML
+    private void transaccionesUsuarios(MouseEvent event) {
+        FlowController.getInstance().goView("TransaccionUsuario");
+    }
+
+    @FXML
+    private void listadosReportes(MouseEvent event) {
+    }
+
+    @FXML
+    private void marcarEntrada(MouseEvent event) {
         TipoMarcaje = 1;
         CargaGraficaMsgConfimar("¿Desea realizar el marcaje de la entrada?"); 
     }
 
     @FXML
-    private void marcarSalida(MouseEvent event) throws InterruptedException, ExecutionException, IOException {
+    private void marcarSalida(MouseEvent event) {
         TipoMarcaje = 2;
         CargaGraficaMsgConfimar("¿Desea realizar el marcaje de la salida?");
     }
-    
+
     private void MarcaEntrada() throws InterruptedException, ExecutionException, JsonProcessingException, IOException 
     {     
         HoraMarcajeDTO UltimaHoraMarcaje = new HoraMarcajeDTO();
@@ -185,22 +197,12 @@ public class MenuGerenteController extends Controller implements Initializable {
             lbl_ultimaHora2.setText("Salida: " + UltimaHoraMarcaje.getHoraSalida().toInstant().atZone(ZoneId.systemDefault()).format(formatter));
         }
     }
-
+    
     @FXML
     private void horario(MouseEvent event) {
         FlowController.getInstance().goView("Horario");
     }
-
-    @FXML
-    private void accionesGestores(MouseEvent event) {
-         FlowController.getInstance().goView("TransaccionUsuario");
-    }
-
-    @FXML
-    private void listadosGerenciales(MouseEvent event) {
-         FlowController.getInstance().goView("GeneracionReporte");
-    }
-
+    
     
     private void MsgConfirmarMarcaje(String titulo,String cuerpo)
     {

@@ -120,6 +120,30 @@ public class VueloWebService {
         response.join();
         return vuelos;
     }
+    
+    public static VueloDTO getUltimoVueloByAvionId(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {        
+        VueloDTO bean = new VueloDTO();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findUltimoVueloByAvionId/"+id))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Vuelo No Encontrado");
+        else
+        {
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen vuelos con este Id de avion");
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), VueloDTO.class);
+                System.out.println(bean);
+            }
+        }
+        response.join();
+        return bean;
+    }
 
     public static void createVuelo(VueloDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {

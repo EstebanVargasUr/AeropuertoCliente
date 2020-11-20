@@ -44,68 +44,12 @@ public class Mensaje {
         dialogo.show();
     }
     
-    public void loginEncargado(StackPane root, ImageView cargando){
-        JFXDialogLayout contenido = new JFXDialogLayout();
-        contenido.setHeading(new Text("Aprovación del Gerente"));
-        
-        JFXTextField cedula = new JFXTextField();
-        JFXPasswordField password = new JFXPasswordField();
-       
-        VBox vbox = new VBox();
-        vbox.getChildren().add(new Label("Cedula: "));
-        vbox.getChildren().add(cedula);
-        vbox.getChildren().add(new Label("Contraseña: "));
-        vbox.getChildren().add(password);
-        
-        vbox.setSpacing(20);
-        
-        contenido.setBody(vbox);
-        
-        JFXDialog dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
-        JFXButton botonAceptar = new JFXButton("Aceptar");
-        JFXButton botonCancelar = new JFXButton("Cancelar");
-        botonCancelar.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-               dialogo.close();
-            }
-        });
-        botonAceptar.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent t) {
-                if(cedula.getText().equals("") || password.getText().equals(""))
-                    alerta(root, "Alerta", "Por favor complete los campos necesarios");
-                else{
-                    Thread thread = new Thread(new Runnable(){
-                    public void run(){
-                        cargando.setVisible(true);
-                        root.setDisable(true);
-   
-                        try{
-                            AuthenticationResponse authenticationResponse = AutenticationWebService.login(cedula.getText(), password.getText(), root);
-                            if(authenticationResponse != null)
-                                if(authenticationResponse.getUsuario().getId().equals(FlowController.getInstance().authenticationResponse.getUsuario().getUsuarioJefe().getId()))
-                                    dialogo.close();
-                        } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, ex);}
-                        
-                        cargando.setVisible(false);
-                        root.setDisable(false);
-                        dialogo.close();
-                    }
-                    });
-                    thread.start();
-                }
-            }
-        });
-        contenido.setActions(botonCancelar,botonAceptar);
-        dialogo.show();
-    }
-    
      public void reporteAveria(StackPane root, ImageView cargando){
         JFXDialogLayout contenido = new JFXDialogLayout();
         contenido.setHeading(new Text("Reporte de Averias del Sistema"));
         JFXTextArea areaTexto = new JFXTextArea();
         areaTexto.setPrefSize(150, 80);
+        areaTexto.setPromptText("Digite una descripción detallada sobre el problema encontrado en la aplicación.");
         contenido.setBody(areaTexto);
         JFXDialog dialogo = new JFXDialog(root, contenido, JFXDialog.DialogTransition.RIGHT);
         JFXButton botonAceptar = new JFXButton("Aceptar");

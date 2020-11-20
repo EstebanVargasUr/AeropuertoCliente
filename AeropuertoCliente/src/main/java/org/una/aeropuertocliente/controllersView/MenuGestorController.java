@@ -25,6 +25,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
+import org.una.aeropuertocliente.DTOs.UsuarioAreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.WebService.HoraMarcajeWebService;
 import org.una.aeropuertocliente.utility.FlowController;
@@ -124,22 +125,54 @@ public class MenuGestorController extends Controller implements Initializable {
     }
     @FXML
     private void servicios(MouseEvent event) {
-        FlowController.getInstance().goView("Servicio");
+        boolean Entrar = false;
+        for(UsuarioAreaTrabajoDTO areaTrabajo : FlowController.getInstance().areaTrabajo)
+            if(areaTrabajo.getAreaTrabajo().getNombreArea().equals("Servicios"))
+                Entrar = true;
+        if(Entrar)
+            FlowController.getInstance().goView("Servicio");
+        else
+            msg.alerta(root, "Alerta", "Necesita pertener al Area de Servicios para ingresar\n"
+                    + "a la ventana de Servicios");
     }
 
     @FXML
     private void aerolineas(MouseEvent event) {
-        FlowController.getInstance().goView("Aerolinea");
+        boolean Entrar = false;
+        for(UsuarioAreaTrabajoDTO areaTrabajo : FlowController.getInstance().areaTrabajo)
+            if(areaTrabajo.getAreaTrabajo().getNombreArea().equals("Servicios"))
+                Entrar = true;
+        if(Entrar)
+            FlowController.getInstance().goView("Aerolinea");
+        else
+            msg.alerta(root, "Alerta", "Necesita pertener al Area de Torre de Control para ingresar\n"
+                    + "a la ventana de Aerolineas");
     }
 
     @FXML
     private void vuelos(MouseEvent event) {
-        FlowController.getInstance().goView("Vuelo");
+        boolean Entrar = false;
+        for(UsuarioAreaTrabajoDTO areaTrabajo : FlowController.getInstance().areaTrabajo)
+            if(areaTrabajo.getAreaTrabajo().getNombreArea().equals("Torre de Control"))
+                Entrar = true;
+        if(Entrar)
+            FlowController.getInstance().goView("Vuelo");
+        else
+            msg.alerta(root, "Alerta", "Necesita pertener al Area de Torre de Control para ingresar\n"
+                    + "a la ventana de Vuelos");
     }
     
     @FXML
     private void usuarios(MouseEvent event) {
-        FlowController.getInstance().goView("Usuario");
+        boolean Entrar = false;
+        for(UsuarioAreaTrabajoDTO areaTrabajo : FlowController.getInstance().areaTrabajo)
+            if(areaTrabajo.getAreaTrabajo().getNombreArea().equals("Recursos Humanos"))
+                Entrar = true;
+        if(Entrar)
+            FlowController.getInstance().goView("Usuario");
+        else
+            msg.alerta(root, "Alerta", "Necesita pertener al Area de Recursos Humanos para ingresar\n"
+                    + "a la ventana de Usuarios");
     }
     
     @FXML

@@ -97,11 +97,11 @@ public class AlertaWebService {
         response.join();
     }
     
-    public static void createAlerta(String areaTrabajo, VueloDTO vuelo, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static void createAlerta(String descripcion, VueloDTO vuelo, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         AlertaDTO bean = new AlertaDTO();
         
-        bean.setDescripcion(areaTrabajo);
+        bean.setDescripcion(descripcion);
         bean.setVuelo(vuelo);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);

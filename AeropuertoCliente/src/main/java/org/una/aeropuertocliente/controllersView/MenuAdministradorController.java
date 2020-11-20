@@ -18,7 +18,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -26,6 +25,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import org.una.aeropuertocliente.DTOs.HoraMarcajeDTO;
+import org.una.aeropuertocliente.DTOs.UsuarioAreaTrabajoDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
 import org.una.aeropuertocliente.WebService.HoraMarcajeWebService;
 import org.una.aeropuertocliente.utility.FlowController;
@@ -84,12 +84,29 @@ public class MenuAdministradorController extends Controller implements Initializ
 
     @FXML
     private void reportesAverias(MouseEvent event) {
-        FlowController.getInstance().goView("ReporteSoporteTecnico");
+        boolean Entrar = false;
+        for(UsuarioAreaTrabajoDTO areaTrabajo : FlowController.getInstance().areaTrabajo)
+            if(areaTrabajo.getAreaTrabajo().getNombreArea().equals("Departamento de Informática"))
+                Entrar = true;
+        if(Entrar)
+            FlowController.getInstance().goView("ReporteSoporteTecnico");
+        else
+            msg.alerta(root, "Alerta", "Necesita pertener al Area de Departamento de Informática para ingresar\n"
+                    + "a la ventana de Reportes de Averias");
     }
 
     @FXML
     private void parametrosSistema(MouseEvent event) {
-        FlowController.getInstance().goView("ParametroSistema");
+        boolean Entrar = false;
+        for(UsuarioAreaTrabajoDTO areaTrabajo : FlowController.getInstance().areaTrabajo)
+            if(areaTrabajo.getAreaTrabajo().getNombreArea().equals("Departamento de Informática"))
+                Entrar = true;
+        if(Entrar)
+            FlowController.getInstance().goView("ParametroSistema");
+        else
+            msg.alerta(root, "Alerta", "Necesita pertener al Area de Departamento de Informática para ingresar\n"
+                    + "a la ventana de Parametros de Sistema");
+        
     }
     
     @FXML

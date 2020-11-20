@@ -144,6 +144,32 @@ public class ServicioWebService {
         return servicios; 
     }
     
+    public static ServicioDTO getUltimoServicioByUsuarioIdAndTipoServicioId(long idAvion, long idTipo, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        ServicioDTO bean = new ServicioDTO();
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findUltimoServicioByAvionIdAndTipoId/"+idAvion+"/"+idTipo))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Servicio No Encontrado");
+
+        else
+        {
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen servicios con la informacion solicitada");
+                return null;
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), ServicioDTO.class);
+                System.out.println(bean);
+            }
+        }
+        response.join();
+        return bean;
+    }
+    
     public static void createServicio(ServicioDTO bean, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         String inputJson = JSONUtils.covertFromObjectToJson(bean);

@@ -397,15 +397,36 @@ public class AvionController extends Controller implements Initializable {
 
             if (!BotonGuardar) {
                 avionAccion.setId(AvionSeleccionado.getId());
-                AvionWebService.updateAvion(avionAccion, AvionSeleccionado.getId(), authenticationResponse.getJwt());
-                AreaTrabajoAvionWebService.updateAreaTrabajoAvion(areaTrabajo, avionAccion, AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId
-                (AvionSeleccionado.getId(), authenticationResponse.getJwt()).getId(), authenticationResponse.getJwt());
+                AreaTrabajoAvionDTO areaAvion= AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId(avionAccion.getId(), authenticationResponse.getJwt());
+                if(areaAvion.getAreaTrabajo().getNombreArea().equals("Torre de Control")){
+                    if(areaTrabajo.getNombreArea().equals("Descarga")){
+                        AvionWebService.updateAvion(avionAccion, AvionSeleccionado.getId(), authenticationResponse.getJwt());
+                        AreaTrabajoAvionWebService.updateAreaTrabajoAvion(areaTrabajo, avionAccion, AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId
+                        (AvionSeleccionado.getId(), authenticationResponse.getJwt()).getId(), authenticationResponse.getJwt());
+                    }else{
+                        CargaGraficaMsg("Los aviones que aterrizan deben pasar a zona de descarga, antes de ir al hangar, area de mantenimiento, o carga de combustible.\n"
+                            + "Por favor seleccione la zona de descarga para completar satisfactoriamente el cambio.");
+                    }
+                }
+                else{
+                    AvionWebService.updateAvion(avionAccion, AvionSeleccionado.getId(), authenticationResponse.getJwt());
+                    AreaTrabajoAvionWebService.updateAreaTrabajoAvion(areaTrabajo, avionAccion, AreaTrabajoAvionWebService.getAreaTrabajoAvionByAvionId
+                    (AvionSeleccionado.getId(), authenticationResponse.getJwt()).getId(), authenticationResponse.getJwt());
+                }
+                
+                
             }
             else{
-                AvionSeleccionado = new AvionC();
-                AvionWebService.createAvion(avionAccion, authenticationResponse.getJwt());
-                avionAccion = AvionWebService.getAvionByMatricula(avionAccion.getMatricula(), authenticationResponse.getJwt()).get(0);
-                AreaTrabajoAvionWebService.createAreaTrabajoAvion(areaTrabajo, avionAccion, authenticationResponse.getJwt());
+                if(areaTrabajo.getNombreArea().equals("Descarga")){
+                    AvionSeleccionado = new AvionC();
+                    AvionWebService.createAvion(avionAccion, authenticationResponse.getJwt());
+                    avionAccion = AvionWebService.getAvionByMatricula(avionAccion.getMatricula(), authenticationResponse.getJwt()).get(0);
+                    AreaTrabajoAvionWebService.createAreaTrabajoAvion(areaTrabajo, avionAccion, authenticationResponse.getJwt());
+                }else
+                    CargaGraficaMsg("Los aviones que aterrizan deben pasar a zona de descarga, antes de ir al hangar, area de mantenimiento, o carga de combustible.\n"
+                            + "Por favor seleccione la zona de descarga para completar satisfactoriamente el registro.");
+                    
+                
             }
 
         } catch (InterruptedException | ExecutionException | IOException ex) {Logger.getLogger(AerolineaController.class.getName()).log(Level.SEVERE, null, ex);}
