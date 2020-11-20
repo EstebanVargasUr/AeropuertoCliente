@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.15.0.final using JasperReports Library version 6.15.0-dd49bfb94918336b8321d5507193f0169ead4e95  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="recaudacion_servicios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fd1bf575-0222-4ac3-b18f-3be96c15f86d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="Imprimidor" class="java.lang.String"/>
+	<field name="Rol" class="java.lang.String"/>
+	<field name="FechaIni" class="java.lang.String"/>
+	<field name="FechaFinal" class="java.lang.String"/>
+	<field name="AreaTrabajo" class="java.lang.String"/>
+	<field name="Nombre" class="java.lang.String"/>
+	<field name="HorarioDiaEntrada" class="java.lang.String"/>
+	<field name="HorarioDiaSalida" class="java.lang.String"/>
+	<field name="HoraEntrada" class="java.lang.String"/>
+	<field name="HoraSalida" class="java.lang.String"/>
+	<field name="EntradaMarcaje" class="java.lang.String"/>
+	<field name="SalidaMarcaje" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="126" splitType="Stretch">
+			<staticText>
+				<reportElement x="43" y="0" width="474" height="30" uuid="b4d7a460-0493-41af-b69c-7814e91dafe5"/>
+				<textElement>
+					<font fontName="Century Gothic" size="22"/>
+				</textElement>
+				<text><![CDATA[Reporte de Horas Laboradas contra Horario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="40" width="120" height="30" uuid="99204696-9ec9-4a63-b412-00553ad45186"/>
+				<textElement>
+					<font fontName="Century Gothic" size="18"/>
+				</textElement>
+				<text><![CDATA[Fecha Inicial:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="140" y="40" width="112" height="30" uuid="8b5b54c0-c533-44b3-a1dd-ef9cc17e4e8e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FechaIni}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="40" width="110" height="30" uuid="5eb63a5e-40bd-49ce-b45f-d6dc7aaaf03e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="18"/>
+				</textElement>
+				<text><![CDATA[Fecha Final:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="390" y="40" width="126" height="30" uuid="a6f554f0-e62b-4625-b178-37770231fa3e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FechaFinal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="80" width="100" height="30" uuid="334e8c88-f2ed-475c-a35e-93953270424f"/>
+				<textElement>
+					<font fontName="Century Gothic" size="18"/>
+				</textElement>
+				<text><![CDATA[Empleado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="80" width="138" height="30" uuid="d3a3bce7-4547-43b6-a71d-e13df88bfc7f"/>
+				<textElement>
+					<font fontName="Century Gothic" size="16"/>
+				</textElement>
+				<text><![CDATA[Area de Trabajo:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="420" y="80" width="118" height="30" uuid="98377c56-4ff0-43e6-93e4-ba670c71290f"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Century Gothic" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AreaTrabajo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="120" y="80" width="160" height="30" uuid="50d08cc0-b8f5-4da5-96c1-b30c7957263c"/>
+				<textElement>
+					<font fontName="Century Gothic" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="44" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="10" width="560" height="1" uuid="f9100a09-df29-4fd5-bd26-b493895cebcc">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="11" width="90" height="30" uuid="893865d1-3974-4301-9490-051dcbd603ec"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Dia Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="11" width="90" height="30" uuid="f7323ba3-bc45-435e-9053-9279042014ea"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Dia Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="11" width="90" height="30" uuid="364003e8-78cd-4880-b911-8e792d2aa504"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Hora Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="270" y="10" width="100" height="31" uuid="ff12547e-d64e-4dd7-8368-cd79671c6947"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Hora Salida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="11" width="100" height="30" uuid="e2396f1e-f4f5-4c6a-bf95-acecef43fe9e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Entrada Marcaje]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="470" y="10" width="90" height="31" uuid="4b25d025-f879-4465-9063-d96fe719bb7d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12"/>
+				</textElement>
+				<text><![CDATA[Salida Marcaje]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="41" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="0" width="560" height="40" uuid="9ba016a5-ba0b-4acb-96b7-f59d02646a3d"/>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="0" y="0" width="90" height="30" uuid="3ff5a829-c73d-4b76-9d42-f468c84e53b6">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c4edce29-5748-4188-87d4-b5439e1a921f"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{HorarioDiaEntrada}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="90" y="0" width="90" height="30" uuid="caf196b4-c72e-4325-82ae-61618cbc3851">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="be780910-b600-4a47-9213-481d85428495"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{HorarioDiaSalida}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="180" y="0" width="100" height="30" uuid="3edb5a86-8cc2-40b2-9274-5bdc288bf600">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="eb873f09-eee3-4342-a21f-8b653156df3b"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{HoraEntrada}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="280" y="0" width="90" height="30" uuid="8f445f7c-d5dd-4d89-acaf-c856e49a72ad">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b166601a-0b81-4348-adfb-f052d91c2ae3"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{HoraSalida}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="469" y="0" width="90" height="30" uuid="3e233b89-305d-44c9-a3e2-30a4aac680e6">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9692eb74-9af3-4681-9460-0a7135532828"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SalidaMarcaje}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="370" y="0" width="100" height="30" uuid="d3410760-9f92-445f-89b7-f23c86881455">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="cbcf1aa0-592e-423d-958a-d071c50b17fa"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Century Gothic"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{EntradaMarcaje}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="8" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="560" height="4" uuid="e9e9c34b-bf1a-45a6-84c0-edbe2a961c8d"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="26" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="-21" y="1" width="596" height="24" forecolor="#D0B48E" backcolor="#F2EBDF" uuid="033e4f5b-fde5-43fd-9904-75fc62103fa2"/>
+				<textField evaluationTime="Report">
+					<reportElement x="520" y="2" width="40" height="20" forecolor="#736343" uuid="9e2e1f7a-b70b-4101-8ef8-1f9ce491dc7c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="440" y="2" width="80" height="20" forecolor="#736343" uuid="7c4549ff-4318-4dc2-b3ca-b5b28ea8bbf9"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="22" y="1" width="197" height="20" forecolor="#736343" uuid="53b66e15-fb9c-416e-80b9-3a3121099d85"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="220" y="2" width="120" height="18" forecolor="#736343" uuid="2f0715bd-1974-4dd7-9b82-1997fb1aa784"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{Imprimidor}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="340" y="2" width="100" height="18" forecolor="#736343" uuid="66385164-a17b-485d-a41c-a264211781e1"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{Rol}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
