@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.aeropuertocliente.controllersView.ParametroSistemaController">
+   <children>
+      <VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" styleClass="Pane">
+         <stylesheets>
+            <URL value="@../resources/WinStyle.css" />
+            <URL value="@../resources/Login.css" />
+         </stylesheets>
+         <padding>
+            <Insets bottom="50.0" left="200.0" right="200.0" top="50.0" />
+         </padding>
+         <children>
+            <VBox alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 20;" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets left="30.0" right="30.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label styleClass="LabelTitulo2" text="Parametros del Sistema">
+                           <font>
+                              <Font name="System Bold" size="28.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Tiempo Máximo de Sesión:" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="txt_maximaSesion" prefHeight="54.0" prefWidth="227.0" promptText="Digite el tiempo en minutos" style="-fx-prompt-text-fill: white;" styleClass="label3" unFocusColor="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Tiempo Cierre por Inactividad:" textFill="WHITE" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font name="System Bold" size="20.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="txt_cierreInactividad" prefHeight="54.0" prefWidth="226.0" promptText="Digite el tiempo en minutos" style="-fx-prompt-text-fill: white;" styleClass="label3" unFocusColor="WHITE" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="30.0" right="30.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <HBox alignment="CENTER" spacing="200.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <JFXButton onMouseClicked="#volver" ripplerFill="#333645" text="Volver" HBox.hgrow="ALWAYS">
+                           <styleClass>
+                              <String fx:value="jfx-buttonStandard" />
+                              <String fx:value="label2" />
+                           </styleClass>
+                        </JFXButton>
+                        <JFXButton onMouseClicked="#guardar" ripplerFill="#333645" text="Guardar" HBox.hgrow="ALWAYS">
+                           <styleClass>
+                              <String fx:value="jfx-buttonStandard" />
+                              <String fx:value="label2" />
+                           </styleClass>
+                        </JFXButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="30.0" right="30.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+      <ImageView fx:id="cargando" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../resources/animacionCargando.gif" />
+         </image>
+         <effect>
+            <ColorAdjust />
+         </effect>
+      </ImageView>
+   </children>
+</StackPane>

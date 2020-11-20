@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import org.una.aeropuertocliente.DTOs.HorarioDTO;
 import org.una.aeropuertocliente.DTOs.UsuarioDTO;
+import org.una.aeropuertocliente.utility.FlowController;
 import org.una.aeropuertocliente.utility.JSONUtils;
 /**
  *
@@ -29,8 +30,9 @@ public class HorarioWebService {
     private static final String serviceURL = "http://localhost:8099/horarios";
     
 
-    public static void getHorarioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static HorarioDTO getHorarioById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
+        HorarioDTO bean = new HorarioDTO();
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
@@ -41,10 +43,16 @@ public class HorarioWebService {
 
         else
         {
-            HorarioDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), HorarioDTO.class);
-            System.out.println(bean);
+            if (response.get().body().isBlank()) {
+                System.out.println("No existen vuelos con este Id");
+            }
+            else {
+                bean = JSONUtils.covertFromJsonToObject(response.get().body(), HorarioDTO.class);
+                System.out.println(bean);
+            }
         }
         response.join();
+        return bean;
     }
     
     public static void getHorariosByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
@@ -107,15 +115,8 @@ public class HorarioWebService {
         return horarios;
     }
     
-    public static void createHorario(Short diaEntrada, Short diaSalida, Time horaEntrada, Time horaSalida, UsuarioDTO usuario, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException, IOException
+    public static void createHorario( HorarioDTO bean , String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException, IOException
     {
-        HorarioDTO bean = new HorarioDTO();
-        
-        bean.setDiaEntrada(diaEntrada);
-        bean.setDiaSalida(diaSalida);
-        bean.setHoraEntrada(horaEntrada);
-        bean.setHoraSalida(horaSalida);        
-        bean.setUsuario(usuario);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
@@ -123,7 +124,14 @@ public class HorarioWebService {
         .POST(HttpRequest.BodyPublishers.ofString(inputJson)).build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.get().body());
+        if(response.get().statusCode() == 500)
+            System.out.println("No se pudo crear el Horario");
 
+        else {
+            TransaccionWebService.createTransaccion("Creación de Horario de Usuario.\nNombre: "+bean.getUsuario().getNombreCompleto()+"\nCédula: "+bean.getUsuario().getCedula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
+        }
+        response.join();
     }
 
     public static void updateHorario(HorarioDTO bean, long id, String finalToken) throws InterruptedException, ExecutionException, IOException
@@ -138,6 +146,8 @@ public class HorarioWebService {
             System.out.println("No se pudo actualizar el Horario");
 
         else {
+            TransaccionWebService.createTransaccion("Modificación de Horario de Usuario.\nNombre: "+bean.getUsuario().getNombreCompleto()+"\nCédula: "+bean.getUsuario().getCedula(),"Transacción",
+            FlowController.getInstance().authenticationResponse.getUsuario() , FlowController.getInstance().authenticationResponse.getJwt());
             bean = JSONUtils.covertFromJsonToObject(response.get().body(), HorarioDTO.class);
             System.out.println(bean);
         }

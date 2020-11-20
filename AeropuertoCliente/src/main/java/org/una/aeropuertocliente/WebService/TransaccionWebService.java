@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.una.aeropuertocliente.DTOs.TransaccionDTO;
@@ -25,7 +26,7 @@ public class TransaccionWebService {
     private static final HttpClient client = HttpClient.newBuilder().version(Version.HTTP_2).build();
     private static final String serviceURL = "http://localhost:8099/transacciones";
 
-    public static void getTransaccionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static TransaccionDTO getTransaccionById(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
         HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findById/"+id))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
@@ -39,13 +40,15 @@ public class TransaccionWebService {
         {
             TransaccionDTO bean = JSONUtils.covertFromJsonToObject(response.get().body(), TransaccionDTO.class);
             System.out.println(bean);
+            return bean;
         }
         response.join();
+        return null;
     }
     
-     public static void getTransaccionByEstado(boolean estado, String finalToken) throws InterruptedException, ExecutionException, IOException
+     public static List<TransaccionDTO> getTransaccionByEstadoAndTipo(boolean estado,String tipo, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstado/"+estado))
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByEstadoAndTipo/"+estado+"/"+tipo))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
@@ -57,31 +60,63 @@ public class TransaccionWebService {
         {
             List<TransaccionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<TransaccionDTO>>() {});
             beans.forEach(System.out::println);
+             return beans;
         }
         response.join();
+         return null;
     }
      
-    public static void getTransaccionByFechaRegistroBetween(Date fechaInicial, Date fechaFinal, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<TransaccionDTO> getTransaccionByFechaRegistroBetweenAndTipo(Date fechaInicial, Date fechaFinal,String tipo, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetween/"+fechaInicial+"/"+fechaFinal))
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetweenAndTipo/"+stringDate+"/"+stringDate2+"/"+tipo))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
 
         if(response.get().statusCode() == 500)
-            System.out.println("Rol No Encontrado");
+            System.out.println("Transacción No Encontrada");
 
         else
         {
             List<TransaccionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<TransaccionDTO>>() {});
             beans.forEach(System.out::println);
+            return beans;
         }
         response.join();
+        return null;
     }
 
-    public static void getTransaccionByUsuario(long id, String finalToken) throws InterruptedException, ExecutionException, IOException
+    public static List<TransaccionDTO> getTransaccionByFechaRegistroBetweenAndTipoAndUsuarioUsuarioJefeId(Date fechaInicial, Date fechaFinal,String tipo,long idJefe, String finalToken) throws InterruptedException, ExecutionException, IOException
     {
-        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioId/"+id))
+        SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate= DateFor.format(fechaInicial);
+        String stringDate2= DateFor.format(fechaFinal);
+        
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByFechaRegistroBetweenAndTipoAndUsuarioUsuarioJefeId/"+stringDate+"/"+stringDate2+"/"+tipo+"/"+idJefe))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Transacción No Encontrada");
+
+        else
+        {
+            List<TransaccionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<TransaccionDTO>>() {});
+            beans.forEach(System.out::println);
+            return beans;
+        }
+        response.join();
+        return null;
+    }
+    
+    public static List<TransaccionDTO> getTransaccionByUsuarioAndTipo(long id,String tipo, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioIdAndTipo/"+id+"/"+tipo))
         .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
         CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
         response.thenAccept(res -> System.out.println(res));
@@ -93,16 +128,39 @@ public class TransaccionWebService {
         {
             List<TransaccionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<TransaccionDTO>>() {});
             beans.forEach(System.out::println);
+             return beans;
         }
         response.join();
+         return null;
     }
      
-    public static void createTransaccion(String informacion, UsuarioDTO usuarioId, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
+    public static List<TransaccionDTO> getTransaccionByUsuarioAndTipoAndUsuarioUsuarioJefeId(long id,String tipo,long idJefe, String finalToken) throws InterruptedException, ExecutionException, IOException
+    {
+        HttpRequest req = HttpRequest.newBuilder(URI.create(serviceURL+"/findByUsuarioIdAndTipoAndUsuarioUsuarioJefeId/"+id+"/"+tipo+"/"+idJefe))
+        .setHeader("Content-Type", "application/json").setHeader("AUTHORIZATION", "Bearer " + finalToken).GET().build();
+        CompletableFuture<HttpResponse<String>> response = client.sendAsync(req, BodyHandlers.ofString());
+        response.thenAccept(res -> System.out.println(res));
+
+        if(response.get().statusCode() == 500)
+            System.out.println("Transaccion No Encontrada");
+
+        else
+        {
+            List<TransaccionDTO> beans = JSONUtils.convertFromJsonToList(response.get().body(), new TypeReference<List<TransaccionDTO>>() {});
+            beans.forEach(System.out::println);
+             return beans;
+        }
+        response.join();
+         return null;
+    }
+    
+    public static void createTransaccion(String informacion,String tipo, UsuarioDTO usuarioId, String finalToken) throws InterruptedException, ExecutionException, JsonProcessingException
     {
         TransaccionDTO bean = new TransaccionDTO();
         
         bean.setInformacion(informacion);
         bean.setUsuario(usuarioId);
+        bean.setTipo(tipo);
 
         String inputJson = JSONUtils.covertFromObjectToJson(bean);
         HttpRequest request = HttpRequest.newBuilder(URI.create(serviceURL+"/"))
