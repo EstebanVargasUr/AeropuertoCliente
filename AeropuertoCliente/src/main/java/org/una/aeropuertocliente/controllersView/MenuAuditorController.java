@@ -134,6 +134,7 @@ public class MenuAuditorController extends Controller implements Initializable {
 
     @FXML
     private void listadosReportes(MouseEvent event) {
+        FlowController.getInstance().goView("GeneracionReporte");
     }
 
     @FXML
